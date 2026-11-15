@@ -1,0 +1,41 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Test Admin</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script></head>
+<body style="font-family:sans-serif;padding:20px">
+<h2>🔍 TEST ADMIN CHECK</h2>
+<input id="tEmail" value="blessedempire@gmail.com" style="width:100%;padding:10px;margin-bottom:10px">
+<button onclick="runTest()" style="padding:10px 20px;background:purple;color:white;border:none;border-radius:8px">RUN TEST →</button>
+<p id="out" style="white-space:pre-wrap;background:#f5f5f5;padding:15px;border-radius:10px;margin-top:15px">Press RUN TEST...</p>
+<script>
+async function runTest(){
+  var email = document.getElementById('tEmail').value.trim().toLowerCase();
+  var out = document.getElementById('out');
+  out.innerText = 'Testing...\nEmail: ' + email + '\nProject check...';
+  try{
+    out.innerText += '\n\n1. Trying collection: admin';
+    var snap = await db.collection('admin').where('email','==',email).get();
+    out.innerText += '\nFound docs: ' + snap.size;
+    snap.forEach(function(d){
+      var data = d.data();
+      out.innerText += '\n\nDOC ID: ' + d.id;
+      out.innerText += '\nALL FIELDS: ' + JSON.stringify(data, null, 2);
+      out.innerText += '\nemail field = [' + data.email + ']';
+      out.innerText += '\npass field = [' + data.pass + ']';
+      out.innerText += '\npass type = ' + typeof data.pass;
+    });
+    if(snap.empty){
+      out.innerText += '\n\n❌ EMPTY! No doc found. Trying WITHOUT where...';
+      var snap2 = await db.collection('admin').get();
+      out.innerText += '\nTotal docs in admin: ' + snap2.size;
+      snap2.forEach(function(d){
+        out.innerText += '\n- Doc: ' + d.id + ' => ' + JSON.stringify(d.data());
+      });
+    }
+  } catch(e){
+    out.innerText += '\n\n❌ ERROR: ' + e.message;
+  }
+}
+</script>
+</body></html>

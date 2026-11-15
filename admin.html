@@ -41,8 +41,8 @@ button{cursor:pointer}
 <div class="container" id="loginBox">
 <div class="top"><h1>VERTEXA 💜</h1><p>Admin Login • One Login For All</p></div>
 <div class="card center" style="margin-top:12px"><h2>Admin Login</h2>
-<p class="small">Owner Login:<br><b>blessedempire150@gmail.com / Vertexa123</b></p><br>
-<input id="loginEmail" placeholder="Admin Email" value="blessedempire150@gmail.com"><input id="loginPass" type="password" placeholder="Password" value="Vertexa123">
+<p class="small">Login with your Admin Email + Password from Firestore <b>admin</b> collection.</p><br>
+<input id="loginEmail" placeholder="Admin Email"><input id="loginPass" type="password" placeholder="Password">
 <button class="btn" style="width:100%" onclick="adminLogin()">Login as Admin →</button>
 <p class="small" id="fbStatus" style="margin-top:10px">Connecting...</p>
 <p class="small" id="loginMsg" style="margin-top:8px;color:#7B3DFF"></p>
@@ -78,39 +78,32 @@ try{
   db=firebase.firestore();
   document.getElementById('fbStatus').innerText='✅ Firebase Connected';
 }catch(e){
-  document.getElementById('fbStatus').innerText='⚠️ Firebase offline - Owner login still go work';
+  document.getElementById('fbStatus').innerText='⚠️ Firebase offline';
   db=null;
 }
-var DEFAULT_ADMINS=[{name:'Founder Owner',email:'blessedempire150@gmail.com',pass:'Vertexa123',role:'OWNER',startDate:'2026-11-15T00:00:00.000Z'}];
 var currentAdmin=null;
 var cache={students:[],withdrawals:[],assignments:[],certs:[],daily:[],chat:[],admins:[],pricing:{promo:15000,normal:40000,count:12}};
 var ALL_TABS=[{id:'payments',label:'💰 Payments',roles:['OWNER','EXTRA']},{id:'students',label:'🎓 Students',roles:['OWNER']},{id:'withdrawals',label:'💸 Withdrawals',roles:['OWNER']},{id:'assignments',label:'📝 Assignments',roles:['OWNER','EXTRA']},{id:'certificates',label:'🏆 Certificates',roles:['OWNER','EXTRA']},{id:'daily',label:'📅 Daily Task',roles:['OWNER','EXTRA']},{id:'chat',label:'💬 Chat Room',roles:['OWNER','EXTRA']},{id:'courses',label:'📚 Courses',roles:['OWNER','EXTRA']},{id:'admins',label:'👥 Other Admins',roles:['OWNER']},{id:'pricing',label:'💲 Pricing',roles:['OWNER']}];
 
-// ===== LOGIN - FIXED, NO HOOK AGAIN =====
+// ===== LOGIN - CHECK FIRESTORE admin COLLECTION ONLY (NO HARDCODED PASSWORD) =====
 function adminLogin(){
   var email=document.getElementById('loginEmail').value.trim().toLowerCase();
   var pass=document.getElementById('loginPass').value;
   var msg=document.getElementById('loginMsg');
   msg.innerText='Checking...';
   if(!email||!pass){msg.innerText='Fill Email + Password';return;}
-  // 1. CHECK OWNER FIRST - NO WAIT FOR FIREBASE, SO E NO HOOK
-  var found=DEFAULT_ADMINS.find(function(a){return a.email===email&&a.pass===pass;});
-  if(found){msg.innerText='✅ Owner Found! Entering...';enterAdmin(found);return;}
-  // 2. IF NO FIREBASE, STOP HERE
-  if(!db){msg.innerText='❌ Wrong login or Firebase offline. Use Owner: blessedempire150@gmail.com / Vertexa123';return;}
-  // 3. CHECK FIREBASE ADMINS WITH TIMEOUT 5 SEC
+  if(!db){msg.innerText='❌ Firebase offline. Try again.';return;}
   var done=false;
-  setTimeout(function(){if(!done){done=true;msg.innerText='❌ Network slow. Try Owner login again.';}},5000);
-  db.collection('admins').get().then(function(snap){
+  setTimeout(function(){if(!done){done=true;msg.innerText='❌ Network slow. Try again.';}},5000);
+  db.collection('admin').get().then(function(snap){
     if(done) return; done=true;
     var fbFound=null;
-    snap.forEach(function(d){var v={id:d.id,...d.data()};if(v.email&&v.email.toLowerCase()===email&&v.pass===pass) fbFound=v;});
-    if(fbFound){enterAdmin({...fbFound,startDate:fbFound.startDate||fbFound.createdAt});return;}
+    snap.forEach(function(d){var v={id:d.id,...d.data()};var vEmail=String(v.email||'').trim().toLowerCase();var vPass=String(v.pass||'').trim();if(vEmail===email&&vPass===pass) fbFound=v;});
+    if(fbFound){enterAdmin({...fbFound,role:fbFound.role||'OWNER',startDate:fbFound.startDate||fbFound.createdAt||'2026-11-15T00:00:00.000Z'});return;}
     msg.innerText='❌ Wrong Admin Email / Password.';
-    alert('Wrong Admin Email / Password.\n\nCorrect Owner:\nblessedempire150@gmail.com\nVertexa123 (V capital)');
   }).catch(function(e){
     if(done) return; done=true;
-    msg.innerText='❌ Error: '+e.message+' - Try Owner login again.';
+    msg.innerText='❌ Error: '+e.message;
   });
 }
 function enterAdmin(admin){
@@ -135,24 +128,24 @@ function buildTabs(){
 }
 function loadAll(){
   if(!db) return;
-  db.collection('students').get().then(function(s){cache.students=[];s.forEach(function(d){cache.students.push({id:d.id,...d.data()});});renderPayments();renderStudents();}).catch(function(e){});
+  db.collection('vertexa_users').get().then(function(s){cache.students=[];s.forEach(function(d){cache.students.push({id:d.id,...d.data()});});renderPayments();renderStudents();}).catch(function(e){});
   db.collection('withdrawals').get().then(function(s){cache.withdrawals=[];s.forEach(function(d){cache.withdrawals.push({id:d.id,...d.data()});});renderWithdrawals();}).catch(function(e){});
   db.collection('assignments').get().then(function(s){cache.assignments=[];s.forEach(function(d){cache.assignments.push({id:d.id,...d.data()});});renderAssignments();}).catch(function(e){});
   db.collection('student_certs').get().then(function(s){cache.certs=[];s.forEach(function(d){cache.certs.push({id:d.id,...d.data()});});renderStudentCerts();}).catch(function(e){});
   db.collection('daily_tasks').get().then(function(s){cache.daily=[];s.forEach(function(d){cache.daily.push({id:d.id,...d.data()});});renderDaily();}).catch(function(e){});
   db.collection('chat').get().then(function(s){cache.chat=[];s.forEach(function(d){cache.chat.push({id:d.id,...d.data()});});renderChat();}).catch(function(e){});
-  db.collection('admins').get().then(function(s){cache.admins=[];s.forEach(function(d){cache.admins.push({id:d.id,...d.data()});});renderAdmins();}).catch(function(e){});
+  db.collection('admin').get().then(function(s){cache.admins=[];s.forEach(function(d){cache.admins.push({id:d.id,...d.data()});});renderAdmins();}).catch(function(e){});
   db.collection('settings').doc('pricing').get().then(function(p){if(p.exists)cache.pricing=p.data();renderPricing();}).catch(function(e){});
 }
 function renderPayments(){
-  document.getElementById('paymentsList').innerHTML=cache.students.map(function(s){return '<div class="item"><b>'+(s.name||'')+'</b> - '+(s.email||'')+'<p>Ref: '+(s.refCode||'')+' | Balance: ₦'+(s.balance||0)+' | Receipt: '+(s.receipt||'No receipt')+'</p><span class="badge '+(s.status==='PAID'?'badge-paid':s.status==='PENDING'?'badge-pending':'badge-free')+'">'+(s.status||'FREE')+'</span><div class="flex"><button class="btn btn-green" onclick="approvePayment(\''+s.id+'\')">✅ Approve / Mark as PAID</button><button class="btn btn-red" onclick="rejectPayment(\''+s.id+'\')">Reject</button></div></div>';}).join('')||'<p class="small">No students yet</p>';
+  document.getElementById('paymentsList').innerHTML=cache.students.map(function(s){return '<div class="item"><b>'+(s.name||'')+'</b> - '+(s.email||'')+'<p>Ref: '+(s.refCode||'')+' | Balance: ₦'+(s.balance||0)+' | Receipt: '+(s.receipt||'No receipt')+'</p><span class="badge '+((s.is_paid==='yes')?'badge-paid':(s.status==='PENDING'?'badge-pending':'badge-free'))+'">'+((s.is_paid==='yes')?'PAID':(s.status||'FREE'))+'</span><div class="flex"><button class="btn btn-green" onclick="approvePayment(\''+s.id+'\')">✅ Approve / Mark as PAID</button><button class="btn btn-red" onclick="rejectPayment(\''+s.id+'\')">Reject</button></div></div>';}).join('')||'<p class="small">No students yet</p>';
 }
-function approvePayment(id){if(!db)return;db.collection('students').doc(id).update({status:'PAID'}).then(function(){loadAll();alert('Don turn PAID ✅');});}
-function rejectPayment(id){if(!db)return;db.collection('students').doc(id).update({status:'FREE'}).then(function(){loadAll();});}
+function approvePayment(id){if(!db)return;db.collection('vertexa_users').doc(id).update({is_paid:'yes'}).then(function(){loadAll();alert('Don turn PAID ✅');});}
+function rejectPayment(id){if(!db)return;db.collection('vertexa_users').doc(id).update({is_paid:'no'}).then(function(){loadAll();});}
 function renderStudents(){
   var q=(document.getElementById('searchStudent')?.value||'').toLowerCase();
   var list=cache.students.filter(function(s){return (s.email||'').toLowerCase().includes(q);});
-  document.getElementById('studentsList').innerHTML=list.map(function(s){return '<div class="item"><b>'+(s.name||'')+'</b> - '+(s.email||'')+'<p>Ref: '+(s.refCode||'')+' | Balance: ₦'+(s.balance||0)+'</p><span class="badge '+(s.status==='PAID'?'badge-paid':'badge-free')+'">'+(s.status||'FREE')+'</span></div>';}).join('')||'No students';
+  document.getElementById('studentsList').innerHTML=list.map(function(s){return '<div class="item"><b>'+(s.name||'')+'</b> - '+(s.email||'')+'<p>Ref: '+(s.refCode||'')+' | Balance: ₦'+(s.balance||0)+'</p><span class="badge '+((s.is_paid==='yes')?'badge-paid':'badge-free')+'">'+((s.is_paid==='yes')?'PAID':'FREE')+'</span></div>';}).join('')||'No students';
 }
 function renderWithdrawals(){
   document.getElementById('withdrawalsList').innerHTML=cache.withdrawals.map(function(x){return '<div class="item"><b>'+(x.email||'')+'</b><p>Bank: '+(x.bank||'')+' | Acc: '+(x.account||'')+' | Amount: ₦'+(x.amount||0)+'</p><span class="badge badge-pending">'+(x.status||'PENDING')+'</span><div class="flex"><button class="btn btn-green" onclick="approveWithdraw(\''+x.id+'\')">Approve</button><button class="btn btn-red" onclick="rejectWithdraw(\''+x.id+'\')">Reject</button></div></div>';}).join('')||'No withdrawals';
@@ -160,7 +153,7 @@ function renderWithdrawals(){
 function approveWithdraw(id){db.collection('withdrawals').doc(id).update({status:'APPROVED'}).then(function(){loadAll();});}
 function rejectWithdraw(id){db.collection('withdrawals').doc(id).update({status:'REJECTED'}).then(function(){loadAll();});}
 function renderAssignments(){
-  document.getElementById('assignmentsList').innerHTML=cache.assignments.map(function(x){return '<div class="item"><b>'+(x.email||'')+'</b><p><a href="'+(x.link||'#')+'" target="_blank" style="color:#7B3DFF">'+(x.link||'')+'</a></p><span class="badge badge-pending">'+(x.status||'PENDING')+'</span><div class="flex"><button class="btn btn-green" onclick="approveAssign(\''+x.id+'\')">Approve</button><button class="btn btn-red" onclick="rejectAssign(\''+x.id+'\')">Reject</button></div></div>';}).join('')||'No assignments';
+  document.getElementById('assignmentsList').innerHTML=cache.assignments.map(function(x){return '<div class="item"><b>'+(x.email||'')</b><p><a href="'+(x.link||'#')+'" target="_blank" style="color:#7B3DFF">'+(x.link||'')+'</a></p><span class="badge badge-pending">'+(x.status||'PENDING')+'</span><div class="flex"><button class="btn btn-green" onclick="approveAssign(\''+x.id+'\')">Approve</button><button class="btn btn-red" onclick="rejectAssign(\''+x.id+'\')">Reject</button></div></div>';}).join('')||'No assignments';
 }
 function approveAssign(id){db.collection('assignments').doc(id).update({status:'APPROVED'}).then(function(){loadAll();});}
 function rejectAssign(id){db.collection('assignments').doc(id).update({status:'REJECTED'}).then(function(){loadAll();});}
@@ -180,7 +173,6 @@ function sendChat(){
   var m=document.getElementById('chatReply').value;if(!m)return; if(!db)return;
   db.collection('chat').add({from:'Admin 👑 '+currentAdmin.name,msg:m,createdAt:new Date().toISOString()}).then(function(){document.getElementById('chatReply').value='';loadAll();});
 }
-// ===== COURSES - LINK TO REAL modules.html =====
 function renderCourses(){
   var list=[{id:'M1',title:'M1 - Design Basics'},{id:'M2',title:'M2 - Colour & Typography'},{id:'M3',title:'M3 - Canva Mastery'},{id:'M4',title:'M4 - Logo Design'},{id:'M5',title:'M5 - Flyer & Placard'},{id:'M6',title:'M6 - Social Media'},{id:'M7',title:'M7 - Brand Kit & Portfolio'},{id:'M8',title:'M8 - Earn & Pricing'},{id:'M9',title:'M9 - Final Project'}];
   document.getElementById('coursesList').innerHTML=list.map(function(c){return '<div class="item"><b>'+c.title+'</b><p>Full lesson + videos dey for modules.html</p><div class="flex"><button class="btn" onclick="openRealModule(\''+c.id+'\')">▶️ Open Full Course + Videos</button></div></div>';}).join('');
@@ -191,15 +183,15 @@ function createAdmin(){
   var name=document.getElementById('newAdminName').value,email=document.getElementById('newAdminEmail').value.trim().toLowerCase(),pass=document.getElementById('newAdminPass').value,role=document.getElementById('newAdminRole').value;
   if(!name||!email||!pass)return alert('Fill all'); if(!db)return alert('Firebase offline');
   var startDate=new Date().toISOString();
-  db.collection('admins').add({name:name,email:email,pass:pass,role:role,createdAt:startDate,startDate:startDate}).then(function(){loadAll();alert('Admin login created ✅ Email: '+email+' Pass: '+pass+' Role: '+role);});
+  db.collection('admin').add({name:name,email:email,pass:pass,role:role,createdAt:startDate,startDate:startDate}).then(function(){loadAll();alert('Admin login created ✅ Email: '+email+' Role: '+role);});
 }
 function renderAdmins(){
-  var all=[...DEFAULT_ADMINS.map(function(a){return {id:'default',...a};}),...cache.admins];
-  document.getElementById('adminsList').innerHTML=all.map(function(a){return '<div class="item"><b>'+a.name+'</b> - '+a.email+'<p>Role: <span class="badge '+(a.role==='OWNER'?'badge-owner':'badge-extra')+'">'+a.role+'</span> | Start: '+(a.startDate?new Date(a.startDate).toDateString():'')+'</p>'+(a.id==='default'?'<p class="small">Default Owner - Cannot remove</p>':'<div class="flex"><button class="btn" onclick="upgradeAdmin(\''+a.id+'\')">⬆️ Upgrade / Switch Role</button><button class="btn btn-gold" onclick="demoteAdmin(\''+a.id+'\')">Demote to EXTRA</button><button class="btn btn-red" onclick="removeAdmin(\''+a.id+'\')">Remove Admin</button></div>')+'</div>';}).join('');
+  var all=[...cache.admins];
+  document.getElementById('adminsList').innerHTML=all.map(function(a){return '<div class="item"><b>'+a.name+'</b> - '+a.email+'<p>Role: <span class="badge '+(a.role==='OWNER'?'badge-owner':'badge-extra')+'">'+a.role+'</span> | Start: '+(a.startDate?new Date(a.startDate).toDateString():'')+'</p><div class="flex"><button class="btn" onclick="upgradeAdmin(\''+a.id+'\')">⬆️ Upgrade / Switch Role</button><button class="btn btn-gold" onclick="demoteAdmin(\''+a.id+'\')">Demote to EXTRA</button><button class="btn btn-red" onclick="removeAdmin(\''+a.id+'\')">Remove Admin</button></div></div>';}).join('');
 }
-function upgradeAdmin(id){var a=cache.admins.find(function(x){return x.id===id});if(!a)return;db.collection('admins').doc(id).update({role:a.role==='EXTRA'?'OWNER':'EXTRA'}).then(function(){loadAll();});}
-function demoteAdmin(id){db.collection('admins').doc(id).update({role:'EXTRA'}).then(function(){loadAll();});}
-function removeAdmin(id){if(!confirm('Remove this admin?'))return;db.collection('admins').doc(id).delete().then(function(){loadAll();});}
+function upgradeAdmin(id){var a=cache.admins.find(function(x){return x.id===id});if(!a)return;db.collection('admin').doc(id).update({role:a.role==='EXTRA'?'OWNER':'EXTRA'}).then(function(){loadAll();});}
+function demoteAdmin(id){db.collection('admin').doc(id).update({role:'EXTRA'}).then(function(){loadAll();});}
+function removeAdmin(id){if(!confirm('Remove this admin?'))return;db.collection('admin').doc(id).delete().then(function(){loadAll();});}
 function savePricing(){
   if(!currentAdmin||currentAdmin.role!=='OWNER')return alert('Only Owner fit change price');
   var p={promo:+document.getElementById('promoPrice').value,normal:+document.getElementById('normalPrice').value,count:+document.getElementById('promoCount').value};
@@ -226,7 +218,18 @@ function upgradeAdminCertIfDue(){
     document.getElementById('adminCertBadge').innerText='👑 LEADER - 2 Months';
   }
 }
-// NO AUTO-LOGIN AGAIN - NA E DEY CAUSE HOOK. USER GO CLICK LOGIN BY HAND.
+// AUTO-LOGIN SAFE - IF YOU COME FROM join.html, ENTER DIRECT, NO SECOND LOGIN
+window.addEventListener('load', function(){
+  try{
+    var saved = localStorage.getItem('vertexa_admin');
+    if(saved){
+      var a = JSON.parse(saved);
+      if(!a.role) a.role='OWNER';
+      if(!a.startDate) a.startDate='2026-11-15T00:00:00.000Z';
+      enterAdmin(a);
+    }
+  }catch(e){}
+});
 </script>
 </body>
 </html>

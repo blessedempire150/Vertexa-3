@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>VERTEXA - Chat</title><link rel="stylesheet" href="style.css"></head>
+<body class="inspo">
+<div class="inspo-top"><div class="inspo-head"><div><p class="hi">Hello,</p><h1>Community Chat 💬</h1><p class="sub">Ask question, show your design, help others</p></div><div class="avatar">V</div></div></div>
+<div class="inspo-body">
+<div class="card2"><h2>Post Your Design / Question</h2><input id="chatName" placeholder="Your Name"><input id="chatMsg" placeholder="Type message... e.g. How I fit make my flyer fine?"><input id="chatLink" placeholder="Design Link (optional - Canva / Drive)"><button class="btn-purple" onclick="sendChat()">Send Message</button><p id="chatStatus"></p></div>
+<div class="card2"><h2>All Messages</h2><div id="chatList"><p>Loading chat...</p></div></div>
+<div class="card2"><p class="muted">Rules: No insult. No spam. Only design talk. Admin fit delete bad message.</p></div>
+</div>
+<nav class="bottomNav"><a href="index.html">🏠<span>Featured</span></a><a href="student.html">📚<span>My Learning</span></a><a href="tools.html">🛠️<span>Tools</span></a><a href="chat.html" class="active">💬<span>Chat</span></a><a href="student.html">🎓<span>Student</span></a><a href="student.html">💰<span>Earn</span></a><a href="student.html">⚙️<span>Setting</span></a><a href="admin.html">👑<span>Admin</span></a></nav>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script><script src="script.js"></script>
+<script>
+function sendChat(){var n=document.getElementById('chatName').value||'Student';var m=document.getElementById('chatMsg').value;var l=document.getElementById('chatLink').value;if(!m){alert('Type message first');return;}if(window.db){window.db.collection('chats').add({name:n,msg:m,link:l||'',createdAt:new Date()}).then(function(){document.getElementById('chatStatus').innerText='Sent!';document.getElementById('chatMsg').value='';});}else{var el=document.getElementById('chatList');el.innerHTML='<div class="card2"><b>'+n+'</b><br>'+m+(l?'<br><a href="'+l+'" target="_blank">View Design</a>':'')+'</div>'+el.innerHTML;document.getElementById('chatStatus').innerText='Sent (offline)';}}
+function loadChat(){if(!window.db){document.getElementById('chatList').innerHTML='<p>Chat go show when Firebase connect. For now you fit still post.</p>';return;}window.db.collection('chats').orderBy('createdAt','desc').limit(50).onSnapshot(function(s){var h='';s.forEach(function(d){var c=d.data();h+='<div class="card2"><b>'+(c.name||'Student')+'</b><br>'+(c.msg||'')+(c.link?'<br><a href="'+c.link+'" target="_blank">🔗 View Design</a>':'')+'</div>';});document.getElementById('chatList').innerHTML=h||'<p>No message yet. Be first to post!</p>';});}
+setTimeout(loadChat,1000);
+</script>
+</body></html>

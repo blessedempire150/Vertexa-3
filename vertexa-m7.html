@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERTEXA Module 7</title>
+<style>
+body{font-family:Arial,sans-serif;background:#0f0f1a;color:#fff;margin:0;padding:16px}
+h1{color:#FFC107;text-align:center}
+button{background:#7B3DFF;color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;width:100%;margin:8px 0}
+.opt{background:#2a2a4a;padding:12px;border-radius:10px;margin:8px 0}
+.card{background:#1e1e35;padding:16px;border-radius:12px;margin:12px 0}
+.small{color:#ccc;text-align:center}
+</style>
+</head>
+<body>
+<div id="home">
+<h1>VERTEXA - MODULE 7</h1>
+<p class="small">Advanced Design - Flyer, Poster, Social | 150 Questions | Quiz go bring 30 Random</p>
+<div class="card"><b>Module 7</b> - 150 Questions<br><button onclick="startQuiz()">START MODULE 7 - 30 QUESTIONS</button></div>
+</div>
+<div id="quiz" style="display:none">
+<h2 id="qtitle"></h2>
+<p id="qtext"></p>
+<div id="opts"></div>
+<p id="progress"></p>
+<button onclick="goHome()">Back Home</button>
+</div>
+<script>
+var BANK=[
+{q:"What is a Flyer?",o:["One page to advertise","Book","Video","Website"],a:0},
+{q:"Flyer must be understood in?",o:["3 seconds","30 seconds","1 hour","1 day"],a:0},
+{q:"Flyer must have?",o:["Headline, Offer, Date, Venue, CTA, Contact","Colour only","Font only","Template"],a:0},
+{q:"Flyer Headline must be?",o:["Big, Bold, Clear","Small","Hidden","Thin"],a:0},
+{q:"Flyer Offer must be?",o:["Clear - What + Price","Hidden","Vague","No price"],a:0},
+{q:"Flyer CTA must be?",o:["Order Now, DM Us, Call Now","Hello","Welcome","Nice"],a:0},
+{q:"Flyer Contact must be?",o:["Phone, WhatsApp, Handle","Price","Colour","Font"],a:0},
+{q:"Flyer without contact is?",o:["Useless","Good","Fine","Nice"],a:0},
+{q:"Flyer size for WhatsApp?",o:["1080 x 1080","1080 x 1920","A4","500 x 500"],a:0},
+{q:"Flyer size for printing?",o:["A4 or A5","1080 x 1080","Story","Banner"],a:0},
+{q:"Flyer size for Story?",o:["1080 x 1920","1080 x 1080","A4","500 x 500"],a:0},
+{q:"What is a Poster?",o:["Big design for wall or online","Book","Video","Music"],a:0},
+{q:"Poster must be seen from?",o:["Far - Big title","Close only","Hidden","Small"],a:0},
+{q:"Poster title must be?",o:["Biggest","Smallest","Hidden","Thin"],a:0},
+{q:"What is a Banner?",o:["Wide design for page or event","Small card","Book","Logo"],a:0},
+{q:"Banner must be?",o:["Wide, Bold, Short text","Long text","Small","Hidden"],a:0},
+{q:"What is a Business Card?",o:["Small card with name and contact","Flyer","Poster","Book"],a:0},
+{q:"What is a Social Media Post?",o:["Design for Instagram, WhatsApp, Facebook","Print only","Book","Video"],a:0},
+{q:"Social Post size?",o:["1080 x 1080","A4","500 x 500","100 x 100"],a:0},
+{q:"Social Post must hook in?",o:["3 seconds","30 seconds","1 hour","1 day"],a:0},
+{q:"What is a Carousel Post?",o:["Many slides - Tips, Steps","One photo","Video","Bio"],a:0},
+{q:"Carousel first slide must be?",o:["Hook - Bold, Clear","Hello","Welcome","Blank"],a:0},
+{q:"Carousel last slide must be?",o:["CTA - Follow, DM, Save","Hello","Welcome","Blank"],a:0},
+{q:"What is a Story Design?",o:["1080 x 1920 - Vertical","1080 x 1080","A4","500 x 500"],a:0},
+{q:"Story Design must be?",o:["Big text, Short, CTA","Small text","Long","Hidden"],a:0},
+{q:"What is a Thumbnail?",o:["Cover for YouTube video","Flyer","Poster","Book"],a:0},
+{q:"Thumbnail size?",o:["1280 x 720","1080 x 1080","500 x 500","A4"],a:0},
+{q:"Thumbnail must be?",o:["Bold, Face, Big text, Curious","Small","Hidden","Long text"],a:0},
+{q:"What is a Menu Design?",o:["List of food + prices","Flyer","Poster","Book"],a:0},
+{q:"Menu must be?",o:["Clear, Prices big, Pictures appetizing","Hidden price","Small","Messy"],a:0},
+{q:"What is a Price List Design?",o:["List of services + prices","Flyer","Poster","Book"],a:0},
+{q:"Price List must be?",o:["Clear, Neat, Prices big","Hidden","Messy","Small"],a:0},
+{q:"What is a Church Flyer?",o:["Flyer for program, Service, Crusade","Food flyer","Salon flyer","School flyer"],a:0},
+{q:"Church Flyer colour?",o:["Warm, Respectful - Purple, Gold, White","Neon","Dark","Rainbow"],a:0},
+{q:"Church Flyer must have?",o:["Theme, Date, Time, Venue, Minister, CTA","Price only","Colour only","Font only"],a:0},
+{q:"What is a Birthday Flyer?",o:["Flyer to celebrate birthday","Food","Salon","School"],a:0},
+{q:"Birthday Flyer must be?",o:["Fun, Colourful, Photo big, Name big","Dark","Sad","Messy"],a:0},
+{q:"What is a Wedding Flyer?",o:["Flyer for wedding - Invitation","Food","Salon","School"],a:0},
+{q:"Wedding Flyer colour?",o:["Elegant - Gold, White, Soft Pink","Neon","Dark","Rainbow"],a:0},
+{q:"What is a Food Flyer?",o:["Flyer to sell food","Church","Salon","School"],a:0},
+{q:"Food Flyer must show?",o:["Food big, Fresh, Price, CTA","Hide food","Dark","Small"],a:0},
+{q:"Food Flyer colour?",o:["Red, Orange, Yellow - Hunger","Blue, Grey","Black, White","Cool only"],a:0},
+{q:"What is a Salon Flyer?",o:["Flyer for hair, nails, beauty","Food","Church","School"],a:0},
+{q:"Salon Flyer colour?",o:["Pink, Gold, Black - Beauty","Dark, Rough","Sad, Grey","Neon"],a:0},
+{q:"Salon Flyer must show?",o:["Before and After, Price, Booking","Hide","Dark","Small"],a:0},
+{q:"What is a Real Estate Flyer?",o:["Flyer to sell house, Land","Food","Salon","School"],a:0},
+{q:"Real Estate Flyer must show?",o:["House big, Price, Location, Contact","Hide house","Dark","Small"],a:0},
+{q:"What is a School Flyer?",o:["Flyer for admission, Event","Food","Salon","Church"],a:0},
+{q:"School Flyer colour?",o:["Blue, White - Trust, Clean","Neon","Dark","Rainbow"],a:0},
+{q:"What is a Concert Flyer?",o:["Flyer for music event","Food","Salon","School"],a:0},
+{q:"Concert Flyer must be?",o:["Bold, Energy, Artist big, Date big","Calm","Small","Hidden"],a:0},
+{q:"What is a Product Flyer?",o:["Flyer to sell product","Church","Salon","School"],a:0},
+{q:"Product Flyer must show?",o:["Product big, Benefit, Price, CTA","Hide product","Dark","Small"],a:0},
+{q:"What is a Promo Flyer?",o:["Flyer for discount, Offer","Church","Salon","School"],a:0},
+{q:"Promo Flyer must show?",o:["Discount big - 50% OFF, Deadline","Hide discount","Small","Hidden"],a:0},
+{q:"What is a Mockup?",o:["Show design on real object","Real photo","Template","Font"],a:0},
+{q:"Mockup for flyer helps?",o:["Client see how e go look real","No help","Hide","Delete"],a:0},
+{q:"What is a Photo in Flyer?",o:["Real picture - Must be clear, Sharp","Blurry","Random","Dark"],a:0},
+{q:"Photo must be?",o:["Clear, Sharp, Related","Blurry","Random","Dark"],a:0},
+{q:"Photo must NOT be?",o:["Blurry, Dark, Stretched","Clear","Sharp","Related"],a:0},
+{q:"What is Stock Photo?",o:["Ready photo from internet","Your photo","Drawing","Text"],a:0},
+{q:"Stock Photo must be?",o:["Clear, Sharp, Related","Blurry","Random","Dark"],a:0},
+{q:"What is a Background in Flyer?",o:["Behind text and pictures","Front","Middle","Side"],a:0},
+{q:"Background must be?",o:["Soft, No fight with text","Busy","Harsh","Neon"],a:0},
+{q:"Background busy is?",o:["Bad - Text go hide","Good","Fine","Nice"],a:0},
+{q:"Text on busy photo must have?",o:["Dark overlay or shadow","No overlay","Tiny","Fancy"],a:0},
+{q:"What is Overlay?",o:["Dark transparent layer on photo","Photo","Font","Text"],a:0},
+{q:"Overlay helps?",o:["Text go show","Hide","Delete","Confuse"],a:0},
+{q:"What is Hierarchy in Flyer?",o:["Title big, Offer medium, Details small","All same","Body big","Title small"],a:0},
+{q:"Hierarchy in Flyer order?",o:["Title - Photo - Offer - CTA","CTA first","Price first","Random"],a:0},
+{q:"What is White Space in Flyer?",o:["Empty space to breathe","Wasted space","Black space","Border"],a:0},
+{q:"Flyer too full is?",o:["Bad - Eye go tire","Good","Fine","Nice"],a:0},
+{q:"What is Alignment in Flyer?",o:["All in line - Neat","Random","Scatter","Rotate"],a:0},
+{q:"What is Contrast in Flyer?",o:["White text on Black background","White on White","Black on Black","Grey on Grey"],a:0},
+{q:"What is Balance in Flyer?",o:["No side too heavy","One side heavy","Random","All left"],a:0},
+{q:"What is Repetition in Flyer?",o:["Same colours, fonts, style","Change every time","Random","Copy"],a:0},
+{q:"What is Proximity in Flyer?",o:["Name + Phone together","Name far from phone","Random","Scatter"],a:0},
+{q:"What is a Grid in Flyer?",o:["Lines to arrange neat","Colour","Font","Picture"],a:0},
+{q:"What is a Border in Flyer?",o:["Line around design","Colour","Font","Text"],a:0},
+{q:"Border must be?",o:["Neat, Not too thick","Thick","Messy","Random"],a:0},
+{q:"What is a Shadow in Flyer?",o:["Soft dark behind object","Colour","Font","Text"],a:0},
+{q:"Shadow must be?",o:["Soft, Small","Hard, Big","Black","No shadow"],a:0},
+{q:"What is a Gradient in Flyer?",o:["Colour change from one to another","One colour","Black","White"],a:0},
+{q:"Gradient must be?",o:["Smooth, Soft","Harsh","Rainbow","Neon"],a:0},
+{q:"What is a Shape in Flyer?",o:["Circle, Square, Triangle, Line","Colour","Font","Text"],a:0},
+{q:"Shape helps?",o:["Highlight offer, Price, CTA","Confuse","Hide","Delete"],a:0},
+{q:"Shape for Offer is?",o:["Circle or Badge - 50% OFF","Square only","Line only","No shape"],a:0},
+{q:"What is an Icon in Flyer?",o:["Small picture - Phone, Location, Time","Big photo","Text","Colour"],a:0},
+{q:"Icon for Phone is?",o:["Phone icon + Number","Text only","Colour only","Font only"],a:0},
+{q:"Icon for Location is?",o:["Pin icon + Address","Text only","Colour only","Font only"],a:0},
+{q:"Icon for Time is?",o:["Clock icon + Time","Text only","Colour only","Font only"],a:0},
+{q:"What is a QR Code in Flyer?",o:["Code wey person scan to open link","Photo","Font","Text"],a:0},
+{q:"QR Code in Flyer helps?",o:["Client scan to WhatsApp, Instagram","Hide","Delete","Confuse"],a:0},
+{q:"What is a Logo in Flyer?",o:["Small logo - Top or Bottom","Big logo centre","No logo","Hidden"],a:0},
+{q:"Logo in Flyer must be?",o:["Small, Corner - No fight title","Big, Centre","Hidden","No logo"],a:0},
+{q:"What is a Footer in Flyer?",o:["Bottom - Contact, Logo, Social","Top","Middle","Side"],a:0},
+{q:"What is a Header in Flyer?",o:["Top - Logo, Title","Bottom","Middle","Side"],a:0},
+{q:"What is a Headline in Flyer?",o:["Main message - Big text","Small text","Price","Colour"],a:0},
+{q:"Headline must be?",o:["Short, Clear, Interesting","Long","Vague","Hidden"],a:0},
+{q:"What is a Sub-headline in Flyer?",o:["Small explanation under headline","Price","Colour","Font"],a:0},
+{q:"What is Body Copy in Flyer?",o:["Details - What, How, Why","Price","Colour","Font"],a:0},
+{q:"Body Copy must be?",o:["Short, Clear","Long","Vague","Hidden"],a:0},
+{q:"What is a CTA in Flyer?",o:["Tell them what to do - Order Now","Colour","Font","Picture"],a:0},
+{q:"CTA in Flyer must be?",o:["Big, Bold, Clear - Button style","Small","Hidden","Thin"],a:0},
+{q:"CTA Button colour must be?",o:["Accent - Stand out","Same as background","Hidden","Grey"],a:0},
+{q:"What is an Offer in Flyer?",o:["What you sell + Price + Bonus","Hello","Welcome","Nice"],a:0},
+{q:"Offer must be?",o:["Clear","Hidden","Vague","No price"],a:0},
+{q:"What is a Deadline in Flyer?",o:["When offer end - Urgency","No deadline","Anytime","Next year"],a:0},
+{q:"Deadline helps?",o:["People act fast","No help","Hide","Delete"],a:0},
+{q:"What is Urgency in Flyer?",o:["Limited slots, Offer ends soon","No urgency","Anytime","Next year"],a:0},
+{q:"What is Social Proof in Flyer?",o:["Testimonial, 100+ happy customers","Claim only","No proof","Hide"],a:0},
+{q:"Social Proof helps?",o:["Trust, Sales","No help","Hide","Delete"],a:0},
+{q:"What is a Testimonial in Flyer?",o:["Client happy review","Complaint","Price","Colour"],a:0},
+{q:"What is a Guarantee in Flyer?",o:["Promise - Money back, Quality","No promise","Vague","Hidden"],a:0},
+{q:"What is a Benefit in Flyer?",o:["What customer go gain","Feature only","Price only","Colour only"],a:0},
+{q:"Benefit vs Feature?",o:["Benefit = You go look beautiful, Feature = We use X","Same","No difference","Hide"],a:0},
+{q:"Flyer must sell?",o:["Benefit, No be feature only","Feature only","Price only","Colour only"],a:0},
+{q:"What is a Hook in Flyer?",o:["First line wey stop scroll","Last line","Colour","Font"],a:0},
+{q:"Hook example?",o:["Stop wasting money on bad flyers","Hello","Welcome","Nice"],a:0},
+{q:"What is a Pain Point?",o:["Problem customer dey face","Solution","Price","Colour"],a:0},
+{q:"Flyer must touch?",o:["Pain Point - Then Solution","Solution only","Price only","Colour only"],a:0},
+{q:"What is a Story in Flyer?",o:["Problem to Result","Hello","Welcome","Nice"],a:0},
+{q:"What is a Design Mistake in Flyer?",o:["Too many colours, fonts, texts","One colour","One font","Clean"],a:0},
+{q:"Biggest flyer mistake?",o:["Too much text","Too little","Clean","Simple"],a:0},
+{q:"Flyer text must be?",o:["Short, Clear","Long","Vague","Hidden"],a:0},
+{q:"What is a Spelling Mistake?",o:["Wrong spelling - Kill trust","Good","Fine","Nice"],a:0},
+{q:"How to avoid spelling mistake?",o:["Read twice, Ask friend, Phone test","Post fast","No check","Delete"],a:0},
+{q:"What is Phone Test for Flyer?",o:["Check on phone - E clear?","Check on laptop only","No check","Print only"],a:0},
+{q:"What is Squint Test for Flyer?",o:["Squint eye - Main thing still show?","Close eye","No test","Print"],a:0},
+{q:"What is 3-Second Test for Flyer?",o:["Understand in 3 secs","30 secs","1 hour","1 day"],a:0},
+{q:"What is Print Test?",o:["Print small to see colours","No print","Hide","Delete"],a:0},
+{q:"What is DPI for Flyer Print?",o:["300","72","10","50"],a:0},
+{q:"What is CMYK for Flyer Print?",o:["Colour for printing","Colour for screen","Font","Text"],a:0},
+{q:"What is RGB for Flyer Phone?",o:["Colour for screen","Colour for print","Font","Text"],a:0},
+{q:"What is Bleed for Flyer Print?",o:["Extra edge for printing","Colour","Font","Text"],a:0},
+{q:"What is Safe Zone for Flyer Print?",o:["Inside margin - Safe for print","Edge","Outside","No zone"],a:0},
+{q:"Text too close to edge is?",o:["Bad - E fit cut when print","Good","Fine","Nice"],a:0},
+{q:"What is a Template for Flyer?",o:["Ready design to edit","Blank","Photo","Font"],a:0},
+{q:"Template must be?",o:["Edited to be yours","Copy as-is","Post as-is","Hide"],a:0},
+{q:"What is a Mock Client for Flyer?",o:["Pretend client - Bakery flyer","Real client","No client","Friend"],a:0},
+{q:"Mock Client helps?",o:["Build portfolio","No help","Waste","Confuse"],a:0},
+{q:"What is a Portfolio Flyer?",o:["Best flyer for portfolio","Bad flyer","Random","Hide"],a:0},
+{q:"What is a Redesign Flyer?",o:["Make old bad flyer better","New flyer","No flyer","Delete"],a:0},
+{q:"Redesign helps?",o:["Show skill, Get clients","No help","Hide","Delete"],a:0},
+{q:"What is Module 7 about?",o:["Advanced Design - Flyer, Poster, Social","Canva","Colour","Money"],a:0},
+{q:"After Module 7, you go fit?",o:["Design flyer, poster, social that sell","Design nothing","Earn nothing","No learn"],a:0},
+{q:"VERTEXA promise?",o:["Design. Earn. Grow.","Hello","Welcome","We design"],a:0}
+];
+var current=[], idx=0, score=0;
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function startQuiz(){ current=shuffle(BANK.slice()).slice(0,30); idx=0; score=0; document.getElementById("home").style.display="none"; document.getElementById("quiz").style.display="block"; showQ(); }
+function showQ(){ if(idx>=current.length){ document.getElementById("qtext").innerHTML="FINISHED! Score: "+score+" / "+current.length+"<br>Click Back Home to try again - New 30 go come!"; document.getElementById("opts").innerHTML=""; document.getElementById("qtitle").innerText="Module 7 - Done"; document.getElementById("progress").innerText=""; return; } var q=current[idx]; document.getElementById("qtitle").innerText="Module 7 - Q "+(idx+1)+" / "+current.length; document.getElementById("qtext").innerText=q.q; var h=""; for(var i=0;i<q.o.length;i++){ h+='<div class="opt" onclick="answer('+i+')">'+q.o[i]+'</div>'; } document.getElementById("opts").innerHTML=h; document.getElementById("progress").innerText="Score: "+score; }
+function answer(i){ if(i===current[idx].a){ score++; alert("Correct!"); } else { alert("Wrong. Correct: "+current[idx].o[current[idx].a]); } idx++; showQ(); }
+function goHome(){ document.getElementById("quiz").style.display="none"; document.getElementById("home").style.display="block"; }
+</script>
+</body>
+</html>

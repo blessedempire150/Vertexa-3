@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>VERTEXA - Login</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
+<link rel="stylesheet" href="style.css"></head>
+<body class="inspo">
+<div class="inspo-top"><div class="inspo-head"><div><p class="hi">Welcome to</p><h1>VERTEXA 📚</h1><p class="sub">Learn Graphics • Earn • Become Pro</p></div><div class="avatar">V</div></div></div>
+<div class="inspo-body">
+
+<div style="background:#E8DEF8;padding:14px;border-radius:12px;margin-bottom:12px">
+<b>📌 How Login Work:</b><br>
+1. <b>Create Account First</b> — Name + Email + Password = Your UNIQUE login forever<br>
+2. <b>Login As FREE</b> — Even if you never pay, you fit login<br>
+3. <b>Pay After</b> — Daily Page → Pay ₦15,000 → Upload Receipt<br>
+4. <b>Same Login Turn PAID ✅</b> — After Admin approve, same Email + Password go turn PAID. No new login.<br>
+<span style="color:#D32F2F;font-weight:bold">⚠️ Admin NO dey create login for you.</span>
+</div>
+
+<div class="card2" id="signupBox">
+<h3>🆕 Create Account (Signup First)</h3>
+<input id="suName" placeholder="Full Name" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;margin-bottom:8px">
+<input id="suEmail" type="email" placeholder="Email e.g blessing@gmail.com" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;margin-bottom:8px">
+<input id="suPass" type="password" placeholder="Password (min 6)" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;margin-bottom:8px">
+<input id="suRef" placeholder="Referral Code (Optional) e.g VERT-XXX" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;margin-bottom:8px">
+<button class="btn-purple" onclick="doSignup()" style="width:100%">Create My UNIQUE Login →</button>
+<p id="suMsg"></p>
+<p style="font-size:13px;text-align:center">Already get account? <a href="#" onclick="showLogin();return false"><b>Login Here ↓</b></a></p>
+</div>
+
+<div class="card2" id="loginBox" style="display:none">
+<h3>🔐 Login (Same Login - FREE or PAID)</h3>
+<input id="liEmail" type="email" placeholder="Your Email" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;margin-bottom:8px">
+<input id="liPass" type="password" placeholder="Your Password" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;margin-bottom:8px">
+<button class="btn-purple" onclick="doLogin()" style="width:100%">Login →</button>
+<p id="liMsg"></p>
+<p style="font-size:13px;text-align:center">No account yet? <a href="#" onclick="showSignup();return false"><b>Create Account ↑</b></a></p>
+</div>
+
+<div class="card2" style="text-align:center">
+<p style="font-size:13px">After login, you go see if you be <b>FREE</b> or <b>PAID ✅</b> for Dashboard.</p>
+<a href="daily.html" class="btn-white">Go Pay / Upload Receipt →</a>
+</div>
+
+</div>
+<nav class="bottomNav"><a href="index.html">🏠<span>Featured</span></a><a href="modules.html">📚<span>Modules</span></a><a href="tools.html">🛠️<span>Tools</span></a><a href="chat.html">💬<span>Chat</span></a><a href="student.html">🎓<span>Student</span></a><a href="daily.html">💰<span>Earn</span></a><a href="student.html">⚙️<span>Setting</span></a><a href="admin.html">👑<span>Admin</span></a></nav>
+<script>
+function showLogin(){ document.getElementById('signupBox').style.display='none'; document.getElementById('loginBox').style.display='block'; }
+function showSignup(){ document.getElementById('loginBox').style.display='none'; document.getElementById('signupBox').style.display='block'; }
+
+function doSignup(){
+  var name=document.getElementById('suName').value.trim();
+  var email=document.getElementById('suEmail').value.trim().toLowerCase();
+  var pass=document.getElementById('suPass').value;
+  var ref=document.getElementById('suRef').value.trim().toUpperCase();
+  if(!name||!email||!pass) return document.getElementById('suMsg').innerText='❌ Fill Name, Email, Password';
+  if(pass.length<6) return document.getElementById('suMsg').innerText='❌ Password must be 6+';
+  document.getElementById('suMsg').innerText='Creating account...';
+  auth.createUserWithEmailAndPassword(email,pass).then(function(cred){
+    var uid=cred.user.uid;
+    var myRef='VERT-'+name.split(' ')[0].toUpperCase().replace(/[^A-Z]/g,'')+'-'+Math.floor(100+Math.random()*900);
+    return db.collection('vertexa_users').doc(uid).set({
+      name:name, email:email, uid:uid, refCode:myRef, referredBy:ref||'', 
+      is_paid:'no', balance:0, paidReferrals:0, totalReferrals:0,
+      createdAt:new Date().toISOString()
+    }).then(function(){
+      localStorage.setItem('vertexa_uid',uid);
+      localStorage.setItem('vertexa_email',email);
+      localStorage.setItem('vertexa_is_paid','no');
+      localStorage.setItem('vertexa_refcode',myRef);
+      document.getElementById('suMsg').innerText='✅ Account Created! Your RefCode: '+myRef+' - You be FREE now. Go pay for Daily to turn PAID.';
+      setTimeout(function(){ location.href='index.html'; },1500);
+    });
+  }).catch(function(e){ document.getElementById('suMsg').innerText='❌ '+e.message; });
+}
+
+function doLogin(){
+  var email=document.getElementById('liEmail').value.trim().toLowerCase();
+  var pass=document.getElementById('liPass').value;
+  if(!email||!pass) return document.getElementById('liMsg').innerText='❌ Enter Email + Password';
+  document.getElementById('liMsg').innerText='Logging in...';
+  auth.signInWithEmailAndPassword(email,pass).then(function(cred){
+    var uid=cred.user.uid;
+    return db.collection('vertexa_users').doc(uid).get().then(function(d){
+      var u=d.data()||{};
+      localStorage.setItem('vertexa_uid',uid);
+      localStorage.setItem('vertexa_email',email);
+      localStorage.setItem('vertexa_is_paid', u.is_paid==='yes'?'yes':'no');
+      localStorage.setItem('vertexa_refcode', u.refCode||'');
+      document.getElementById('liMsg').innerText = u.is_paid==='yes' ? '✅ Welcome back! You be PAID ✅' : '✅ Welcome back! You be FREE - Go Daily to pay to turn PAID.';
+      setTimeout(function(){ location.href='index.html'; },1200);
+    });
+  }).catch(function(e){ document.getElementById('liMsg').innerText='❌ '+e.message+' - Check Email / Password'; });
+}
+</script>
+</body></html>

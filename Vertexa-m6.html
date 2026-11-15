@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERTEXA Module 6</title>
+<style>
+body{font-family:Arial,sans-serif;background:#0f0f1a;color:#fff;margin:0;padding:16px}
+h1{color:#FFC107;text-align:center}
+button{background:#7B3DFF;color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;width:100%;margin:8px 0}
+.opt{background:#2a2a4a;padding:12px;border-radius:10px;margin:8px 0}
+.card{background:#1e1e35;padding:16px;border-radius:12px;margin:12px 0}
+.small{color:#ccc;text-align:center}
+</style>
+</head>
+<body>
+<div id="home">
+<h1>VERTEXA - MODULE 6</h1>
+<p class="small">Logo & Brand Identity | 150 Questions | Quiz go bring 30 Random</p>
+<div class="card"><b>Module 6</b> - 150 Questions<br><button onclick="startQuiz()">START MODULE 6 - 30 QUESTIONS</button></div>
+</div>
+<div id="quiz" style="display:none">
+<h2 id="qtitle"></h2>
+<p id="qtext"></p>
+<div id="opts"></div>
+<p id="progress"></p>
+<button onclick="goHome()">Back Home</button>
+</div>
+<script>
+var BANK=[
+{q:"What is a Logo?",o:["Symbol of a brand","Flyer","Price","Colour"],a:0},
+{q:"Logo must be?",o:["Simple, Clear, Memorable","Complex","Blurry","Many colours"],a:0},
+{q:"Logo must work in?",o:["Small and Big, Black and Colour","Small only","Big only","Colour only"],a:0},
+{q:"What is a Wordmark?",o:["Logo with words only","Symbol only","Colour only","Picture only"],a:0},
+{q:"Wordmark example?",o:["VERTEXA, Coca-Cola, Google","Nike tick","Apple","Bird"],a:0},
+{q:"What is a Logomark?",o:["Symbol without words","Word only","Colour only","Font only"],a:0},
+{q:"Logomark example?",o:["Apple, Nike tick, Bird","Google word","VERTEXA word","Coca-Cola word"],a:0},
+{q:"What is a Combination Mark?",o:["Symbol + Words together","Word only","Symbol only","Colour only"],a:0},
+{q:"Combination Mark example?",o:["Symbol on top, Name below","Word only","Symbol only","Colour only"],a:0},
+{q:"What is an Emblem?",o:["Logo inside shape - Badge","Word only","Symbol only","Colour only"],a:0},
+{q:"Emblem example?",o:["School badge, Starbucks","Google word","Nike tick","Apple"],a:0},
+{q:"What is a Mascot Logo?",o:["Character - e.g. Chicken for food","Word only","Symbol only","Colour only"],a:0},
+{q:"What is Branding?",o:["How people remember a business","Logo only","Colour only","Font only"],a:0},
+{q:"Branding includes?",o:["Logo, Colours, Fonts, Voice, Style","Logo only","Colour only","Font only"],a:0},
+{q:"What is Brand Identity?",o:["Visual face of brand","Logo only","Colour only","Font only"],a:0},
+{q:"Brand Identity includes?",o:["Logo, Colours, Fonts, Card, Flyer, Packaging","Logo only","Colour only","Font only"],a:0},
+{q:"What is Brand Strategy?",o:["Plan - Who, What, Why, How","Logo only","Colour only","Font only"],a:0},
+{q:"What is Brand Voice?",o:["How brand talk - Friendly, Professional","Logo","Colour","Font"],a:0},
+{q:"What is Brand Story?",o:["Why brand exist - Story","Logo","Colour","Font"],a:0},
+{q:"What is Brand Colour?",o:["Main colour people remember you by","Random","Template","Font"],a:0},
+{q:"Brand Colour must be?",o:["1-2 main, 1 accent","10 colours","Rainbow","Neon"],a:0},
+{q:"What is Brand Font?",o:["2 fonts - Heading + Body","5 fonts","10 fonts","Random"],a:0},
+{q:"What is a Brand Kit?",o:["File with Logo, Colours, Fonts, Rules","Logo only","Colour only","Font only"],a:0},
+{q:"Brand Kit helps?",o:["Keep all designs same","Change every time","Random","Copy"],a:0},
+{q:"What is a Logo Guide?",o:["Rules - How to use logo","Logo only","Colour only","Font only"],a:0},
+{q:"Logo Guide must say?",o:["Do and Dont - Size, Space, Colours","Logo only","Colour only","Font only"],a:0},
+{q:"Logo must have clear space?",o:["Yes - Space around, No touch edge","No space","Touch edge","Hide"],a:0},
+{q:"Logo minimum size is?",o:["Must still be clear when small","Blurry","Hidden","Big only"],a:0},
+{q:"Logo must NOT be?",o:["Stretched, Blurry, Many colours","Clear","Simple","Memorable"],a:0},
+{q:"Logo must NOT be stretched because?",o:["E go look unprofessional","Good","Fine","Nice"],a:0},
+{q:"Logo must work on black background?",o:["Yes - White version","No","Only white bg","Only colour bg"],a:0},
+{q:"Logo must work on white background?",o:["Yes - Dark version","No","Only black bg","Only colour bg"],a:0},
+{q:"What is a Primary Logo?",o:["Main logo - Full version","Small version","Icon only","Colour only"],a:0},
+{q:"What is a Secondary Logo?",o:["Small version - For card, Profile","Main version","Full version","Colour only"],a:0},
+{q:"What is a Logo Variation?",o:["Same logo - Different layout, Colour","Different logo","Random","Copy"],a:0},
+{q:"Logo Variation helps?",o:["Fit different places - Card, Profile, Flyer","Confuse","Hide","Delete"],a:0},
+{q:"What is a Monogram?",o:["Logo with letters - V, VA","Word only","Symbol only","Colour only"],a:0},
+{q:"Monogram example?",o:["V for VERTEXA, LV for Louis Vuitton","Apple","Nike tick","Bird"],a:0},
+{q:"What is a Badge Logo?",o:["Logo inside circle or shield","Word only","Symbol only","Colour only"],a:0},
+{q:"Badge Logo is good for?",o:["School, Church, Sports, Coffee","Tech only","Bank only","Fashion only"],a:0},
+{q:"What is a Minimal Logo?",o:["Simple - Less lines, Less colours","Complex","Many colours","Many lines"],a:0},
+{q:"Minimal Logo wins because?",o:["Easy to remember, Easy to use","Hard to remember","Complex","Messy"],a:0},
+{q:"What is a Timeless Logo?",o:["Logo wey no go old - Simple","Trendy","Complex","Neon"],a:0},
+{q:"What is a Trendy Logo?",o:["Logo wey follow trend - Go old soon","Timeless","Simple","Clear"],a:0},
+{q:"Logo must be timeless because?",o:["Client no go change every year","Change every year","Old soon","Complex"],a:0},
+{q:"What is a Concept in Logo?",o:["Idea behind logo - Why this shape?","Colour","Font","Size"],a:0},
+{q:"Concept must connect to?",o:["Business - What dem sell, Who dem be","Random","Template","Font"],a:0},
+{q:"Concept for bakery logo?",o:["Bread, Wheat, Oven, Warm colour","Car","Phone","Shoe"],a:0},
+{q:"Concept for salon logo?",o:["Scissors, Hair, Beauty, Elegant","Car","Phone","Shoe"],a:0},
+{q:"Concept for church logo?",o:["Cross, Dove, Open Bible, Warm","Car","Phone","Shoe"],a:0},
+{q:"Concept for school logo?",o:["Book, Graduation cap, Pencil","Car","Phone","Shoe"],a:0},
+{q:"What is a Sketch for Logo?",o:["Draw many ideas on paper first","Design direct","Template","Colour"],a:0},
+{q:"Sketch helps?",o:["Think fast, Try many ideas","No help","Waste","Confuse"],a:0},
+{q:"How many logo sketches?",o:["10-20 rough, Then pick 3","1","2","0"],a:0},
+{q:"What is Moodboard for Logo?",o:["Pictures of feeling, colours, style","Template","Font","Colour"],a:0},
+{q:"Moodboard for Logo helps?",o:["Client approve style before design","No help","Waste","Confuse"],a:0},
+{q:"What is a Font for Logo?",o:["Unique, Bold, Readable","Fancy, Tiny","Script only","Thin only"],a:0},
+{q:"Logo font must be?",o:["Readable, Bold, Timeless","Fancy, Tiny","Script","Thin"],a:0},
+{q:"What is a Custom Font?",o:["Edit letters to make unique","Normal font","Template","Copy"],a:0},
+{q:"Custom Font helps?",o:["Logo stand out, No be template","Hide","Delete","Confuse"],a:0},
+{q:"What is a Shape in Logo?",o:["Circle, Square, Triangle","Colour","Font","Text"],a:0},
+{q:"Circle in Logo means?",o:["Friendly, Unity, Soft","Sharp","Anger","Power"],a:0},
+{q:"Square in Logo means?",o:["Stable, Trust, Strong","Soft","Fun","Love"],a:0},
+{q:"Triangle in Logo means?",o:["Power, Direction, Energy","Soft","Calm","Love"],a:0},
+{q:"What is Negative Space in Logo?",o:["Hidden shape in empty space","Colour","Font","Text"],a:0},
+{q:"Negative Space example?",o:["FedEx arrow, Hidden shape","Random","Colour","Font"],a:0},
+{q:"Negative Space helps?",o:["Clever, Memorable","Confuse","Hide","Delete"],a:0},
+{q:"What is a Colour for Logo?",o:["1-2 colours, Meaningful","Rainbow","Neon","10 colours"],a:0},
+{q:"Logo colour must be?",o:["Meaningful - Red for food, Blue for trust","Random","Template","Neon"],a:0},
+{q:"Logo for food brand colour?",o:["Red, Orange - Hunger","Blue, Grey","Black, White","Cool only"],a:0},
+{q:"Logo for bank colour?",o:["Blue, Grey - Trust","Red, Neon","Pink, Yellow","Rainbow"],a:0},
+{q:"Logo for beauty colour?",o:["Pink, Gold, Black - Elegant","Dark, Rough","Sad, Grey","Neon"],a:0},
+{q:"What is Black and White Logo?",o:["Logo in black only - Must still work","Colour only","No logo","Hidden"],a:0},
+{q:"Black and White test is?",o:["If logo clear in B&W, e good","No test","Print only","Hide"],a:0},
+{q:"What is a Vector?",o:["Logo file wey no blur when big - SVG, PDF","Photo","JPG","Screenshot"],a:0},
+{q:"Logo must be delivered as?",o:["PNG Transparent + PDF + JPG + SVG","Screenshot","Word","JPG only"],a:0},
+{q:"PNG Transparent is for?",o:["Logo on any colour","Flyer only","Video","Music"],a:0},
+{q:"SVG is for?",o:["Website, Print - No blur","Chat","Music","Game"],a:0},
+{q:"What is a Mockup for Logo?",o:["Show logo on card, Shirt, Signboard","Real photo","Template","Font"],a:0},
+{q:"Mockup for Logo helps?",o:["Client see how logo go look real","No help","Hide","Delete"],a:0},
+{q:"Mockup must show?",o:["Card, Signboard, Shirt, Profile","Logo only","Colour only","Font only"],a:0},
+{q:"What is Logo Presentation?",o:["Show logo + Story + Colours + Mockups","Logo only","Colour only","Font only"],a:0},
+{q:"Logo Presentation must have?",o:["Story, Colours, Fonts, Mockups, Variations","Logo only","Colour only","Font only"],a:0},
+{q:"How many logo options to show client?",o:["2-3 best","10","1","100"],a:0},
+{q:"Why 2-3 options?",o:["Client fit choose, No confuse","Confuse","Hide","Delete"],a:0},
+{q:"What is a Logo Revision?",o:["Small change - Colour, Font, Size","New logo","Delete","Copy"],a:0},
+{q:"Logo Revision is NOT?",o:["New logo from scratch","Change colour","Change font","Move small"],a:0},
+{q:"What is a Brand Name?",o:["Name people call business","Logo","Colour","Font"],a:0},
+{q:"Brand Name must be?",o:["Short, Easy to spell, Memorable","Long, Hard","Vague","Hidden"],a:0},
+{q:"What is a Tagline?",o:["Short phrase wey describe brand","Long story","Price","Colour"],a:0},
+{q:"Tagline must be?",o:["Short, Memorable, Clear","Long","Vague","Hidden"],a:0},
+{q:"Tagline example?",o:["Design. Earn. Grow.","Hello","Welcome","Nice"],a:0},
+{q:"What is a Slogan?",o:["Memorable phrase - Just Do It","Price","Colour","Font"],a:0},
+{q:"What is a Mission?",o:["Why brand exist","Logo","Colour","Font"],a:0},
+{q:"What is a Vision?",o:["Where brand go go","Logo","Colour","Font"],a:0},
+{q:"What is a Value?",o:["What brand stand for - Trust, Quality","Price","Colour","Font"],a:0},
+{q:"What is a Brand Personality?",o:["Brand like person - Fun, Serious, Elegant","Logo","Colour","Font"],a:0},
+{q:"Brand Personality helps?",o:["Pick colours, fonts, voice","Confuse","Hide","Delete"],a:0},
+{q:"What is a Business Card?",o:["Small card with name and contact","Flyer","Poster","Book"],a:0},
+{q:"Business Card must have?",o:["Name, Business, Phone, WhatsApp, Logo","Colour only","Font only","Template"],a:0},
+{q:"Business Card size?",o:["3.5 x 2 inch","A4","1080 x 1080","1080 x 1920"],a:0},
+{q:"What is a Letterhead?",o:["Paper with logo on top","Flyer","Poster","Book"],a:0},
+{q:"What is Packaging?",o:["Box, Bag, Label for product","Flyer","Poster","Book"],a:0},
+{q:"Packaging must have?",o:["Logo, Name, Colour, Info","Logo only","Colour only","Font only"],a:0},
+{q:"What is a Label?",o:["Small sticker on product","Flyer","Poster","Book"],a:0},
+{q:"What is a Signboard?",o:["Big board outside shop","Flyer","Poster","Book"],a:0},
+{q:"Signboard must be?",o:["Big, Bold, Readable from far","Small","Hidden","Fancy"],a:0},
+{q:"What is a Brand Style Guide?",o:["Book - How to use brand","Logo only","Colour only","Font only"],a:0},
+{q:"Style Guide must have?",o:["Logo, Colours, Fonts, Do and Dont","Logo only","Colour only","Font only"],a:0},
+{q:"Style Guide helps?",o:["Anybody design go keep same brand","Confuse","Hide","Delete"],a:0},
+{q:"What is Consistency in Branding?",o:["Same colours, fonts, style everywhere","Change every time","Random","Copy"],a:0},
+{q:"Consistency helps?",o:["People remember you fast","Confuse","Hide","Delete"],a:0},
+{q:"What is a Rebrand?",o:["Change old brand to new","New brand","No brand","Delete"],a:0},
+{q:"Rebrand is needed when?",o:["Brand old, Confusing, No growth","Brand new","Brand good","Brand fresh"],a:0},
+{q:"What is a Brand Audit?",o:["Check brand - Wetin work, Wetin no work","Logo only","Colour only","Font only"],a:0},
+{q:"What is a Competitor Brand?",o:["Other brand - Learn, No copy","Enemy","Friend","Client"],a:0},
+{q:"What is a Unique Selling Point?",o:["What make you different","Same as others","Copy","Hide"],a:0},
+{q:"USP example?",o:["We deliver flyer in 24hrs","Hello","Welcome","Nice"],a:0},
+{q:"What is a Logo Copyright?",o:["No steal other person logo","Steal all","Copy all","Use all"],a:0},
+{q:"What is a Trademark?",o:["Legal protect for brand name and logo","Logo","Colour","Font"],a:0},
+{q:"What is a Logo Inspiration?",o:["See good logos, Learn, Make yours","Copy as-is","Steal","Hide"],a:0},
+{q:"Where to find logo inspiration?",o:["Pinterest, Behance, Dribbble","Copy only","Hide","No search"],a:0},
+{q:"What is a Logo Mistake?",o:["Complex, Many colours, Tiny, Blurry","Simple","Clear","Memorable"],a:0},
+{q:"Biggest logo mistake?",o:["Too complex - Too many things","Too simple","Clean","Clear"],a:0},
+{q:"Logo must be designed for?",o:["Client customer, No be designer taste","Designer taste","Friend taste","Random"],a:0},
+{q:"Logo must be tested on?",o:["Phone, Card, Shirt, Signboard","Laptop only","No test","Print only"],a:0},
+{q:"Logo must be tested in?",o:["Small, Black and White, Colour","Big only","Colour only","White only"],a:0},
+{q:"What is a Logo Price for beginner?",o:["10k - 30k","100","Free","1M"],a:0},
+{q:"What is a Brand Identity Price?",o:["30k - 100k","100","Free","1k"],a:0},
+{q:"Logo deposit is?",o:["50 percent before work","Full after","Free","No payment"],a:0},
+{q:"What is Module 6 about?",o:["Logo & Brand Identity","Canva","Colour","Money"],a:0},
+{q:"After Module 6, you go fit?",o:["Design logo, brand kit, card, packaging","Design nothing","Earn nothing","No learn"],a:0},
+{q:"VERTEXA promise?",o:["Design. Earn. Grow.","Hello","Welcome","We design"],a:0}
+];
+var current=[], idx=0, score=0;
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function startQuiz(){ current=shuffle(BANK.slice()).slice(0,30); idx=0; score=0; document.getElementById("home").style.display="none"; document.getElementById("quiz").style.display="block"; showQ(); }
+function showQ(){ if(idx>=current.length){ document.getElementById("qtext").innerHTML="FINISHED! Score: "+score+" / "+current.length+"<br>Click Back Home to try again - New 30 go come!"; document.getElementById("opts").innerHTML=""; document.getElementById("qtitle").innerText="Module 6 - Done"; document.getElementById("progress").innerText=""; return; } var q=current[idx]; document.getElementById("qtitle").innerText="Module 6 - Q "+(idx+1)+" / "+current.length; document.getElementById("qtext").innerText=q.q; var h=""; for(var i=0;i<q.o.length;i++){ h+='<div class="opt" onclick="answer('+i+')">'+q.o[i]+'</div>'; } document.getElementById("opts").innerHTML=h; document.getElementById("progress").innerText="Score: "+score; }
+function answer(i){ if(i===current[idx].a){ score++; alert("Correct!"); } else { alert("Wrong. Correct: "+current[idx].o[current[idx].a]); } idx++; showQ(); }
+function goHome(){ document.getElementById("quiz").style.display="none"; document.getElementById("home").style.display="block"; }
+</script>
+</body>
+</html>

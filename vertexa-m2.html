@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERTEXA Module 2</title>
+<style>
+body{font-family:Arial,sans-serif;background:#0f0f1a;color:#fff;margin:0;padding:16px}
+h1{color:#FFC107;text-align:center}
+button{background:#7B3DFF;color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;width:100%;margin:8px 0}
+.opt{background:#2a2a4a;padding:12px;border-radius:10px;margin:8px 0}
+.card{background:#1e1e35;padding:16px;border-radius:12px;margin:12px 0}
+.small{color:#ccc;text-align:center}
+</style>
+</head>
+<body>
+<div id="home">
+<h1>VERTEXA - MODULE 2</h1>
+<p class="small">Canva Mastery | 150 Questions | Quiz go bring 30 Random</p>
+<div class="card"><b>Module 2</b> - 150 Questions<br><button onclick="startQuiz()">START MODULE 2 - 30 QUESTIONS</button></div>
+</div>
+<div id="quiz" style="display:none">
+<h2 id="qtitle"></h2>
+<p id="qtext"></p>
+<div id="opts"></div>
+<p id="progress"></p>
+<button onclick="goHome()">Back Home</button>
+</div>
+<script>
+var BANK=[
+{q:"What is Canva?",o:["Free design app","Video app","Music app","Bank app"],a:0},
+{q:"Canva fit work on?",o:["Phone and Laptop","Phone only","Laptop only","TV only"],a:0},
+{q:"Canva size for Instagram Post?",o:["1080 x 1080","100 x 100","500 x 500","2000 x 100"],a:0},
+{q:"Canva size for Story?",o:["1080 x 1920","1080 x 1080","500 x 500","A4"],a:0},
+{q:"Canva size for WhatsApp Status?",o:["1080 x 1920","1080 x 1080","A4","500 x 500"],a:0},
+{q:"Canva size for Flyer?",o:["A4","Small square","Story","Banner"],a:0},
+{q:"Canva size for YouTube Thumbnail?",o:["1280 x 720","1080 x 1080","500 x 500","A4"],a:0},
+{q:"Canva size for Facebook Post?",o:["1080 x 1080","100 x 100","500 x 500","A4"],a:0},
+{q:"Canva size for Business Card?",o:["3.5 x 2 inch","A4","1080 x 1080","1080 x 1920"],a:0},
+{q:"What is Template in Canva?",o:["Ready design to edit","Blank","Photo","Font"],a:0},
+{q:"Should you copy template as-is?",o:["No, edit am make am yours","Yes","Copy all","Post as-is"],a:0},
+{q:"What is Element in Canva?",o:["Shape, Icon, Line, Picture","Font only","Colour only","Text only"],a:0},
+{q:"What is Text in Canva?",o:["Add Heading, Subheading, Body","Add photo","Add colour","Add shape"],a:0},
+{q:"What is Upload in Canva?",o:["Bring your own photo, logo","Delete","Hide","Copy"],a:0},
+{q:"What is Background Remover?",o:["Remove background in 1 click","Add background","Add font","Add text"],a:0},
+{q:"Background Remover dey for?",o:["Canva Pro","Free always","No Canva","Word"],a:0},
+{q:"PNG with transparent background is for?",o:["Logo on any colour","Flyer only","Video","Music"],a:0},
+{q:"What is Mockup in Canva?",o:["Show design on real object","Real photo","Template","Font"],a:0},
+{q:"Best file to send client for printing?",o:["PDF Print","Blurry JPG","Screenshot","Word"],a:0},
+{q:"Best file for WhatsApp?",o:["JPG","PDF Print","PSD","Word"],a:0},
+{q:"What is Brand Kit in Canva?",o:["Save colours, fonts, logo","Save music","Save video","Save chat"],a:0},
+{q:"Brand Kit helps?",o:["Keep all designs same brand","Change every time","Random","Copy"],a:0},
+{q:"What is Lock in Canva?",o:["Prevent moving by mistake","Delete","Hide","Copy"],a:0},
+{q:"What is Group in Canva?",o:["Move many things together","Delete","Copy","Hide"],a:0},
+{q:"What is Ungroup?",o:["Separate grouped things","Delete","Hide","Lock"],a:0},
+{q:"What is Duplicate?",o:["Copy page or element","Delete","Hide","Lock"],a:0},
+{q:"What is Copy Style?",o:["Copy colour and font to another","Delete","Hide","Lock"],a:0},
+{q:"What is Transparency?",o:["Make element see-through","Make bold","Make big","Make small"],a:0},
+{q:"Transparency for watermark is?",o:["Low - Like 10-20%","100%","High","No"],a:0},
+{q:"What is Download in Canva?",o:["Save design as JPG, PNG, PDF","Delete","Share only","Print only"],a:0},
+{q:"What is Share Link in Canva?",o:["Send link to view or edit","Delete","Hide","Print"],a:0},
+{q:"Before posting, check?",o:["Spelling, Alignment, Phone Test","Colour only","Font only","Template"],a:0},
+{q:"What is Align in Canva?",o:["Arrange in line - Left, Centre, Right","Random","Scatter","Rotate"],a:0},
+{q:"What is Position in Canva?",o:["Bring forward or send backward","Delete","Hide","Copy"],a:0},
+{q:"Bring to Front means?",o:["Put element on top","Send back","Delete","Hide"],a:0},
+{q:"Send to Back means?",o:["Put element behind","Bring front","Delete","Hide"],a:0},
+{q:"What is Layer?",o:["Order of elements - Top to bottom","Colour","Font","Text"],a:0},
+{q:"What is Crop in Canva?",o:["Cut photo to fit","Delete","Hide","Rotate"],a:0},
+{q:"What is Filter in Canva?",o:["Change photo colour mood","Add text","Add shape","Add font"],a:0},
+{q:"What is Adjust in Canva?",o:["Brightness, Contrast, Saturation","Font","Text","Shape"],a:0},
+{q:"What is Blur in Canva?",o:["Make background soft","Make sharp","Make bold","Make big"],a:0},
+{q:"Blur is good for?",o:["Background so text go show","Main text","Logo","Price"],a:0},
+{q:"What is Frame in Canva?",o:["Shape to put photo inside - Circle, Phone","Text","Font","Colour"],a:0},
+{q:"What is Grid in Canva?",o:["Many photos in one layout","Text","Font","Colour"],a:0},
+{q:"What is Shape in Canva?",o:["Circle, Square, Triangle, Line","Font","Text","Colour"],a:0},
+{q:"What is Line in Canva?",o:["Divide or underline","Font","Text","Colour"],a:0},
+{q:"What is Icon in Canva?",o:["Small picture with meaning","Big photo","Text","Colour"],a:0},
+{q:"What is Sticker in Canva?",o:["Fun small graphic","Font","Text","Colour"],a:0},
+{q:"What is Chart in Canva?",o:["Show numbers - Bar, Pie","Photo","Font","Text"],a:0},
+{q:"What is Video in Canva?",o:["Moving design - Reel, Ad","Photo","Font","Text"],a:0},
+{q:"Canva Video fit be used for?",o:["Reel, TikTok, Ad","Print only","Logo only","Flyer only"],a:0},
+{q:"What is Animation in Canva?",o:["Make element move","Make bold","Make big","Make small"],a:0},
+{q:"Animation for flyer JPG is?",o:["No need - JPG no move","Yes","Must","Always"],a:0},
+{q:"What is Page in Canva?",o:["One slide or one design","Font","Colour","Text"],a:0},
+{q:"Add Page means?",o:["Add new design inside same file","Delete","Hide","Copy"],a:0},
+{q:"What is Resize in Canva?",o:["Change size - Post to Story","Delete","Hide","Copy"],a:0},
+{q:"Resize dey for?",o:["Canva Pro","Free always","No Canva","Word"],a:0},
+{q:"What is Magic Resize?",o:["Change size in 1 click","Delete","Hide","Copy"],a:0},
+{q:"What is Magic Write in Canva?",o:["AI write text, caption","Design only","Colour only","Font only"],a:0},
+{q:"What is Magic Design in Canva?",o:["AI make design from your idea","Delete","Hide","Copy"],a:0},
+{q:"What is Magic Eraser?",o:["Remove unwanted thing from photo","Add thing","Add text","Add font"],a:0},
+{q:"What is Magic Edit?",o:["Change part of photo with AI","Delete","Hide","Copy"],a:0},
+{q:"AI in Canva is to?",o:["Help you faster - No replace you","Replace you","No help","Delete"],a:0},
+{q:"What is Folder in Canva?",o:["Arrange designs by client or type","Delete","Hide","Copy"],a:0},
+{q:"Folder helps?",o:["Find work fast","Lose work","Hide work","Delete work"],a:0},
+{q:"What is Starred in Canva?",o:["Save favourite design","Delete","Hide","Copy"],a:0},
+{q:"What is Trash in Canva?",o:["Deleted designs - Fit restore","Delete forever","Hide","Copy"],a:0},
+{q:"What is History in Canva?",o:["Undo - Go back","Delete","Hide","Copy"],a:0},
+{q:"Undo shortcut is?",o:["Ctrl + Z","Ctrl + C","Ctrl + V","Ctrl + S"],a:0},
+{q:"Redo shortcut is?",o:["Ctrl + Y","Ctrl + Z","Ctrl + C","Ctrl + V"],a:0},
+{q:"Copy shortcut is?",o:["Ctrl + C","Ctrl + V","Ctrl + Z","Ctrl + S"],a:0},
+{q:"Paste shortcut is?",o:["Ctrl + V","Ctrl + C","Ctrl + Z","Ctrl + S"],a:0},
+{q:"Save in Canva is?",o:["Automatic","Manual","No save","Print only"],a:0},
+{q:"Canva Free fit do?",o:["Design flyer, post, logo - Enough to start","Nothing","Only view","No design"],a:0},
+{q:"Canva Pro gives?",o:["Brand Kit, Background Remover, Resize, More","Nothing","Less","Same"],a:0},
+{q:"Do you need Pro to start?",o:["No - Free fit start, earn, then upgrade","Yes","Must","No design"],a:0},
+{q:"What is Canva App on phone?",o:["Design on phone - Same as laptop","Game","Music","Bank"],a:0},
+{q:"Phone design tip?",o:["Use big text, Check on phone","Small text","Tiny","No check"],a:0},
+{q:"What is Canva Search?",o:["Search template, photo, element","Delete","Hide","Copy"],a:0},
+{q:"Search in Canva must be?",o:["Clear - e.g. Church Flyer Purple","Vague","One letter","No search"],a:0},
+{q:"What is Photo in Canva?",o:["Real picture from Canva library","Drawing","Text","Colour"],a:0},
+{q:"Canva photo must be?",o:["Clear, Sharp, Related","Blurry","Random","Dark"],a:0},
+{q:"What is Audio in Canva?",o:["Music for video","Photo","Font","Text"],a:0},
+{q:"Audio for flyer JPG is?",o:["No need","Yes","Must","Always"],a:0},
+{q:"What is Canva Docs?",o:["Write document inside Canva","Design only","Video only","Music only"],a:0},
+{q:"What is Canva Whiteboard?",o:["Plan idea with team","Design only","Video only","Music only"],a:0},
+{q:"What is Canva Presentation?",o:["Slides to present","Flyer only","Logo only","Card only"],a:0},
+{q:"Presentation fit be used for?",o:["Show client your design story","Hide","Delete","No use"],a:0},
+{q:"What is Canva Print?",o:["Print your design via Canva","Design only","Video only","Music only"],a:0},
+{q:"What is QR Code in Canva?",o:["Code wey person scan to open link","Photo","Font","Text"],a:0},
+{q:"QR Code fit link to?",o:["WhatsApp, Instagram, Website","Nothing","Photo","Font"],a:0},
+{q:"What is Link in Canva?",o:["Click to go to page","Photo","Font","Text"],a:0},
+{q:"What is Comment in Canva?",o:["Client drop note on design","Delete","Hide","Copy"],a:0},
+{q:"Comment helps?",o:["Know wetin to fix","Confuse","Hide","Delete"],a:0},
+{q:"What is Version in Canva?",o:["Save different version - V1, V2","Delete","Hide","Copy"],a:0},
+{q:"Version helps?",o:["Go back if client no like new","Confuse","Hide","Delete"],a:0},
+{q:"What is Colour Code in Canva?",o:["HEX - e.g. #7B3DFF","Name only","Random","No code"],a:0},
+{q:"HEX for VERTEXA Purple?",o:["#7B3DFF","#FF0000","#00FF00","#000000"],a:0},
+{q:"HEX for VERTEXA Gold?",o:["#FFC107","#FF0000","#00FF00","#000000"],a:0},
+{q:"How to add HEX in Canva?",o:["Click colour - Type HEX - Enter","Guess","Random","No add"],a:0},
+{q:"What is Font Pairing in Canva?",o:["Heading + Body - Bold + Clean","2 Scripts","3 Fancy","All Bold"],a:0},
+{q:"Canva font must be?",o:["Easy to read","Fancy","Script","Tiny"],a:0},
+{q:"What is Text Effect in Canva?",o:["Shadow, Outline, Curve, Lift","Delete","Hide","Copy"],a:0},
+{q:"Curve text is for?",o:["Circle logo, Badge","Body text","Long text","Price"],a:0},
+{q:"Outline text helps?",o:["Stand out on busy photo","Hide","Delete","No help"],a:0},
+{q:"Shadow text helps?",o:["Stand out on photo","Hide","Delete","No help"],a:0},
+{q:"What is Spacing in Canva?",o:["Space between letters and lines","Colour","Font","Size"],a:0},
+{q:"What is Line Height?",o:["Space between lines","Space between letters","Colour","Size"],a:0},
+{q:"What is Alignment in Canva?",o:["Left, Centre, Right, Justify","Random","Scatter","Rotate"],a:0},
+{q:"Centre alignment is for?",o:["Title, Short text","Long text","Body","All"],a:0},
+{q:"Left alignment is for?",o:["Body, Long text","Title only","Price only","Logo only"],a:0},
+{q:"What is Ruler in Canva?",o:["Guide to align","Colour","Font","Text"],a:0},
+{q:"What is Guide in Canva?",o:["Purple line to align centre","Colour","Font","Text"],a:0},
+{q:"Guide helps?",o:["Make design neat","Confuse","Hide","Delete"],a:0},
+{q:"What is Margin in Canva?",o:["No put text too close to edge","Centre","Top only","Bottom only"],a:0},
+{q:"Text too close to edge is?",o:["Bad - E fit cut when print","Good","Fine","Nice"],a:0},
+{q:"What is Safe Zone?",o:["Inside margin - Safe for print","Edge","Outside","No zone"],a:0},
+{q:"What is Bleed?",o:["Extra edge for printing","Colour","Font","Text"],a:0},
+{q:"What is Crop Mark?",o:["Line for printer to cut","Colour","Font","Text"],a:0},
+{q:"What is DPI for Canva Print?",o:["300","72","10","50"],a:0},
+{q:"What is Download Quality?",o:["High - For print and sharp","Low","Blurry","No quality"],a:0},
+{q:"JPG download for WhatsApp must be?",o:["Sharp, Not too big","Blurry","Huge","Tiny"],a:0},
+{q:"PNG download for logo must be?",o:["Transparent background","White background","Black","Colour"],a:0},
+{q:"PDF download for printing must be?",o:["PDF Print - CMYK, Crop marks","JPG","Screenshot","Word"],a:0},
+{q:"What is CMYK?",o:["Colour for printing","Colour for screen","Font","Text"],a:0},
+{q:"What is RGB?",o:["Colour for screen - Phone, Instagram","Colour for print","Font","Text"],a:0},
+{q:"Design for Instagram na RGB or CMYK?",o:["RGB","CMYK","Both","None"],a:0},
+{q:"Design for printing na RGB or CMYK?",o:["CMYK","RGB","Both","None"],a:0},
+{q:"What is Canva Team?",o:["Work with others on same design","Work alone","Hide","Delete"],a:0},
+{q:"What is Canva Classroom?",o:["Learn Canva free","Design only","Video only","Music only"],a:0},
+{q:"What is Canva Tutorial?",o:["Video to learn Canva","Design","Photo","Font"],a:0},
+{q:"How to learn Canva fast?",o:["Practice 1 design everyday","Watch only","No practice","Copy only"],a:0},
+{q:"Best Canva practice?",o:["Recreate good flyer you see","Copy as-is","Hide","No practice"],a:0},
+{q:"What is Canva Shortcut for Bold?",o:["Ctrl + B","Ctrl + C","Ctrl + V","Ctrl + Z"],a:0},
+{q:"What is Canva Shortcut for Italic?",o:["Ctrl + I","Ctrl + B","Ctrl + C","Ctrl + V"],a:0},
+{q:"What is Canva Shortcut for Underline?",o:["Ctrl + U","Ctrl + B","Ctrl + C","Ctrl + V"],a:0},
+{q:"What is Canva Shortcut for Delete?",o:["Delete or Backspace","Ctrl + C","Ctrl + V","Ctrl + Z"],a:0},
+{q:"What is Canva Shortcut for Select All?",o:["Ctrl + A","Ctrl + C","Ctrl + V","Ctrl + Z"],a:0},
+{q:"What is Canva Shortcut for Zoom?",o:["Ctrl + Plus / Minus","Ctrl + C","Ctrl + V","Ctrl + Z"],a:0},
+{q:"What is Canva Mobile App tip?",o:["Use 2 fingers to zoom, Tap to edit","One finger only","No edit","No zoom"],a:0},
+{q:"Canva on phone fit do?",o:["Full design - Flyer, Post, Logo","View only","No design","Chat only"],a:0},
+{q:"What is the first step in Canva?",o:["Pick size - Post, Flyer, Story","Pick colour","Pick font","Pick template"],a:0},
+{q:"What is the last step in Canva?",o:["Check - Spelling, Alignment, Phone Test, Download","Post fast","Delete","Hide"],a:0},
+{q:"What is Module 2 about?",o:["Canva Mastery","Design basics","Clients","Money"],a:0},
+{q:"After Module 2, you go fit?",o:["Design flyer, post, logo inside Canva","Design nothing","Earn nothing","No learn"],a:0},
+{q:"VERTEXA Module 2 promise?",o:["Design. Earn. Grow.","Hello","Welcome","We design"],a:0}
+];
+var current=[], idx=0, score=0;
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function startQuiz(){ current=shuffle(BANK.slice()).slice(0,30); idx=0; score=0; document.getElementById("home").style.display="none"; document.getElementById("quiz").style.display="block"; showQ(); }
+function showQ(){ if(idx>=current.length){ document.getElementById("qtext").innerHTML="FINISHED! Score: "+score+" / "+current.length+"<br>Click Back Home to try again - New 30 go come!"; document.getElementById("opts").innerHTML=""; document.getElementById("qtitle").innerText="Module 2 - Done"; document.getElementById("progress").innerText=""; return; } var q=current[idx]; document.getElementById("qtitle").innerText="Module 2 - Q "+(idx+1)+" / "+current.length; document.getElementById("qtext").innerText=q.q; var h=""; for(var i=0;i<q.o.length;i++){ h+='<div class="opt" onclick="answer('+i+')">'+q.o[i]+'</div>'; } document.getElementById("opts").innerHTML=h; document.getElementById("progress").innerText="Score: "+score; }
+function answer(i){ if(i===current[idx].a){ score++; alert("Correct!"); } else { alert("Wrong. Correct: "+current[idx].o[current[idx].a]); } idx++; showQ(); }
+function goHome(){ document.getElementById("quiz").style.display="none"; document.getElementById("home").style.display="block"; }
+</script>
+</body>
+</html>

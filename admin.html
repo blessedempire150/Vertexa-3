@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERTEXA - Admin 👑</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#F5F2FF;color:#222;min-height:100vh}
+header{background:#7B3DFF;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+header h1{font-size:20px}
+header button{background:#FF3B30;color:#fff;border:none;padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:700}
+.container{max-width:1100px;margin:auto;padding:16px}
+.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,0.06)}
+h2{font-size:18px;margin-bottom:10px;color:#7B3DFF}
+h3{font-size:15px;margin:12px 0 6px;color:#222}
+input,select,textarea{width:100%;padding:12px;border-radius:12px;border:2px solid #eee;background:#fff;color:#222;margin-bottom:10px}
+button{cursor:pointer}
+.btn{background:#7B3DFF;color:#fff;border:none;padding:11px 14px;border-radius:12px;font-weight:700}
+.btn-green{background:#00A651}.btn-red{background:#FF3B30}.btn-gold{background:#FFD700;color:#000}.btn-grey{background:#eee;color:#222;border:1px solid #ddd}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.tab{background:#fff;padding:10px 14px;border-radius:20px;cursor:pointer;font-size:13px;font-weight:700;border:1px solid #ddd}
+.tab.active{background:#7B3DFF;color:#fff}
+.item{background:#F5F2FF;border:1px solid #eee;border-radius:14px;padding:12px;margin-bottom:10px}
+.item p{font-size:13px;color:#666;line-height:1.5}
+.badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-paid{background:#00A651;color:#fff}.badge-pending{background:#FF9800;color:#fff}.badge-free{background:#999;color:#fff}.badge-owner{background:#FFD700;color:#000}.badge-extra{background:#7B3DFF;color:#fff}
+.flex{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.flex button{flex:1}
+.hidden{display:none!important}.small{font-size:12px;color:#888}.center{text-align:center}
+#loginBox{max-width:420px;margin:60px auto}
+.top{background:#7B3DFF;color:#fff;border-radius:20px;padding:18px;text-align:center}
+.top h1{color:#fff}
+.adminCert{border-radius:16px;padding:20px;text-align:center;border:3px solid #FFD700;background:#fff;color:#111}
+.adminCert.purple{background:#7B3DFF!important;color:#fff!important}
+.lesson{white-space:pre-wrap;font-size:13px;line-height:1.7;color:#444;background:#F5F2FF;padding:12px;border-radius:10px;margin-top:8px}
+</style>
+</head>
+<body>
+<header><h1>👑 VERTEXA ADMIN</h1><div style="display:flex;gap:8px;align-items:center"><span id="adminInfo" class="small" style="color:#fff"></span><button onclick="logout()">Logout</button></div></header>
+
+<div class="container" id="loginBox">
+<div class="top"><h1>VERTEXA 💜</h1><p>Admin Login • One Login For All</p></div>
+<div class="card center" style="margin-top:12px"><h2>Admin Login</h2>
+<p class="small">Owner Login:<br><b>blessedempire150@gmail.com / Vertexa123</b></p><br>
+<input id="loginEmail" placeholder="Admin Email" value="blessedempire150@gmail.com"><input id="loginPass" type="password" placeholder="Password" value="Vertexa123">
+<button class="btn" style="width:100%" onclick="adminLogin()">Login as Admin →</button>
+<p class="small" id="fbStatus" style="margin-top:10px">Connecting...</p>
+<p class="small" id="loginMsg" style="margin-top:8px;color:#7B3DFF"></p>
+<p class="small" style="margin-top:8px">If e hook, click Logout for top, clear cache, try again.</p>
+</div>
+</div>
+
+<div class="container hidden" id="mainBox">
+<div class="card"><h2>👋 Welcome, <span id="welcomeName"></span></h2><p class="small" id="welcomeRole"></p></div>
+<div class="tabs" id="tabsBar"></div>
+<div id="tab-payments" class="tabPage"><div class="card"><h2>💰 Payments - Approve & Mark as PAID</h2><div id="paymentsList"></div></div></div>
+<div id="tab-students" class="tabPage hidden"><div class="card"><h2>🎓 Students - OWNER ONLY</h2><input id="searchStudent" placeholder="Search by Email..." oninput="renderStudents()"><div id="studentsList"></div></div></div>
+<div id="tab-withdrawals" class="tabPage hidden"><div class="card"><h2>💸 Withdrawals - OWNER ONLY</h2><div id="withdrawalsList"></div></div></div>
+<div id="tab-assignments" class="tabPage hidden"><div class="card"><h2>📝 Assignments</h2><div id="assignmentsList"></div></div></div>
+<div id="tab-certificates" class="tabPage hidden"><div class="card"><h2>🏆 Student Certificates</h2><div id="studentCertsList"></div></div></div>
+<div id="tab-daily" class="tabPage hidden"><div class="card"><h2>📅 Daily Task</h2><input id="taskTitle" placeholder="Task Title"><textarea id="taskDesc" placeholder="Description"></textarea><input id="taskReward" type="number" placeholder="Reward e.g 500"><button class="btn" onclick="addDailyTask()">+ Add Daily Task</button><h3>All Tasks</h3><div id="dailyList"></div></div></div>
+<div id="tab-chat" class="tabPage hidden"><div class="card"><h2>💬 Chat Room</h2><div id="chatList"></div><div style="display:flex;gap:8px"><input id="chatReply" placeholder="Reply as Admin 👑"><button class="btn" onclick="sendChat()">Send</button></div></div></div>
+<div id="tab-courses" class="tabPage hidden"><div class="card"><h2>📚 Courses - Real Modules</h2><p class="small">Click any module, e go open your real <b>modules.html</b> with videos + full lesson.</p><div id="coursesList"></div></div></div>
+<div id="tab-admins" class="tabPage hidden">
+<div class="card"><h2>👥 Other Admins - OWNER ONLY</h2><h3>+ Create New Admin Login</h3><input id="newAdminName" placeholder="Full Name"><input id="newAdminEmail" placeholder="Admin Email"><input id="newAdminPass" placeholder="Password"><select id="newAdminRole"><option value="EXTRA">EXTRA - Senior</option><option value="OWNER">OWNER - Owner</option></select><button class="btn" onclick="createAdmin()">+ Create Admin Login</button><h3>All Admins</h3><div id="adminsList"></div></div>
+<div class="card"><h2>🏆 My Admin Certificate - After 2 Months → Purple + Leadership</h2><div id="adminCertBox" class="adminCert"><div id="adminCertBadge" class="badge badge-extra">ADMIN</div><h2 id="adminCertTitle" style="margin:10px 0">Certificate of Service</h2><p id="adminCertText">For Service & Dedication in VERTEXA</p><p class="small" id="adminCertName" style="margin-top:10px"></p><p class="small" id="adminCertDays"></p></div></div>
+</div>
+<div id="tab-pricing" class="tabPage hidden"><div class="card"><h2>💲 Pricing - OWNER ONLY</h2><div style="display:flex;gap:10px;flex-wrap:wrap"><div style="flex:1"><label class="small">Promo Price (₦)</label><input id="promoPrice" type="number" value="15000"></div><div style="flex:1"><label class="small">Normal Price (₦)</label><input id="normalPrice" type="number" value="40000"></div><div style="flex:1"><label class="small">Promo Slots /20</label><input id="promoCount" type="number" value="12"></div></div><button class="btn" onclick="savePricing()">Save Pricing</button><p class="small" id="pricingInfo" style="margin-top:8px"></p></div></div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+// ===== FIREBASE - SAFE, NO HOOK =====
+var firebaseConfig={apiKey:"AIzaSyCvPOiAoflp_hnVFOYqcdtacbIS-rdnCqQ",authDomain:"vertexa3-d852f.firebaseapp.com",projectId:"vertexa3-d852f",storageBucket:"vertexa3-d852f.firebasestorage.app",messagingSenderId:"379061561522",appId:"1:379061561522:web:c264702092a54dc7ce81ab",measurementId:"G-PL0FT0744P"};
+var db=null;
+try{
+  firebase.initializeApp(firebaseConfig);
+  db=firebase.firestore();
+  document.getElementById('fbStatus').innerText='✅ Firebase Connected';
+}catch(e){
+  document.getElementById('fbStatus').innerText='⚠️ Firebase offline - Owner login still go work';
+  db=null;
+}
+var DEFAULT_ADMINS=[{name:'Founder Owner',email:'blessedempire150@gmail.com',pass:'Vertexa123',role:'OWNER',startDate:'2026-11-15T00:00:00.000Z'}];
+var currentAdmin=null;
+var cache={students:[],withdrawals:[],assignments:[],certs:[],daily:[],chat:[],admins:[],pricing:{promo:15000,normal:40000,count:12}};
+var ALL_TABS=[{id:'payments',label:'💰 Payments',roles:['OWNER','EXTRA']},{id:'students',label:'🎓 Students',roles:['OWNER']},{id:'withdrawals',label:'💸 Withdrawals',roles:['OWNER']},{id:'assignments',label:'📝 Assignments',roles:['OWNER','EXTRA']},{id:'certificates',label:'🏆 Certificates',roles:['OWNER','EXTRA']},{id:'daily',label:'📅 Daily Task',roles:['OWNER','EXTRA']},{id:'chat',label:'💬 Chat Room',roles:['OWNER','EXTRA']},{id:'courses',label:'📚 Courses',roles:['OWNER','EXTRA']},{id:'admins',label:'👥 Other Admins',roles:['OWNER']},{id:'pricing',label:'💲 Pricing',roles:['OWNER']}];
+
+// ===== LOGIN - FIXED, NO HOOK AGAIN =====
+function adminLogin(){
+  var email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  var pass=document.getElementById('loginPass').value;
+  var msg=document.getElementById('loginMsg');
+  msg.innerText='Checking...';
+  if(!email||!pass){msg.innerText='Fill Email + Password';return;}
+  // 1. CHECK OWNER FIRST - NO WAIT FOR FIREBASE, SO E NO HOOK
+  var found=DEFAULT_ADMINS.find(function(a){return a.email===email&&a.pass===pass;});
+  if(found){msg.innerText='✅ Owner Found! Entering...';enterAdmin(found);return;}
+  // 2. IF NO FIREBASE, STOP HERE
+  if(!db){msg.innerText='❌ Wrong login or Firebase offline. Use Owner: blessedempire150@gmail.com / Vertexa123';return;}
+  // 3. CHECK FIREBASE ADMINS WITH TIMEOUT 5 SEC
+  var done=false;
+  setTimeout(function(){if(!done){done=true;msg.innerText='❌ Network slow. Try Owner login again.';}},5000);
+  db.collection('admins').get().then(function(snap){
+    if(done) return; done=true;
+    var fbFound=null;
+    snap.forEach(function(d){var v={id:d.id,...d.data()};if(v.email&&v.email.toLowerCase()===email&&v.pass===pass) fbFound=v;});
+    if(fbFound){enterAdmin({...fbFound,startDate:fbFound.startDate||fbFound.createdAt});return;}
+    msg.innerText='❌ Wrong Admin Email / Password.';
+    alert('Wrong Admin Email / Password.\n\nCorrect Owner:\nblessedempire150@gmail.com\nVertexa123 (V capital)');
+  }).catch(function(e){
+    if(done) return; done=true;
+    msg.innerText='❌ Error: '+e.message+' - Try Owner login again.';
+  });
+}
+function enterAdmin(admin){
+  currentAdmin=admin;
+  try{localStorage.setItem('vertexa_admin',JSON.stringify(admin));}catch(e){}
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('mainBox').classList.remove('hidden');
+  document.getElementById('adminInfo').innerText=admin.name+' ('+admin.role+')';
+  document.getElementById('welcomeName').innerText=admin.name;
+  document.getElementById('welcomeRole').innerText=admin.email+' • '+admin.role+' Admin';
+  buildTabs(); renderCourses(); upgradeAdminCertIfDue(); loadAll();
+}
+function logout(){try{localStorage.removeItem('vertexa_admin');}catch(e){} location.reload();}
+function buildTabs(){
+  var bar=document.getElementById('tabsBar');bar.innerHTML='';
+  var first=true;
+  ALL_TABS.forEach(function(t){if(!t.roles.includes(currentAdmin.role))return;
+    var d=document.createElement('div');d.className='tab'+(first?' active':'');first=false;d.innerText=t.label;
+    d.onclick=function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});d.classList.add('active');document.querySelectorAll('.tabPage').forEach(function(p){p.classList.add('hidden')});document.getElementById('tab-'+t.id).classList.remove('hidden');};
+    bar.appendChild(d);
+  });
+}
+function loadAll(){
+  if(!db) return;
+  db.collection('students').get().then(function(s){cache.students=[];s.forEach(function(d){cache.students.push({id:d.id,...d.data()});});renderPayments();renderStudents();}).catch(function(e){});
+  db.collection('withdrawals').get().then(function(s){cache.withdrawals=[];s.forEach(function(d){cache.withdrawals.push({id:d.id,...d.data()});});renderWithdrawals();}).catch(function(e){});
+  db.collection('assignments').get().then(function(s){cache.assignments=[];s.forEach(function(d){cache.assignments.push({id:d.id,...d.data()});});renderAssignments();}).catch(function(e){});
+  db.collection('student_certs').get().then(function(s){cache.certs=[];s.forEach(function(d){cache.certs.push({id:d.id,...d.data()});});renderStudentCerts();}).catch(function(e){});
+  db.collection('daily_tasks').get().then(function(s){cache.daily=[];s.forEach(function(d){cache.daily.push({id:d.id,...d.data()});});renderDaily();}).catch(function(e){});
+  db.collection('chat').get().then(function(s){cache.chat=[];s.forEach(function(d){cache.chat.push({id:d.id,...d.data()});});renderChat();}).catch(function(e){});
+  db.collection('admins').get().then(function(s){cache.admins=[];s.forEach(function(d){cache.admins.push({id:d.id,...d.data()});});renderAdmins();}).catch(function(e){});
+  db.collection('settings').doc('pricing').get().then(function(p){if(p.exists)cache.pricing=p.data();renderPricing();}).catch(function(e){});
+}
+function renderPayments(){
+  document.getElementById('paymentsList').innerHTML=cache.students.map(function(s){return '<div class="item"><b>'+(s.name||'')+'</b> - '+(s.email||'')+'<p>Ref: '+(s.refCode||'')+' | Balance: ₦'+(s.balance||0)+' | Receipt: '+(s.receipt||'No receipt')+'</p><span class="badge '+(s.status==='PAID'?'badge-paid':s.status==='PENDING'?'badge-pending':'badge-free')+'">'+(s.status||'FREE')+'</span><div class="flex"><button class="btn btn-green" onclick="approvePayment(\''+s.id+'\')">✅ Approve / Mark as PAID</button><button class="btn btn-red" onclick="rejectPayment(\''+s.id+'\')">Reject</button></div></div>';}).join('')||'<p class="small">No students yet</p>';
+}
+function approvePayment(id){if(!db)return;db.collection('students').doc(id).update({status:'PAID'}).then(function(){loadAll();alert('Don turn PAID ✅');});}
+function rejectPayment(id){if(!db)return;db.collection('students').doc(id).update({status:'FREE'}).then(function(){loadAll();});}
+function renderStudents(){
+  var q=(document.getElementById('searchStudent')?.value||'').toLowerCase();
+  var list=cache.students.filter(function(s){return (s.email||'').toLowerCase().includes(q);});
+  document.getElementById('studentsList').innerHTML=list.map(function(s){return '<div class="item"><b>'+(s.name||'')+'</b> - '+(s.email||'')+'<p>Ref: '+(s.refCode||'')+' | Balance: ₦'+(s.balance||0)+'</p><span class="badge '+(s.status==='PAID'?'badge-paid':'badge-free')+'">'+(s.status||'FREE')+'</span></div>';}).join('')||'No students';
+}
+function renderWithdrawals(){
+  document.getElementById('withdrawalsList').innerHTML=cache.withdrawals.map(function(x){return '<div class="item"><b>'+(x.email||'')+'</b><p>Bank: '+(x.bank||'')+' | Acc: '+(x.account||'')+' | Amount: ₦'+(x.amount||0)+'</p><span class="badge badge-pending">'+(x.status||'PENDING')+'</span><div class="flex"><button class="btn btn-green" onclick="approveWithdraw(\''+x.id+'\')">Approve</button><button class="btn btn-red" onclick="rejectWithdraw(\''+x.id+'\')">Reject</button></div></div>';}).join('')||'No withdrawals';
+}
+function approveWithdraw(id){db.collection('withdrawals').doc(id).update({status:'APPROVED'}).then(function(){loadAll();});}
+function rejectWithdraw(id){db.collection('withdrawals').doc(id).update({status:'REJECTED'}).then(function(){loadAll();});}
+function renderAssignments(){
+  document.getElementById('assignmentsList').innerHTML=cache.assignments.map(function(x){return '<div class="item"><b>'+(x.email||'')+'</b><p><a href="'+(x.link||'#')+'" target="_blank" style="color:#7B3DFF">'+(x.link||'')+'</a></p><span class="badge badge-pending">'+(x.status||'PENDING')+'</span><div class="flex"><button class="btn btn-green" onclick="approveAssign(\''+x.id+'\')">Approve</button><button class="btn btn-red" onclick="rejectAssign(\''+x.id+'\')">Reject</button></div></div>';}).join('')||'No assignments';
+}
+function approveAssign(id){db.collection('assignments').doc(id).update({status:'APPROVED'}).then(function(){loadAll();});}
+function rejectAssign(id){db.collection('assignments').doc(id).update({status:'REJECTED'}).then(function(){loadAll();});}
+function renderStudentCerts(){
+  document.getElementById('studentCertsList').innerHTML=cache.certs.map(function(x){return '<div class="item"><b>'+(x.email||'')+'</b><p>Exam: '+(x.exam||0)+'% | Projects: '+(x.projects||0)+'/3</p><span class="badge badge-pending">'+(x.status||'PENDING')+'</span><div class="flex"><button class="btn btn-green" onclick="approveStudentCert(\''+x.id+'\')">Approve - Certificate of Completion</button><button class="btn btn-red" onclick="rejectStudentCert(\''+x.id+'\')">Reject</button></div></div>';}).join('')||'No certificates pending';
+}
+function approveStudentCert(id){db.collection('student_certs').doc(id).update({status:'APPROVED - Certificate of Completion'}).then(function(){loadAll();});}
+function rejectStudentCert(id){db.collection('student_certs').doc(id).update({status:'REJECTED'}).then(function(){loadAll();});}
+function addDailyTask(){
+  var t=document.getElementById('taskTitle').value,d=document.getElementById('taskDesc').value,r=document.getElementById('taskReward').value;
+  if(!t)return alert('Add title'); if(!db)return alert('Firebase offline');
+  db.collection('daily_tasks').add({title:t,desc:d,reward:+r||0,createdAt:new Date().toISOString()}).then(function(){loadAll();alert('Daily Task added');});
+}
+function renderDaily(){document.getElementById('dailyList').innerHTML=cache.daily.map(function(x){return '<div class="item"><b>'+(x.title||'')+'</b><p>'+(x.desc||'')+' | Reward: ₦'+(x.reward||0)+'</p></div>';}).join('');}
+function renderChat(){document.getElementById('chatList').innerHTML=cache.chat.map(function(x){return '<div class="item"><b>'+(x.from||'')+'</b><p>'+(x.msg||'')+'</p></div>';}).join('');}
+function sendChat(){
+  var m=document.getElementById('chatReply').value;if(!m)return; if(!db)return;
+  db.collection('chat').add({from:'Admin 👑 '+currentAdmin.name,msg:m,createdAt:new Date().toISOString()}).then(function(){document.getElementById('chatReply').value='';loadAll();});
+}
+// ===== COURSES - LINK TO REAL modules.html =====
+function renderCourses(){
+  var list=[{id:'M1',title:'M1 - Design Basics'},{id:'M2',title:'M2 - Colour & Typography'},{id:'M3',title:'M3 - Canva Mastery'},{id:'M4',title:'M4 - Logo Design'},{id:'M5',title:'M5 - Flyer & Placard'},{id:'M6',title:'M6 - Social Media'},{id:'M7',title:'M7 - Brand Kit & Portfolio'},{id:'M8',title:'M8 - Earn & Pricing'},{id:'M9',title:'M9 - Final Project'}];
+  document.getElementById('coursesList').innerHTML=list.map(function(c){return '<div class="item"><b>'+c.title+'</b><p>Full lesson + videos dey for modules.html</p><div class="flex"><button class="btn" onclick="openRealModule(\''+c.id+'\')">▶️ Open Full Course + Videos</button></div></div>';}).join('');
+}
+function openRealModule(id){window.open('modules.html?module='+id,'_blank');}
+function createAdmin(){
+  if(!currentAdmin||currentAdmin.role!=='OWNER')return alert('Only Owner fit create Admin');
+  var name=document.getElementById('newAdminName').value,email=document.getElementById('newAdminEmail').value.trim().toLowerCase(),pass=document.getElementById('newAdminPass').value,role=document.getElementById('newAdminRole').value;
+  if(!name||!email||!pass)return alert('Fill all'); if(!db)return alert('Firebase offline');
+  var startDate=new Date().toISOString();
+  db.collection('admins').add({name:name,email:email,pass:pass,role:role,createdAt:startDate,startDate:startDate}).then(function(){loadAll();alert('Admin login created ✅ Email: '+email+' Pass: '+pass+' Role: '+role);});
+}
+function renderAdmins(){
+  var all=[...DEFAULT_ADMINS.map(function(a){return {id:'default',...a};}),...cache.admins];
+  document.getElementById('adminsList').innerHTML=all.map(function(a){return '<div class="item"><b>'+a.name+'</b> - '+a.email+'<p>Role: <span class="badge '+(a.role==='OWNER'?'badge-owner':'badge-extra')+'">'+a.role+'</span> | Start: '+(a.startDate?new Date(a.startDate).toDateString():'')+'</p>'+(a.id==='default'?'<p class="small">Default Owner - Cannot remove</p>':'<div class="flex"><button class="btn" onclick="upgradeAdmin(\''+a.id+'\')">⬆️ Upgrade / Switch Role</button><button class="btn btn-gold" onclick="demoteAdmin(\''+a.id+'\')">Demote to EXTRA</button><button class="btn btn-red" onclick="removeAdmin(\''+a.id+'\')">Remove Admin</button></div>')+'</div>';}).join('');
+}
+function upgradeAdmin(id){var a=cache.admins.find(function(x){return x.id===id});if(!a)return;db.collection('admins').doc(id).update({role:a.role==='EXTRA'?'OWNER':'EXTRA'}).then(function(){loadAll();});}
+function demoteAdmin(id){db.collection('admins').doc(id).update({role:'EXTRA'}).then(function(){loadAll();});}
+function removeAdmin(id){if(!confirm('Remove this admin?'))return;db.collection('admins').doc(id).delete().then(function(){loadAll();});}
+function savePricing(){
+  if(!currentAdmin||currentAdmin.role!=='OWNER')return alert('Only Owner fit change price');
+  var p={promo:+document.getElementById('promoPrice').value,normal:+document.getElementById('normalPrice').value,count:+document.getElementById('promoCount').value};
+  db.collection('settings').doc('pricing').set(p).then(function(){cache.pricing=p;renderPricing();alert('Pricing saved ✅');});
+}
+function renderPricing(){
+  var p=cache.pricing||{promo:15000,normal:40000,count:12};
+  document.getElementById('promoPrice').value=p.promo;
+  document.getElementById('normalPrice').value=p.normal;
+  document.getElementById('promoCount').value=p.count;
+  document.getElementById('pricingInfo').innerText='Promo: ₦'+p.promo+' ('+p.count+'/20) | Normal: ₦'+p.normal;
+}
+function upgradeAdminCertIfDue(){
+  if(!currentAdmin)return;
+  var startStr=currentAdmin.startDate;if(!startStr)return;
+  var start=new Date(startStr),now=new Date();
+  var diffDays=Math.floor((now-start)/(1000*60*60*24));
+  document.getElementById('adminCertName').innerText=currentAdmin.name+' - '+currentAdmin.email;
+  document.getElementById('adminCertDays').innerText='Days as Admin: '+diffDays+' / 60 days';
+  if(diffDays>=60){
+    document.getElementById('adminCertBox').classList.add('purple');
+    document.getElementById('adminCertTitle').innerText='Certificate of Leadership';
+    document.getElementById('adminCertText').innerText='For Leadership, Consistency & Excellence in VERTEXA';
+    document.getElementById('adminCertBadge').innerText='👑 LEADER - 2 Months';
+  }
+}
+// NO AUTO-LOGIN AGAIN - NA E DEY CAUSE HOOK. USER GO CLICK LOGIN BY HAND.
+</script>
+</body>
+</html>

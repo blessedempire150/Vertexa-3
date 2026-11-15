@@ -1,0 +1,34 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>VERTEXA - Your Name</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#7B3DFF}
+.wrap{max-width:420px;margin:0 auto;min-height:100vh;background:#F5F2FF;padding:16px}
+.card{background:#fff;border-radius:22px;padding:24px 18px;text-align:center;margin-top:20px}
+input{width:100%;padding:14px;border:2px solid #ddd;border-radius:12px;font-size:16px;margin:8px 0;outline:none}
+input:focus{border-color:#7B3DFF}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;background:#7B3DFF;color:#fff;margin-top:10px}
+.small{font-size:12px;color:#888;margin-top:12px;line-height:1.5}
+</style></head>
+<body>
+<div class="wrap">
+<div class="card">
+<p style="font-size:48px;margin:0">👤</p>
+<h2 style="margin:8px 0">What be your name?</h2>
+<p style="color:#666;font-size:14px">We go use am for your Certificate & Dashboard</p>
+<input id="name" placeholder="Enter your full name e.g. Favour Isaiah">
+<input id="phone" placeholder="Enter your WhatsApp number e.g. 0913..." type="tel">
+<button class="btn" onclick="saveName()">Continue →</button>
+<button class="btn" style="background:#eee;color:#333" onclick="location.href='join.html'">← Back</button>
+<p class="small">Your name go show for Dashboard & Certificate.<br>VERTEXA • OPay: 09159228665</p>
+</div>
+</div>
+<script>
+function saveName(){
+var n=document.getElementById('name').value.trim();
+var p=document.getElementById('phone').value.trim();
+if(!n){alert('Please enter your name');return;}
+localStorage.setItem('vertexa_name',n);
+localStorage.setItem('vertexa_phone',p);
+var wantPaid=localStorage.getItem('vertexa_want_paid');
+if(wantPaid=='yes'){location.href='daily.html';} else {location.href='index.html';}
+}
+</script>
+</body></html>

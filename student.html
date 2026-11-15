@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>VERTEXA - Student</title><link rel="stylesheet" href="style.css"><style>
+.certWrap{position:relative;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+.certWrap img{width:100%;display:block}
+.certName{position:absolute;left:0;right:0;top:48%;text-align:center;font-weight:900;font-size:22px;letter-spacing:1px;color:#111;text-transform:uppercase}
+.certId{position:absolute;left:19%;bottom:8%;font-size:10px;font-weight:700;color:#111}
+.certLock{position:absolute;inset:0;background:rgba(255,255,255,0.72);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;padding:20px;text-align:center}
+.progressBar{height:12px;background:#eee;border-radius:10px;overflow:hidden}
+.progressBar div{height:12px;background:#6A00FF;border-radius:10px}
+</style></head>
+<body class="inspo">
+<div class="inspo-top"><div class="inspo-head"><div><p class="hi">Hello,</p><h1>Student 🎓</h1><p class="sub">Your Progress • Your Certificate • Your Earnings</p></div><div class="avatar">V</div></div></div>
+<div class="inspo-body">
+<div class="card2"><h2>👤 Your Profile</h2><p id="studentEmail">Loading...</p><p><b>Current Module:</b> <span id="currentMod">Module 1</span></p><p><b>Progress:</b> <span id="progText">0 / 9 Modules</span></p><div class="progressBar"><div id="progBar" style="width:0%"></div></div><p class="muted">Finish Module 9 + Pass Final Quiz + Submit Final Project to unlock certificate.</p><button class="btn-purple" onclick="location.href='modules.html'">Continue Learning →</button></div>
+
+<div class="card2"><h2>🏆 Your VERTEXA Certificate - Real Design</h2><p class="muted">This na YOUR real VERTEXA Academy Master Class certificate. Founder must approve am before download.</p>
+<div class="certWrap" id="certBox">
+<img src="certificate.jpg" alt="VERTEXA Certificate">
+<div class="certName" id="certName">ADA OKONKWO</div>
+<div class="certId" id="certId">ID: VERT-2026-00123</div>
+<div id="certLock" class="certLock"><div style="font-size:50px">🔒</div><h3>Certificate Locked</h3><p id="lockReason">Finish Module 9 to unlock.</p><button class="btn-purple" onclick="location.href='modules.html'">Go Finish Module 9 →</button></div>
+</div>
+<br>
+<button class="btn-purple" id="downloadBtn" onclick="downloadCert()" disabled>🔒 Download Certificate (Locked)</button>
+<button class="btn-white" onclick="previewCert()">👁️ Preview Full Certificate</button>
+<p id="certMsg"></p>
+<button class="btn-white" id="requestCertBtn" style="display:none" onclick="requestCertFromStudent()">📩 Send Certificate to Founder for Approval</button>
+<p class="muted" style="font-size:12px">⏳ After you finish Module 9, tap Send to Founder. Founder go see am for Admin > Cert Reviews > Approve.</p>
+</div>
+
+<div class="card2"><h2>💰 Earnings & Withdrawal</h2><p>Balance: <b id="balance">₦0</b></p><p>Unlock Withdrawal: Certificate must be unlocked + approved first.</p><button class="btn-purple" onclick="checkWithdraw()">Request Withdrawal</button><p id="withdrawMsg"></p>
+<div id="withdrawForm" style="display:none"><input id="wBank" placeholder="Bank Name - e.g OPay"><input id="wAcct" placeholder="Account Number"><input id="wName" placeholder="Account Name"><input id="wAmount" type="number" placeholder="Amount ₦"><button class="btn-purple" onclick="submitWithdraw()">Submit Withdrawal to Founder</button></div></div>
+<div class="card2"><h2>📚 My Modules Progress</h2><div id="myModules"></div></div>
+<div class="card2"><h2>📝 My Quiz Scores</h2><div id="myQuizzes"><p>Loading...</p></div></div>
+</div>
+<nav class="bottomNav"><a href="index.html">🏠<span>Featured</span></a><a href="modules.html">📚<span>Modules</span></a><a href="tools.html">🛠️<span>Tools</span></a><a href="chat.html">💬<span>Chat</span></a><a href="student.html" class="active">🎓<span>Student</span></a><a href="daily.html">💰<span>Earn</span></a><a href="settings.html">⚙️<span>Setting</span></a><a href="admin.html">👑<span>Admin</span></a></nav>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script><script src="firebase.js"></script>
+<script>
+var myEmail = (localStorage.getItem('vertexa_email')||'').toLowerCase();
+var myName = localStorage.getItem('vertexa_student_name')||localStorage.getItem('vertexa_name')||'';
+var myUid = localStorage.getItem('vertexa_uid')||myEmail;
+var certStatus = 'none'; // none, pending, approved, rejected
+var certId = localStorage.getItem('vertexa_cert_id');
+if(!certId){ certId='VERT-2026-'+Math.floor(1000+Math.random()*9000); localStorage.setItem('vertexa_cert_id',certId); }
+var currentMod = 1;
+
+function getModuleFromFirestore(){
+  // Module from Firestore = real progress, no hack
+  if(window.db && myEmail){
+    db.collection('vertexa_users').doc(myUid).get().then(function(d){
+      if(d.exists && d.data().current_module) currentMod = parseInt(d.data().current_module);
+      else currentMod = parseInt(localStorage.getItem('vertexa_current_module')||'1');
+      checkCertFromFirestore();
+    }).catch(function(){ currentMod = parseInt(localStorage.getItem('vertexa_current_module')||'1'); checkCertFromFirestore(); });
+  } else { currentMod = parseInt(localStorage.getItem('vertexa_current_module')||'1'); renderCert(); }
+}
+function checkCertFromFirestore(){
+  // FIX: Approval comes from Admin Firestore, NOT ?cert=unlock
+  if(!window.db) return renderCert();
+  db.collection('certificates').where('email','==',myEmail).orderBy('createdAt','desc').limit(1).get().then(function(s){
+    if(!s.empty){ var c=s.docs[0].data(); certStatus=c.status; if(c.certId) certId=c.certId; }
+    else certStatus='none';
+    renderCert();
+  }).catch(renderCert);
+}
+function renderCert(){
+  document.getElementById('studentEmail').innerText='Email: '+myEmail;
+  var showName=(myName||myEmail.split('@')[0]||'ADA OKONKWO').toUpperCase();
+  document.getElementById('certName').innerText=showName;
+  document.getElementById('certId').innerText='ID: '+certId;
+  document.getElementById('currentMod').innerText='Module '+currentMod;
+  document.getElementById('progText').innerText=currentMod+' / 9 Modules';
+  document.getElementById('progBar').style.width=(currentMod/9*100)+'%';
+  var lock=document.getElementById('certLock');
+  var btn=document.getElementById('downloadBtn');
+  var reqBtn=document.getElementById('requestCertBtn');
+  reqBtn.style.display='none';
+  if(currentMod>=9 && certStatus==='approved'){
+    lock.style.display='none'; btn.disabled=false; btn.innerText='⬇️ Download Certificate - UNLOCKED ✅'; btn.style.background='green';
+    document.getElementById('certMsg').innerText='🎉 Congratulations! Founder don approve am. ID: '+certId;
+  } else if(currentMod>=9 && certStatus==='pending'){
+    lock.style.display='flex'; lock.style.background='rgba(255,255,255,0.15)';
+    lock.innerHTML='<div style="font-size:40px">⏳</div><h3>Waiting for Founder Approval</h3><p>You don finish Module 9. Founder go review am for Admin > Cert Reviews.</p><button class="btn-white" onclick="location.href=\'modules.html\'">Check Final Project</button>';
+    btn.disabled=true; btn.innerText='⏳ Waiting for Founder Approval'; btn.style.background='';
+    document.getElementById('certMsg').innerText='⏳ Waiting for Founder. Check back later.';
+  } else if(currentMod>=9 && certStatus!=='pending'){
+    lock.style.display='flex'; lock.style.background='rgba(255,255,255,0.72)';
+    lock.innerHTML='<div style="font-size:40px">🎓</div><h3>You Don Finish Module 9!</h3><p>Send your certificate to Founder for approval.</p>';
+    btn.disabled=true; btn.innerText='🔒 Download Certificate (Locked)'; reqBtn.style.display='block';
+    document.getElementById('certMsg').innerText='Tap Send to Founder below.';
+  } else if(currentMod>=8){
+    lock.style.display='flex'; lock.style.background='rgba(255,255,255,0.72)';
+    lock.innerHTML='<div style="font-size:40px">👀</div><h3>You Dey Module 8 - Certificate Dey Near!</h3><p>Finish Module 9 to see am clear.</p><button class="btn-purple" onclick="location.href=\'modules.html\'">Go To Module 9 →</button>';
+    btn.disabled=true; btn.innerText='🔒 Download Certificate (Locked)';
+  } else {
+    lock.style.display='flex'; lock.style.background='rgba(255,255,255,0.72)';
+    lock.innerHTML='<div style="font-size:50px">🔒</div><h3>Certificate Locked</h3><p>Finish Module 9 to unlock. You dey Module '+currentMod+' now.</p><button class="btn-purple" onclick="location.href=\'modules.html\'">Go Finish Module 9 →</button>';
+    btn.disabled=true; btn.innerText='🔒 Download Certificate (Locked)';
+  }
+  var h=''; for(var i=1;i<=9;i++){ var done=i<currentMod; var cur=i===currentMod; h+='<p>'+(done?'✅':cur?'👉':'🔒')+' Module '+i+' - '+(done?'Completed':cur?'Current - Continue':'Locked')+' <button class="btn-white" onclick="location.href=\'modules.html\'">'+(cur?'Open':'View')+'</button></p>'; } document.getElementById('myModules').innerHTML=h;
+  document.getElementById('balance').innerText='₦'+(localStorage.getItem('vertexa_balance')||0);
+}
+function requestCertFromStudent(){
+  if(currentMod<9) return alert('Finish Module 9 first');
+  if(!window.db) return alert('No connection');
+  db.collection('certificates').add({name:myName||myEmail, email:myEmail, uid:myUid, type:'Student', course:'M1-M8 + Final Project', certId:certId, status:'pending', createdAt:new Date()}).then(function(){ alert('✅ Sent to Founder! Founder go see am for Admin > Cert Reviews'); certStatus='pending'; renderCert(); });
+}
+function previewCert(){ if(currentMod<8){ alert('Full preview dey locked. Finish Module 8 first. You dey Module '+currentMod); return; } alert('Your real certificate dey for top. Finish Module 9 + Founder approval to download.'); }
+function downloadCert(){ if(currentMod<9){ alert('Locked. Finish Module 9 first.'); return; } if(certStatus!=='approved'){ alert('⏳ Waiting for Founder Approval.'); return; } alert('Certificate unlocked! Tap and hold image to save. ID: '+certId); window.print(); }
+function checkWithdraw(){ if(!(currentMod>=9 && certStatus==='approved')){ document.getElementById('withdrawMsg').innerText='🔒 Withdrawal locked. Unlock + Founder approve certificate first.'; return; } document.getElementById('withdrawForm').style.display='block'; document.getElementById('withdrawMsg').innerText='✅ Fill form to submit to Founder.'; }
+function submitWithdraw(){
+  var bank=document.getElementById('wBank').value.trim(), acct=document.getElementById('wAcct').value.trim(), nm=document.getElementById('wName').value.trim(), amt=Number(document.getElementById('wAmount').value);
+  if(!bank||!acct||!nm||!amt) return alert('Fill all');
+  db.collection('withdrawals').add({name:nm, email:myEmail, uid:myUid, bank:bank+' - '+acct, amount:amt, status:'pending', createdAt:new Date()}).then(function(){ alert('✅ Withdrawal sent! Founder / Senior go see am for Admin > Withdraw'); document.getElementById('withdrawForm').style.display='none'; });
+}
+// NO ?cert=unlock hack - REMOVED
+getModuleFromFirestore();
+if(window.db){ db.collection('quizzes').where('email','==',myEmail).orderBy('createdAt','desc').limit(5).onSnapshot(function(s){ var h=''; s.forEach(function(d){ var c=d.data(); h+='<p>Module '+c.module+' - '+c.score+' / 30 - '+(c.score>=21?'PASS ✅':'Try Again')+'</p>'; }); document.getElementById('myQuizzes').innerHTML=h||'<p>No quiz yet.</p>'; }); }
+</script></body></html>

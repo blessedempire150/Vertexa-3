@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>VERTEXA - Tools</title><link rel="stylesheet" href="style.css"></head>
+<body class="inspo">
+<div class="inspo-top"><div class="inspo-head"><div><p class="hi">Hello,</p><h1>Design Tools 🛠️</h1><p class="sub">Free tools + Design Apps to help you design faster</p></div><div class="avatar">V</div></div></div>
+
+<div class="inspo-body">
+
+<!-- DESIGN APPS -->
+<div class="card2"><h2>📱 Design Apps - Tap to Open</h2><p class="muted">These na apps wey pro designers dey use. If you no get am, tap to open / download.</p>
+<div class="grid2">
+<div class="cat" style="background:#E0E7FF" onclick="window.open('https://www.canva.com','_blank')"><span>🎨</span><b>Canva</b><small>Best for beginners • FREE</small><small style="color:#6A00FF;font-weight:800">Open Canva →</small></div>
+<div class="cat" style="background:#FFE4E6" onclick="window.open('https://www.adobe.com/express','_blank')"><span>✨</span><b>Adobe Express</b><small>Flyer + Logo • FREE</small><small style="color:#6A00FF;font-weight:800">Open Adobe →</small></div>
+<div class="cat" style="background:#DCFCE7" onclick="window.open('https://www.photopea.com','_blank')"><span>🖼️</span><b>Photopea</b><small>Like Photoshop • FREE</small><small style="color:#6A00FF;font-weight:800">Open Photopea →</small></div>
+<div class="cat" style="background:#FEF3C7" onclick="window.open('https://www.figma.com','_blank')"><span>✏️</span><b>Figma</b><small>UI + Logo • FREE</small><small style="color:#6A00FF;font-weight:800">Open Figma →</small></div>
+<div class="cat" style="background:#F1E9FF" onclick="window.open('https://pixlr.com','_blank')"><span>🌈</span><b>Pixlr</b><small>Edit Photo • FREE</small><small style="color:#6A00FF;font-weight:800">Open Pixlr →</small></div>
+<div class="cat" style="background:#E0F2FE" onclick="window.open('https://www.remove.bg','_blank')"><span>✂️</span><b>Remove.bg</b><small>Remove Background • FREE</small><small style="color:#6A00FF;font-weight:800">Open Remove.bg →</small></div>
+</div>
+<p class="muted"><b>For Phone:</b> Download Canva + Adobe Express from Play Store / App Store. Na dem two you go use pass for VERTEXA Modules 1-6.</p>
+<button class="btn-purple" onclick="downloadAllApps()">⬇️ Download All Apps (One by One)</button>
+<div id="dlBox" style="display:none;background:#F8F7FF;border-radius:14px;padding:14px;margin-top:10px"><p id="dlText" class="muted">We go open each app store one by one. Allow pop-up.</p><p><b>Step <span id="dlStep">1</span> of 6:</b> <span id="dlName">Canva</span></p><button class="btn-purple" onclick="nextDownload()">Next App →</button><button class="btn-white" onclick="closeDownload()">Close</button></div>
+<button class="btn-white" onclick="window.open('https://play.google.com/store/search?q=canva&c=apps','_blank')">Download Canva for Android</button>
+<button class="btn-white" onclick="window.open('https://apps.apple.com/ng/app/canva-design-photo-video/id897446215','_blank')">Download Canva for iPhone</button>
+</div>
+
+<!-- COLOUR PICKER -->
+<div class="card2"><h2>🎨 Colour Picker</h2><p class="muted">Pick colour for your design. Copy the code.</p><input type="color" id="colorPick" value="#6A00FF" oninput="document.getElementById('colorCode').innerText=this.value;document.getElementById('colorBox').style.background=this.value" style="height:50px"><div id="colorBox" style="height:40px;background:#6A00FF;border-radius:12px;margin:10px 0"></div><p>Code: <b id="colorCode">#6A00FF</b></p><button class="btn-purple" onclick="navigator.clipboard.writeText(document.getElementById('colorCode').innerText);alert('Copied: '+document.getElementById('colorCode').innerText)">Copy Colour Code</button></div>
+
+<!-- FONT -->
+<div class="card2"><h2>🔤 Font Pairing</h2><p class="muted">Best fonts for flyer:</p><p><b>1. Heading:</b> Montserrat Bold + <b>Body:</b> Poppins<br><b>2. Heading:</b> Bebas Neue + <b>Body:</b> Arial<br><b>3. Heading:</b> Playfair Display + <b>Body:</b> Inter</p><input id="fontTest" placeholder="Type your text to test" onkeyup="document.getElementById('fontPrev').innerText=this.value"><h2 id="fontPrev" style="font-family:Montserrat,sans-serif">Your Text Here</h2><button class="btn-white" onclick="document.getElementById('fontPrev').style.fontFamily='Georgia,serif'">Try Elegant Font</button></div>
+
+<!-- SIZE GUIDE -->
+<div class="card2"><h2>📐 Flyer Size Guide</h2><p><b>Instagram Post:</b> 1080 x 1080<br><b>Instagram Story:</b> 1080 x 1920<br><b>WhatsApp Status:</b> 1080 x 1920<br><b>Flyer Print:</b> A5 - 148 x 210mm<br><b>Placard:</b> 1080 x 1350</p></div>
+
+<!-- PLACARD MAKER -->
+<div class="card2"><h2>🪧 Placard Maker - Quick Text</h2><input id="toolTitle" placeholder="Placard Title e.g. Happy Birthday"><input id="toolSub" placeholder="Subtitle e.g. Ada Turns 20"><button class="btn-purple" onclick="makePlacard()">Generate Placard Text</button><div id="toolOut" style="background:#6A00FF;color:#fff;padding:20px;border-radius:16px;margin-top:12px;text-align:center;display:none"><h2 id="outTitle"></h2><p id="outSub"></p><p>Designed with VERTEXA</p></div></div>
+
+<!-- PRICE -->
+<div class="card2"><h2>💰 Price Calculator</h2><p class="muted">How much to charge client?</p><input id="priceType" placeholder="Type: Flyer, Logo, Placard"><select id="priceLevel"><option value="5000">Beginner - Flyer N5,000</option><option value="15000">Pro - Flyer N15,000</option><option value="30000">Pro - Logo N30,000</option><option value="50000">Pro - Brand Kit N50,000</option></select><button class="btn-purple" onclick="alert('Charge: N'+document.getElementById('priceLevel').value)">Calculate Price</button></div>
+
+</div>
+
+<nav class="bottomNav"><a href="index.html">🏠<span>Featured</span></a><a href="student.html">📚<span>My Learning</span></a><a href="tools.html" class="active">🛠️<span>Tools</span></a><a href="chat.html">💬<span>Chat</span></a><a href="student.html">🎓<span>Student</span></a><a href="student.html">💰<span>Earn</span></a><a href="student.html">⚙️<span>Setting</span></a><a href="admin.html">👑<span>Admin</span></a></nav>
+
+<script>
+function makePlacard(){var t=document.getElementById('toolTitle').value||'Happy Birthday';var s=document.getElementById('toolSub').value||'We Celebrate You';document.getElementById('outTitle').innerText=t;document.getElementById('outSub').innerText=s;document.getElementById('toolOut').style.display='block';}
+
+var apps=[
+{name:'Canva',android:'https://play.google.com/store/apps/details?id=com.canva.editor',ios:'https://apps.apple.com/ng/app/canva-design-photo-video/id897446215',web:'https://www.canva.com'},
+{name:'Adobe Express',android:'https://play.google.com/store/apps/details?id=com.adobe.spark.post',ios:'https://apps.apple.com/us/app/adobe-express/id1051937863',web:'https://www.adobe.com/express'},
+{name:'Photopea (Web)',android:'https://www.photopea.com',ios:'https://www.photopea.com',web:'https://www.photopea.com'},
+{name:'Figma',android:'https://play.google.com/store/apps/details?id=com.figma.app',ios:'https://apps.apple.com/us/app/figma/id1152747299',web:'https://www.figma.com'},
+{name:'Pixlr',android:'https://play.google.com/store/apps/details?id=com.pixlr.express',ios:'https://apps.apple.com/us/app/pixlr-photo-editor/id526783584',web:'https://pixlr.com'},
+{name:'Remove.bg',android:'https://play.google.com/store/apps/details?id=com.kaleidoscope.removebg',ios:'https://apps.apple.com/us/app/removebg-remove-background/id1547105805',web:'https://www.remove.bg'}
+];
+var dlIndex=0;
+function isIOS(){return /iPhone|iPad|iPod/i.test(navigator.userAgent);}
+function downloadAllApps(){dlIndex=0;document.getElementById('dlBox').style.display='block';openCurrentApp();updateDlUI();}
+function updateDlUI(){document.getElementById('dlStep').innerText=dlIndex+1;document.getElementById('dlName').innerText=apps[dlIndex].name;}
+function openCurrentApp(){var a=apps[dlIndex];var url=isIOS()?a.ios:a.android;window.open(url,'_blank');}
+function nextDownload(){dlIndex++;if(dlIndex>=apps.length){alert('Done! All 6 apps don open. Install the ones you no get.');document.getElementById('dlBox').style.display='none';dlIndex=0;return;}updateDlUI();openCurrentApp();}
+function closeDownload(){document.getElementById('dlBox').style.display='none';}
+</script>
+</body></html>

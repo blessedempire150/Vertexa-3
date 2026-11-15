@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERTEXA Module 1</title>
+<style>
+body{font-family:Arial,sans-serif;background:#0f0f1a;color:#fff;margin:0;padding:16px}
+h1{color:#FFC107;text-align:center}
+button{background:#7B3DFF;color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;width:100%;margin:8px 0}
+.opt{background:#2a2a4a;padding:12px;border-radius:10px;margin:8px 0}
+.card{background:#1e1e35;padding:16px;border-radius:12px;margin:12px 0}
+.small{color:#ccc;text-align:center}
+</style>
+</head>
+<body>
+<div id="home">
+<h1>VERTEXA - MODULE 1</h1>
+<p class="small">Intro to Design | 150 Questions | Quiz go bring 30 Random</p>
+<div class="card"><b>Module 1</b> - 150 Questions<br><button onclick="startQuiz()">START MODULE 1 - 30 QUESTIONS</button></div>
+</div>
+<div id="quiz" style="display:none">
+<h2 id="qtitle"></h2>
+<p id="qtext"></p>
+<div id="opts"></div>
+<p id="progress"></p>
+<button onclick="goHome()">Back Home</button>
+</div>
+<script>
+var BANK=[
+{q:"What is Design?",o:["Make something clear and beautiful","Copy","Delete","Hide"],a:0},
+{q:"What is Graphic Design?",o:["Visual communication with text and image","Only drawing","Only typing","Only colour"],a:0},
+{q:"What is a Flyer?",o:["One page to advertise","Book","Video","Website"],a:0},
+{q:"Good design must be?",o:["Clear, Simple, Readable","Busy","Colourful only","Big only"],a:0},
+{q:"What is a Logo?",o:["Symbol of a brand","Flyer","Price","Colour"],a:0},
+{q:"What is Branding?",o:["How people remember a business","Logo only","Colour only","Font only"],a:0},
+{q:"What is Colour?",o:["Feeling and meaning in design","Decoration only","Random","No meaning"],a:0},
+{q:"Red means?",o:["Energy, Love, Urgency","Calm","Sad","Luxury"],a:0},
+{q:"Blue means?",o:["Trust, Calm, Professional","Anger","Fear","Hunger"],a:0},
+{q:"Green means?",o:["Growth, Money, Nature","Anger","Fear","Sad"],a:0},
+{q:"Yellow means?",o:["Happy, Energy, Attention","Sad","Calm","Luxury"],a:0},
+{q:"Black means?",o:["Luxury, Power, Elegant","Childish","Weak","Cheap"],a:0},
+{q:"White means?",o:["Clean, Pure, Simple","Dirty","Angry","Sad"],a:0},
+{q:"Purple means?",o:["Royalty, Creativity, Luxury","Hunger","Fear","Anger"],a:0},
+{q:"Orange means?",o:["Fun, Friendly, Energy","Sad","Calm","Luxury"],a:0},
+{q:"Pink means?",o:["Love, Soft, Feminine","Anger","Fear","Power"],a:0},
+{q:"Brown means?",o:["Natural, Earth, Reliable","Luxury","Energy","Sad"],a:0},
+{q:"Gold means?",o:["Wealth, Premium, Success","Cheap","Sad","Anger"],a:0},
+{q:"What is Font?",o:["Style of letters","Colour","Picture","Shape"],a:0},
+{q:"How many fonts for one design?",o:["Max 2","5","10","Any"],a:0},
+{q:"What is Hierarchy?",o:["Biggest thing first","All same","Random","Small first"],a:0},
+{q:"What is White Space?",o:["Empty space to breathe","Wasted space","Black space","Border"],a:0},
+{q:"What is Alignment?",o:["Arrange things in line","Random","Scatter","Rotate"],a:0},
+{q:"What is Contrast?",o:["Difference to make things stand out","Same colour","Same size","Same font"],a:0},
+{q:"What is Balance?",o:["No side too heavy","One side heavy","Random","All left"],a:0},
+{q:"What is Proximity?",o:["Related things stay together","Scatter","Random","Far apart"],a:0},
+{q:"What is Repetition?",o:["Repeat same colour, font, style","Change every time","Random","Copy"],a:0},
+{q:"What is a Poster?",o:["Big design for wall or online","Book","Video","Music"],a:0},
+{q:"What is a Business Card?",o:["Small card with name and contact","Flyer","Poster","Book"],a:0},
+{q:"What is a Banner?",o:["Wide design for page or event","Small card","Book","Logo"],a:0},
+{q:"What is a Logo Mark?",o:["Symbol without words","Word only","Colour only","Font only"],a:0},
+{q:"What is a Wordmark?",o:["Logo with words only","Symbol only","Colour only","Picture only"],a:0},
+{q:"What is a Tagline?",o:["Short phrase wey describe brand","Long story","Price","Colour"],a:0},
+{q:"What is a Slogan?",o:["Memorable phrase - Just Do It","Price","Colour","Font"],a:0},
+{q:"What is a Mood?",o:["Feeling design gives","Colour only","Font only","Size only"],a:0},
+{q:"What is a Layout?",o:["How things arrange on page","Colour","Font","Picture"],a:0},
+{q:"What is a Grid?",o:["Lines to arrange things neat","Colour","Font","Picture"],a:0},
+{q:"What is Margin?",o:["Space around edge","Centre","Top only","Bottom only"],a:0},
+{q:"What is Padding?",o:["Space inside box","Space outside","Colour","Font"],a:0},
+{q:"What is a Shape?",o:["Circle, Square, Triangle, Line","Colour","Font","Text"],a:0},
+{q:"Circle shape means?",o:["Friendly, Unity, Soft","Sharp","Anger","Power"],a:0},
+{q:"Square shape means?",o:["Stable, Trust, Strong","Soft","Fun","Love"],a:0},
+{q:"Triangle shape means?",o:["Power, Direction, Energy","Soft","Calm","Love"],a:0},
+{q:"What is a Line?",o:["Mark to divide or direct eye","Colour","Font","Text"],a:0},
+{q:"What is Texture?",o:["Feel of surface - Rough, Smooth","Colour","Font","Size"],a:0},
+{q:"What is Pattern?",o:["Repeat design","Random","One colour","One font"],a:0},
+{q:"What is an Icon?",o:["Small picture with meaning","Big photo","Text","Colour"],a:0},
+{q:"What is Illustration?",o:["Drawn picture","Real photo","Text","Colour"],a:0},
+{q:"What is Photography in design?",o:["Real picture to tell story","Drawing","Text","Colour"],a:0},
+{q:"What is Stock Photo?",o:["Ready photo from internet","Your photo","Drawing","Text"],a:0},
+{q:"Stock photo must be?",o:["Clear, Sharp, Related","Blurry","Random","Dark"],a:0},
+{q:"What is Resolution?",o:["Sharpness of picture","Colour","Font","Size"],a:0},
+{q:"Blurry picture is?",o:["Bad - No use","Good","Sharp","Clear"],a:0},
+{q:"What is Pixel?",o:["Small dot wey make picture","Colour","Font","Text"],a:0},
+{q:"What is DPI?",o:["Dots per inch - For printing","Colour","Font","Size"],a:0},
+{q:"For printing, DPI must be?",o:["300","72","10","50"],a:0},
+{q:"For phone screen, DPI fit be?",o:["72","300","1000","500"],a:0},
+{q:"What is JPG?",o:["Photo file for sharing","Print file","Logo file","Video"],a:0},
+{q:"What is PNG?",o:["File with transparent background","Photo only","Video","Music"],a:0},
+{q:"What is PDF?",o:["File for printing and sharing","Photo only","Video","Music"],a:0},
+{q:"What is a Mockup?",o:["Show design on real object","Real photo","Template","Font"],a:0},
+{q:"What is a Template?",o:["Ready design to edit","Blank","Photo","Font"],a:0},
+{q:"Should you copy template as-is?",o:["No, edit am make am yours","Yes","Copy all","Post as-is"],a:0},
+{q:"What is a Draft?",o:["First rough design","Final","Print","Share"],a:0},
+{q:"What is Final Design?",o:["Checked and ready to send","Draft","Rough","Blurry"],a:0},
+{q:"What is a Concept?",o:["Idea behind design","Colour","Font","Size"],a:0},
+{q:"Design must answer?",o:["Who, What, When, Where, Why","Colour only","Font only","Size only"],a:0},
+{q:"Who is Target Audience?",o:["People design is for","Designer","Printer","Friend"],a:0},
+{q:"Design for church must be?",o:["Respectful, Clear, Warm","Loud","Dark","Funny"],a:0},
+{q:"Design for salon must be?",o:["Beautiful, Feminine, Clean","Dark","Rough","Sad"],a:0},
+{q:"Design for food must be?",o:["Appetizing - Show food big, Fresh","Hide food","Dark","Small"],a:0},
+{q:"Design for school must be?",o:["Trust, Clean, Professional","Funny","Dark","Messy"],a:0},
+{q:"What is 3-Second Test?",o:["People understand in 3 secs","30 secs","1 hour","1 day"],a:0},
+{q:"What is Phone Test?",o:["Check design on phone - E clear?","Check on laptop only","No check","Print only"],a:0},
+{q:"What is Squint Test?",o:["Squint eye - Main thing still show?","Close eye","No test","Print"],a:0},
+{q:"What is Readability?",o:["Easy to read","Hard to read","Fancy","Small"],a:0},
+{q:"What is Legibility?",o:["Letters clear","Colour","Size","Shape"],a:0},
+{q:"Title must be?",o:["Biggest and Boldest","Smallest","Hidden","Thin"],a:0},
+{q:"Body text must be?",o:["Easy to read, Not too long","Long","Tiny","Fancy"],a:0},
+{q:"What is CTA?",o:["Call To Action - Tell them what to do","Colour","Font","Picture"],a:0},
+{q:"Good CTA example?",o:["Order Now, DM Us, Call Now","Hello","Welcome","Nice"],a:0},
+{q:"What is Offer?",o:["What you sell + Price","Hello","Welcome","Nice"],a:0},
+{q:"Offer must be?",o:["Clear","Hidden","Vague","No price"],a:0},
+{q:"Price must be?",o:["Big and Clear","Hidden","Small","No price"],a:0},
+{q:"What is Date in flyer?",o:["When event go happen","Price","Colour","Font"],a:0},
+{q:"What is Venue?",o:["Where event go happen","Price","Colour","Font"],a:0},
+{q:"What is Contact?",o:["Phone, WhatsApp, Handle","Price","Colour","Font"],a:0},
+{q:"Flyer without contact is?",o:["Useless - Nobody fit reach you","Good","Fine","Nice"],a:0},
+{q:"What is a Headline?",o:["Main message - Big text","Small text","Price","Colour"],a:0},
+{q:"Headline must be?",o:["Short, Clear, Interesting","Long","Vague","Hidden"],a:0},
+{q:"What is Sub-headline?",o:["Small explanation under headline","Price","Colour","Font"],a:0},
+{q:"What is Body Copy?",o:["Details - What, How, Why","Price","Colour","Font"],a:0},
+{q:"What is Footer?",o:["Bottom part - Contact, Logo","Top part","Middle","Side"],a:0},
+{q:"What is Header?",o:["Top part - Logo, Title","Bottom","Middle","Side"],a:0},
+{q:"What is a Border?",o:["Line around design","Colour","Font","Text"],a:0},
+{q:"Border must be?",o:["Neat, Not too thick","Thick","Messy","Random"],a:0},
+{q:"What is a Shadow?",o:["Soft dark behind object","Colour","Font","Text"],a:0},
+{q:"Shadow must be?",o:["Soft, Small","Hard, Big","Black","No shadow"],a:0},
+{q:"What is a Gradient?",o:["Colour change from one to another","One colour","Black","White"],a:0},
+{q:"Gradient must be?",o:["Smooth, Soft","Harsh","Rainbow","Neon"],a:0},
+{q:"What is Saturation?",o:["How strong colour be","How big","How small","How bold"],a:0},
+{q:"Too much saturation is?",o:["Harsh, Pain eye","Good","Soft","Clean"],a:0},
+{q:"What is Brightness?",o:["How light or dark","How big","How small","How bold"],a:0},
+{q:"What is a Warm Colour?",o:["Red, Orange, Yellow","Blue, Green","Black","White"],a:0},
+{q:"What is a Cool Colour?",o:["Blue, Green, Purple","Red, Orange","Yellow","Black"],a:0},
+{q:"Warm colours feel?",o:["Energy, Happy, Warm","Calm","Sad","Cold"],a:0},
+{q:"Cool colours feel?",o:["Calm, Trust, Professional","Energy","Hot","Angry"],a:0},
+{q:"What is Monochrome?",o:["One colour, different shades","Many colours","Rainbow","Neon"],a:0},
+{q:"What is Analogous?",o:["Neighbour colours on wheel","Opposite","Random","Black and white"],a:0},
+{q:"What is Triadic?",o:["3 colours equally spaced","1 colour","2 colours","Rainbow"],a:0},
+{q:"What is a Colour Palette?",o:["Set of colours for brand","One colour","Random","Font"],a:0},
+{q:"Palette must have?",o:["2-3 colours only","10 colours","Rainbow","Neon"],a:0},
+{q:"What is Brand Colour?",o:["Main colour people remember you by","Random","Template","Font"],a:0},
+{q:"VERTEXA main colour?",o:["Purple #7B3DFF","Red","Green","Blue"],a:0},
+{q:"VERTEXA accent colour?",o:["Gold #FFC107","Red","Green","Blue"],a:0},
+{q:"What is a Serif font?",o:["Font with small feet","No feet","Script","Bold only"],a:0},
+{q:"What is Sans-Serif?",o:["Clean font, no feet","With feet","Script","Fancy"],a:0},
+{q:"What is Script font?",o:["Handwriting style","Clean","Bold","Block"],a:0},
+{q:"Script font is for?",o:["Small accent, Not body","Body text","Long text","All text"],a:0},
+{q:"What is Display font?",o:["Big fancy for title","Body","Small","Long"],a:0},
+{q:"What is Bold?",o:["Thick letters","Thin","Small","Hidden"],a:0},
+{q:"What is Italic?",o:["Slanted letters","Bold","Small","Big"],a:0},
+{q:"What is Uppercase?",o:["ALL CAPITAL LETTERS","small letters","Mixed","Numbers"],a:0},
+{q:"Uppercase for title is?",o:["Good for short title","Good for long text","Bad","No use"],a:0},
+{q:"Uppercase for long text is?",o:["Hard to read","Easy","Good","Fine"],a:0},
+{q:"What is Letter Spacing?",o:["Space between letters","Space between lines","Colour","Size"],a:0},
+{q:"What is Line Spacing?",o:["Space between lines","Space between letters","Colour","Size"],a:0},
+{q:"Line spacing must be?",o:["Enough to breathe","Too tight","Too wide","No space"],a:0},
+{q:"What is a Design Mistake?",o:["Too many colours, fonts, texts","One colour","One font","Clean"],a:0},
+{q:"Biggest beginner mistake?",o:["Too much - Too many colours, fonts, elements","Too little","Clean","Simple"],a:0},
+{q:"Less is?",o:["More - Simple wins","Less","Bad","Weak"],a:0},
+{q:"What is a Professional Design?",o:["Clean, Clear, Consistent","Busy","Messy","Colourful"],a:0},
+{q:"What is Creativity?",o:["Solve problem in new way","Copy","Steal","Random"],a:0},
+{q:"Creativity comes from?",o:["Practice + Observe + Try","Copy","Wait","Sleep"],a:0},
+{q:"What is Inspiration?",o:["See good work, Learn, Make yours","Copy as-is","Steal","Hide"],a:0},
+{q:"Where to find inspiration?",o:["Pinterest, Instagram, Behance","Copy only","Hide","No search"],a:0},
+{q:"What is Originality?",o:["Your own touch, Not copy","Copy","Steal","Template as-is"],a:0},
+{q:"What is Copyright?",o:["No steal other person work","Steal all","Copy all","Use all"],a:0},
+{q:"What is a Designer?",o:["Person wey solve problem with visual","Painter only","Typist","Printer"],a:0},
+{q:"Designer must have?",o:["Eye, Taste, Patience, Practice","Luck only","Money only","Phone only"],a:0},
+{q:"What is a Design Eye?",o:["See wetin good and wetin bad","Colour only","Font only","Size only"],a:0},
+{q:"Design Eye comes from?",o:["Practice + See good designs everyday","1 day","No practice","Copy"],a:0},
+{q:"What is the first step in design?",o:["Understand client and audience","Pick colour","Pick font","Pick template"],a:0},
+{q:"What is the last step in design?",o:["Check - Spelling, Alignment, Phone Test","Post fast","Delete","Hide"],a:0},
+{q:"What is VERTEXA?",o:["Design. Earn. Grow.","Hello","Welcome","We design"],a:0},
+{q:"What is Module 1 about?",o:["Intro to Design - Basics","Canva","Clients","Money"],a:0},
+{q:"After Module 1, you go fit?",o:["Know colours, fonts, layout, hierarchy","Design all","Earn all","No learn"],a:0}
+];
+var current=[], idx=0, score=0;
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function startQuiz(){ current=shuffle(BANK.slice()).slice(0,30); idx=0; score=0; document.getElementById("home").style.display="none"; document.getElementById("quiz").style.display="block"; showQ(); }
+function showQ(){ if(idx>=current.length){ document.getElementById("qtext").innerHTML="FINISHED! Score: "+score+" / "+current.length+"<br>Click Back Home to try again - New 30 go come!"; document.getElementById("opts").innerHTML=""; document.getElementById("qtitle").innerText="Module 1 - Done"; document.getElementById("progress").innerText=""; return; } var q=current[idx]; document.getElementById("qtitle").innerText="Module 1 - Q "+(idx+1)+" / "+current.length; document.getElementById("qtext").innerText=q.q; var h=""; for(var i=0;i<q.o.length;i++){ h+='<div class="opt" onclick="answer('+i+')">'+q.o[i]+'</div>'; } document.getElementById("opts").innerHTML=h; document.getElementById("progress").innerText="Score: "+score; }
+function answer(i){ if(i===current[idx].a){ score++; alert("Correct!"); } else { alert("Wrong. Correct: "+current[idx].o[current[idx].a]); } idx++; showQ(); }
+function goHome(){ document.getElementById("quiz").style.display="none"; document.getElementById("home").style.display="block"; }
+</script>
+</body>
+</html>

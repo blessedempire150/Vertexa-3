@@ -1,0 +1,58 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>VERTEXA - Learn</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#F5F2FF}
+.wrap{max-width:420px;margin:0 auto;padding:14px}
+.top{background:#7B3DFF;color:#fff;border-radius:20px;padding:18px}
+.top h2{margin:4px 0}.card{background:#fff;border-radius:18px;padding:16px;margin-top:12px}
+.btn{width:100%;padding:13px;border:none;border-radius:12px;font-weight:bold;font-size:15px;background:#7B3DFF;color:#fff;margin-top:8px;cursor:pointer}
+.btn2{background:#00A651}.lock{color:#888;font-size:13px}
+</style></head>
+<body>
+<div class="wrap">
+<div class="top"><p>👋 <span id="nm">Student</span></p><h2>📚 Learn Skills</h2><p id="st">Free Member</p></div>
+
+<div class="card">
+<b>🖼️ 1. Graphics Design — LIVE NOW ✅</b>
+<p style="font-size:13px;color:#555;line-height:1.6">
+<b>Canva + Photoshop. Design flyers, logos.</b><br><br>
+<b>9 Modules:</b> Design Basics, Colour, Canva, Logo, Flyer, Social Media, Brand Kit, Pricing, Final Project<br><br>
+<b>Module 1 FREE</b> — Module 2-9 for Paid Members Only.
+</p>
+<button class="btn" onclick="location.href='modules.html'">▶ Open Graphics Course →</button>
+<p id="graphicsNote" style="font-size:12px;color:#7B3DFF"></p>
+</div>
+
+<div class="card" style="opacity:0.6">
+<b>🎨 2. UI/UX Design — ⏳ COMING SOON</b>
+<p class="lock">Learn Figma, App Design. Full course coming next year — 2027.<br>UI = How App LOOK<br>UX = How App FEEL</p>
+<button class="btn" style="background:#999" disabled>⏳ Coming Soon - 2027</button>
+</div>
+
+<div class="card" style="opacity:0.6">
+<b>✍️ 3. Copywriting — ⏳ COMING SOON</b>
+<p class="lock">Learn how to write words wey sell. Full course coming next year — 2027.</p>
+<button class="btn" style="background:#999" disabled>⏳ Coming Soon - 2027</button>
+</div>
+
+<div class="card" style="opacity:0.6">
+<b>📱 4. Social Media Management — ⏳ COMING SOON</b>
+<p class="lock">Manage pages for businesses and earn monthly. Full course coming next year — 2027.</p>
+<button class="btn" style="background:#999" disabled>⏳ Coming Soon - 2027</button>
+</div>
+
+<div class="card" style="opacity:0.6">
+<b>💻 5. Web Design / HTML — ⏳ COMING SOON</b>
+<p class="lock">Build websites like VERTEXA. Full course coming next year — 2027.</p>
+<button class="btn" style="background:#999" disabled>⏳ Coming Soon - 2027</button>
+</div>
+
+<button class="btn btn2" onclick="location.href='index.html'">← Back To Dashboard</button>
+<button class="btn" onclick="location.href='daily.html'">💳 Pay To Unlock M2-M9 →</button>
+</div>
+<script>
+var n=localStorage.getItem('vertexa_name'); if(n) document.getElementById('nm').textContent=n;
+var isPaid = localStorage.getItem('vertexa_is_paid')=='yes';
+var isAdmin = localStorage.getItem('v_admin')=='owner' || localStorage.getItem('v_admin')=='extra' || localStorage.getItem('v_admin_role')=='founder' || localStorage.getItem('v_admin_role')=='senior' || localStorage.getItem('v_admin_role')=='other_admin';
+if(isPaid || isAdmin){ document.getElementById('st').textContent='Paid Member • All Unlocked ✅'; document.getElementById('graphicsNote').textContent='✅ You fit watch M1-M9'; }
+else { document.getElementById('graphicsNote').textContent='🔒 You fit watch M1 FREE only. M2-M9 need Paid.'; }
+</script>
+</body></html>

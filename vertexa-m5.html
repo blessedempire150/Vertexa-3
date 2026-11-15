@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERTEXA Module 5</title>
+<style>
+body{font-family:Arial,sans-serif;background:#0f0f1a;color:#fff;margin:0;padding:16px}
+h1{color:#FFC107;text-align:center}
+button{background:#7B3DFF;color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;width:100%;margin:8px 0}
+.opt{background:#2a2a4a;padding:12px;border-radius:10px;margin:8px 0}
+.card{background:#1e1e35;padding:16px;border-radius:12px;margin:12px 0}
+.small{color:#ccc;text-align:center}
+</style>
+</head>
+<body>
+<div id="home">
+<h1>VERTEXA - MODULE 5</h1>
+<p class="small">Social Media & Marketing | 150 Questions | Quiz go bring 30 Random</p>
+<div class="card"><b>Module 5</b> - 150 Questions<br><button onclick="startQuiz()">START MODULE 5 - 30 QUESTIONS</button></div>
+</div>
+<div id="quiz" style="display:none">
+<h2 id="qtitle"></h2>
+<p id="qtext"></p>
+<div id="opts"></div>
+<p id="progress"></p>
+<button onclick="goHome()">Back Home</button>
+</div>
+<script>
+var BANK=[
+{q:"What is Instagram for designer?",o:["Portfolio + Shop","Chat only","Music","Game"],a:0},
+{q:"Bio must say?",o:["What you do, Who you help, CTA","Hello","Welcome","Nice"],a:0},
+{q:"Bio must have?",o:["Name, What you do, Link, CTA","Hello","Welcome","Emoji only"],a:0},
+{q:"What is Content?",o:["Post, Reel, Story, Carousel","Chat","Call","Music"],a:0},
+{q:"How often to post?",o:["3-5 times per week","Once per year","Never","Once"],a:0},
+{q:"What is Hashtag?",o:["Help people find your post","Decoration","Colour","Font"],a:0},
+{q:"How many hashtags?",o:["5-10 relevant","30 random","0","100"],a:0},
+{q:"Hashtag must be?",o:["Relevant - #LagosDesigner","Random","Popular only","Funny only"],a:0},
+{q:"What is Reel?",o:["Short video","Photo","Story","Bio"],a:0},
+{q:"Reel must hook in?",o:["First 3 seconds","Last 3 seconds","Middle","End"],a:0},
+{q:"Reel hook example?",o:["I redesign this bad flyer in 30 secs","Hello","Welcome","Nice"],a:0},
+{q:"What is DM?",o:["Direct Message to client","Public post","Comment","Bio"],a:0},
+{q:"How to DM client?",o:["Compliment, Show work, Offer help - No spam","Spam","Beg","Insult"],a:0},
+{q:"DM must NOT be?",o:["Spam, Beg, Long","Short, Polite","Helpful","Clear"],a:0},
+{q:"What is WhatsApp Status?",o:["Daily show your work","Chat only","Call","Music"],a:0},
+{q:"WhatsApp Status must show?",o:["Work, Offer, Testimonial, Behind scene","Personal only","No work","Hide"],a:0},
+{q:"What is TikTok for designer?",o:["Show process video","Dance only","Music only","Game"],a:0},
+{q:"Process video shows?",o:["Before and After","Only after","Only before","No show"],a:0},
+{q:"What is Engagement?",o:["Likes, Comments, Shares, Saves","Followers only","Views only","Money only"],a:0},
+{q:"Engagement is important because?",o:["Algorithm show your post to more people","Followers only","Views only","Money only"],a:0},
+{q:"What is Consistency?",o:["Show up everyday","Show up once","Hide","Quit"],a:0},
+{q:"What is Personal Brand?",o:["Your name, style, voice","No brand","Hide","Random"],a:0},
+{q:"Personal Brand helps?",o:["People remember you, Trust you","Hide","No help","Confuse"],a:0},
+{q:"What is Carousel?",o:["Many slides in one post","One photo","Video","Bio"],a:0},
+{q:"Carousel is good for?",o:["Tips, Steps, Before and After","One photo","Bio","Chat"],a:0},
+{q:"Carousel first slide must be?",o:["Hook - Bold, Clear","Hello","Welcome","Blank"],a:0},
+{q:"Carousel last slide must be?",o:["CTA - Follow, DM, Save","Hello","Welcome","Blank"],a:0},
+{q:"What is Caption?",o:["Text under post - Story + CTA","Bio","Hashtag","Comment"],a:0},
+{q:"Good caption must have?",o:["Hook, Story, CTA","Hello only","Emoji only","Hashtag only"],a:0},
+{q:"Caption Hook example?",o:["Stop doing this mistake in your flyer","Hello","Welcome","Nice"],a:0},
+{q:"What is Story?",o:["24hr post - Behind scene, Poll, Offer","Permanent post","Bio","Reel"],a:0},
+{q:"Story is good for?",o:["Daily, Poll, Offer, Behind scene","Permanent","Bio","No use"],a:0},
+{q:"What is Highlight?",o:["Save Story - Work, Price, Review","Delete","Hide","Bio"],a:0},
+{q:"Highlight must have?",o:["Work, Price, Reviews, About","Random","Personal","No work"],a:0},
+{q:"What is a Post?",o:["Photo or design on feed","Story","Bio","Reel"],a:0},
+{q:"Feed must look?",o:["Clean, Consistent colours","Messy","Random","Rainbow"],a:0},
+{q:"What is Algorithm?",o:["System wey decide who see your post","Person","Colour","Font"],a:0},
+{q:"Algorithm likes?",o:["Consistent, Engaging, Saves, Shares","Spam","Hide","No post"],a:0},
+{q:"What is Save?",o:["Person save your post to see later","Like","Comment","Share"],a:0},
+{q:"Save is powerful because?",o:["Algorithm push am more","No power","Hide","Delete"],a:0},
+{q:"How to get Saves?",o:["Post tips, Checklist, Valuable content","Hello","Welcome","Nice"],a:0},
+{q:"What is Share?",o:["Person send your post to others","Like","Save","Comment"],a:0},
+{q:"Share helps?",o:["Reach new people free","No help","Hide","Delete"],a:0},
+{q:"What is Comment?",o:["Person talk under post","Like","Save","Share"],a:0},
+{q:"How to get comments?",o:["Ask question, Poll, Opinion","Hello","Welcome","Nice"],a:0},
+{q:"What is Follower?",o:["Person wey follow you","Client","Friend","Enemy"],a:0},
+{q:"Follower is NOT?",o:["Client - Follower fit no buy","Client","Buyer","Customer"],a:0},
+{q:"What is a Lead?",o:["Person wey fit buy - DM, Comment, Ask price","Follower only","Like only","View only"],a:0},
+{q:"How to turn follower to client?",o:["DM, Offer, Portfolio, CTA","Spam","Beg","Ignore"],a:0},
+{q:"What is CTA in social media?",o:["Tell them - DM, Follow, Save, Comment","Colour","Font","Picture"],a:0},
+{q:"Good CTA for post?",o:["DM DESIGN to order","Hello","Welcome","Nice"],a:0},
+{q:"What is a Hook?",o:["First line wey stop scroll","Last line","Colour","Font"],a:0},
+{q:"Hook must be?",o:["Bold, Clear, Curious","Long","Vague","Hidden"],a:0},
+{q:"What is Scroll Stopper?",o:["Design wey make person stop","Boring design","Small","Hidden"],a:0},
+{q:"What is Content Pillar?",o:["3-4 topics you always post","Random","One topic","No topic"],a:0},
+{q:"Content Pillar example?",o:["Tips, Work, Behind scene, Offer","Random","Hello","Welcome"],a:0},
+{q:"What is Content Calendar?",o:["Plan - What to post, When","Random","No plan","Post anyhow"],a:0},
+{q:"Content Calendar helps?",o:["No stress, Consistent","Confuse","Hide","Delete"],a:0},
+{q:"What is Batching?",o:["Design many posts in one day","Design one by one","No design","Copy"],a:0},
+{q:"Batching helps?",o:["Save time, Consistent","Waste time","Confuse","Hide"],a:0},
+{q:"What is a Niche on Instagram?",o:["One area - Church flyers","Do everything","Do nothing","Copy"],a:0},
+{q:"Niche on Instagram helps?",o:["Right people find you fast","Confuse","Slow","No clients"],a:0},
+{q:"What is a Target Audience on Instagram?",o:["People who need your design","Everybody","Nobody","Friends only"],a:0},
+{q:"What is a Competitor?",o:["Other designer - Learn from, No copy","Enemy","Friend","Client"],a:0},
+{q:"Competitor analysis is?",o:["See wetin dem do well, Do yours better","Copy as-is","Hate","Ignore"],a:0},
+{q:"What is a Trend?",o:["Style many people dey use now","Old style","No style","Random"],a:0},
+{q:"Trend must be?",o:["Use with your style, No copy blindly","Copy as-is","Ignore all","Hide"],a:0},
+{q:"What is a Viral Post?",o:["Post many people share","Normal post","Hidden","Deleted"],a:0},
+{q:"Viral is NOT?",o:["Guaranteed - Focus on value, Consistency","Guaranteed","Easy","Everyday"],a:0},
+{q:"What is a Giveaway?",o:["Free design to grow followers","Paid","No give","Hide"],a:0},
+{q:"Giveaway must be?",o:["Small, With rule - Follow, Tag, Share","Big, No rule","Free always","No rule"],a:0},
+{q:"What is Collaboration?",o:["Work with another person to grow","Work alone","Hide","Delete"],a:0},
+{q:"Collab example?",o:["Designer + Photographer - Joint post","Alone","Hide","No collab"],a:0},
+{q:"What is Influencer?",o:["Person with followers wey fit promote you","Client","Enemy","Friend"],a:0},
+{q:"What is UGC?",o:["User Generated Content - Client post your work","Design","Flyer","Bio"],a:0},
+{q:"What is Social Proof?",o:["Testimonial, Review, Work - Proof you sabi","Claim only","No proof","Hide"],a:0},
+{q:"Social Proof helps?",o:["New clients trust you","No help","Hide","Delete"],a:0},
+{q:"What is a Before and After on social?",o:["Show old vs new - Get attention","Only new","Only old","No show"],a:0},
+{q:"Before and After post must have?",o:["Story - Problem, Fix, Result","Logo only","Colour only","Font only"],a:0},
+{q:"What is a Tutorial Post?",o:["Teach small thing - How to pick colour","Show only","Hide","Delete"],a:0},
+{q:"Tutorial helps?",o:["Show you sabi, Get saves and followers","No help","Hide","Delete"],a:0},
+{q:"What is Behind The Scene?",o:["Show how you design","Show only final","Hide","Delete"],a:0},
+{q:"Behind Scene helps?",o:["People connect with you","No help","Hide","Delete"],a:0},
+{q:"What is a Live?",o:["Video live - Teach, Answer, Design","Recorded","Photo","Bio"],a:0},
+{q:"Live helps?",o:["Trust, Engage, Show skill","No help","Hide","Delete"],a:0},
+{q:"What is a Poll?",o:["Ask audience - This or That","Design","Flyer","Bio"],a:0},
+{q:"Poll helps?",o:["Engagement, Know wetin dem want","No help","Hide","Delete"],a:0},
+{q:"What is a Q and A?",o:["Answer audience questions","Design","Flyer","Bio"],a:0},
+{q:"What is a Testimonial Post?",o:["Client review screenshot","Complaint","Price","Colour"],a:0},
+{q:"Testimonial Post must have?",o:["Screenshot + Work + CTA","Logo only","Colour only","Font only"],a:0},
+{q:"What is an Offer Post?",o:["Post to sell - Price, Bonus, Deadline","Hello","Welcome","Nice"],a:0},
+{q:"Offer Post must have?",o:["What, Price, Bonus, Deadline, CTA","Hello","Welcome","Nice"],a:0},
+{q:"What is a Price Post?",o:["Show price - No hide","Hide price","Vague","No price"],a:0},
+{q:"Price Post helps?",o:["Save time, Only serious people DM","Confuse","Hide","Delete"],a:0},
+{q:"What is a Portfolio Post?",o:["Show best work","Bad work","Random","Hide"],a:0},
+{q:"Portfolio Post must be?",o:["Best work only, Clean","All work","Bad work","Random"],a:0},
+{q:"What is a Pin Post?",o:["Pin best post on top","Delete","Hide","Bio"],a:0},
+{q:"Pin Post must be?",o:["Best work, Offer, About","Random","Old","Bad"],a:0},
+{q:"How many pin posts?",o:["3","10","0","100"],a:0},
+{q:"What is a Link in Bio?",o:["Link to WhatsApp, Portfolio, Price","Bio","Hashtag","Comment"],a:0},
+{q:"Link in Bio helps?",o:["Client fit reach you in 1 click","Hide","Delete","Confuse"],a:0},
+{q:"What is WhatsApp Business?",o:["App for business - Catalogue, Auto reply","Chat only","Music","Game"],a:0},
+{q:"WhatsApp Catalogue is?",o:["Show your designs + prices","Chat","Call","Music"],a:0},
+{q:"WhatsApp Auto Reply is?",o:["Auto message when you busy","No reply","Spam","Ignore"],a:0},
+{q:"What is Facebook for designer?",o:["Groups, Page, Marketplace - Clients","Chat only","Music","Game"],a:0},
+{q:"Facebook Group helps?",o:["Find clients - Church, Business groups","Hide","Delete","No help"],a:0},
+{q:"What is TikTok Hook?",o:["First 2 secs - Bold statement","Last secs","Middle","End"],a:0},
+{q:"TikTok for designer must show?",o:["Process, Before and After, Tips","Dance only","Music only","Game"],a:0},
+{q:"What is YouTube for designer?",o:["Long tutorial, Portfolio","Short only","Music only","Game"],a:0},
+{q:"What is Pinterest for designer?",o:["Inspiration + Portfolio - People search","Chat","Music","Game"],a:0},
+{q:"What is Behance for designer?",o:["Show portfolio to world","Chat","Music","Game"],a:0},
+{q:"What is LinkedIn for designer?",o:["Professional clients - Companies","Chat","Music","Game"],a:0},
+{q:"What is a Brand Voice?",o:["How you talk - Friendly, Clear, Professional","Random","Rude","Silent"],a:0},
+{q:"Brand Voice must be?",o:["Same everywhere","Different everywhere","Random","Rude"],a:0},
+{q:"What is a Brand Colour on social?",o:["Same colours for all posts","Random","Rainbow","Neon"],a:0},
+{q:"Brand Colour helps?",o:["People recognise you fast","Confuse","Hide","Delete"],a:0},
+{q:"What is a Brand Font on social?",o:["Same 2 fonts for all posts","Random","5 fonts","Neon"],a:0},
+{q:"What is a Watermark on social?",o:["Small logo on work - Protect","Final file","Logo only","Colour"],a:0},
+{q:"Watermark on social must be?",o:["Small, Corner - No spoil design","Big, Centre","Hidden","No watermark"],a:0},
+{q:"What is a Call To Action in Bio?",o:["DM DESIGN to order","Hello","Welcome","Nice"],a:0},
+{q:"What is a Landing Page?",o:["One page - Offer + CTA","Many pages","No page","Hide"],a:0},
+{q:"What is a Funnel?",o:["Post - Follow - DM - Pay","Random","Hide","Delete"],a:0},
+{q:"Funnel first step is?",o:["See post","Pay","DM","Follow"],a:0},
+{q:"Funnel last step is?",o:["Pay","See post","Follow","DM"],a:0},
+{q:"What is Marketing?",o:["Show people you exist and can help","Beg","Spam","Hide"],a:0},
+{q:"Marketing is NOT?",o:["Spam, Beg, Force","Show work","Help","Teach"],a:0},
+{q:"What is Sales on social?",o:["Help client solve problem","Beg","Force","Lie"],a:0},
+{q:"What is a Good DM Script?",o:["Hi, I love your page, I design flyers for salons, Can I show you 1 sample?","Spam, Beg, Long","Insult","Hello"],a:0},
+{q:"DM Script must be?",o:["Short, Personal, Helpful","Long, Spam","Beg","Rude"],a:0},
+{q:"How many DMs per day?",o:["5-10 quality DMs","100 spam","0","1000"],a:0},
+{q:"What is Spam?",o:["Send same message to many, No permission","Personal","Helpful","Short"],a:0},
+{q:"Spam is bad because?",o:["Block, Report, No trust","Good","Help","Grow"],a:0},
+{q:"What is a Cold DM?",o:["DM person wey never talk to you","DM friend","DM client","DM family"],a:0},
+{q:"Cold DM must be?",o:["Personal, Value first","Spam","Beg","Long"],a:0},
+{q:"What is a Warm DM?",o:["DM person wey don engage your post","DM stranger","DM enemy","DM spam"],a:0},
+{q:"Warm DM is easier because?",o:["Dem don see you before","No see","Hide","Delete"],a:0},
+{q:"What is a Follow Up DM?",o:["Remind client after 2-3 days","Forget","Spam","Insult"],a:0},
+{q:"What is Insights?",o:["Numbers - Reach, Likes, Saves, Follows","Colour","Font","Template"],a:0},
+{q:"Insights helps?",o:["Know wetin work, Do more of am","Confuse","Hide","Delete"],a:0},
+{q:"What is Reach?",o:["How many people see post","Likes","Comments","Saves"],a:0},
+{q:"What is Impression?",o:["How many times post show","Likes","Comments","Saves"],a:0},
+{q:"What is a KPI?",o:["Number to track - DMs, Sales, Follows","Colour","Font","Template"],a:0},
+{q:"KPI for designer is?",o:["DMs, Orders, Sales - No be likes only","Likes only","Followers only","Views only"],a:0},
+{q:"What is a Content Idea?",o:["Topic to post","Random","Hello","Welcome"],a:0},
+{q:"Content Ideas for designer?",o:["Tips, Before and After, Tutorial, Offer, Testimonial","Hello","Welcome","Nice"],a:0},
+{q:"What is a Hook for caption?",o:["First line - Stop doing this","Last line","Colour","Font"],a:0},
+{q:"What is a Storytelling Post?",o:["Tell story - Problem to Result","Hello","Welcome","Nice"],a:0},
+{q:"Storytelling helps?",o:["Connect, Trust, Sales","No help","Hide","Delete"],a:0},
+{q:"What is Module 5 about?",o:["Social Media & Marketing","Canva","Colour","Money"],a:0},
+{q:"After Module 5, you go fit?",o:["Grow Instagram, Get clients from social","Design nothing","Earn nothing","No learn"],a:0},
+{q:"VERTEXA promise?",o:["Design. Earn. Grow.","Hello","Welcome","We design"],a:0}
+];
+var current=[], idx=0, score=0;
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function startQuiz(){ current=shuffle(BANK.slice()).slice(0,30); idx=0; score=0; document.getElementById("home").style.display="none"; document.getElementById("quiz").style.display="block"; showQ(); }
+function showQ(){ if(idx>=current.length){ document.getElementById("qtext").innerHTML="FINISHED! Score: "+score+" / "+current.length+"<br>Click Back Home to try again - New 30 go come!"; document.getElementById("opts").innerHTML=""; document.getElementById("qtitle").innerText="Module 5 - Done"; document.getElementById("progress").innerText=""; return; } var q=current[idx]; document.getElementById("qtitle").innerText="Module 5 - Q "+(idx+1)+" / "+current.length; document.getElementById("qtext").innerText=q.q; var h=""; for(var i=0;i<q.o.length;i++){ h+='<div class="opt" onclick="answer('+i+')">'+q.o[i]+'</div>'; } document.getElementById("opts").innerHTML=h; document.getElementById("progress").innerText="Score: "+score; }
+function answer(i){ if(i===current[idx].a){ score++; alert("Correct!"); } else { alert("Wrong. Correct: "+current[idx].o[current[idx].a]); } idx++; showQ(); }
+function goHome(){ document.getElementById("quiz").style.display="none"; document.getElementById("home").style.display="block"; }
+</script>
+</body>
+</html>

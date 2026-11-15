@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERTEXA Module 8</title>
+<style>
+body{font-family:Arial,sans-serif;background:#0f0f1a;color:#fff;margin:0;padding:16px}
+h1{color:#FFC107;text-align:center}
+button{background:#7B3DFF;color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;width:100%;margin:8px 0}
+.opt{background:#2a2a4a;padding:12px;border-radius:10px;margin:8px 0}
+.card{background:#1e1e35;padding:16px;border-radius:12px;margin:12px 0}
+.small{color:#ccc;text-align:center}
+</style>
+</head>
+<body>
+<div id="home">
+<h1>VERTEXA - MODULE 8</h1>
+<p class="small">Money, Business & Final Project | 150 Questions | Quiz go bring 30 Random</p>
+<div class="card"><b>Module 8</b> - 150 Questions<br><button onclick="startQuiz()">START MODULE 8 - 30 QUESTIONS</button></div>
+</div>
+<div id="quiz" style="display:none">
+<h2 id="qtitle"></h2>
+<p id="qtext"></p>
+<div id="opts"></div>
+<p id="progress"></p>
+<button onclick="goHome()">Back Home</button>
+</div>
+<script>
+var BANK=[
+{q:"What is VERTEXA?",o:["Design. Earn. Grow.","Hello","Welcome","We design"],a:0},
+{q:"What is the goal of VERTEXA?",o:["Learn design, Earn money, Grow business","Learn only","Earn only","Hide"],a:0},
+{q:"What is a Business?",o:["Solve problem, Get paid","Copy","Hide","Beg"],a:0},
+{q:"Designer business solves?",o:["Client need flyer, logo, post to sell","No problem","Hide","Copy"],a:0},
+{q:"What is Income?",o:["Money you earn","Money you spend","Money you borrow","Money you hide"],a:0},
+{q:"What is Expense?",o:["Money you spend - Data, Subscription","Money you earn","Money you save","Money you hide"],a:0},
+{q:"What is Profit?",o:["Income minus Expense","Income plus Expense","Income only","Expense only"],a:0},
+{q:"Profit example - Earn 50k, Spend 10k?",o:["Profit 40k","Profit 50k","Profit 10k","Profit 0"],a:0},
+{q:"What is Saving?",o:["Keep part of money for future","Spend all","Borrow","Hide"],a:0},
+{q:"How much to save from each job?",o:["Save at least 20 percent","Spend all","Save 0","Borrow"],a:0},
+{q:"What is Reinvestment?",o:["Use profit to grow - Buy course, Tool","Spend all","Hide","Borrow"],a:0},
+{q:"Reinvestment example?",o:["Buy Canva Pro, Buy data, Learn","Spend on party","Hide","Borrow"],a:0},
+{q:"What is a Price List?",o:["List of your prices","Hidden","Vague","No list"],a:0},
+{q:"Price List must have?",o:["Flyer, Logo, Card, Post - Prices","Colour only","Font only","Template"],a:0},
+{q:"What is a Package?",o:["Bundle - Flyer + Card + Post for one price","One flyer","Free","No price"],a:0},
+{q:"Package helps?",o:["Client buy more, You earn more","Confuse","Hide","Delete"],a:0},
+{q:"What is a Retainer?",o:["Monthly pay from client","One time","Free","No pay"],a:0},
+{q:"Retainer example?",o:["Shop pay 30k monthly for 8 posts","One flyer","Free","No pay"],a:0},
+{q:"Retainer is good because?",o:["Steady money monthly","One time","Free","No money"],a:0},
+{q:"How to get retainer?",o:["Do good work, Offer monthly plan","Beg","Spam","Hide"],a:0},
+{q:"What is a Deposit?",o:["Part payment before work - 50 percent","Full after","Free","No payment"],a:0},
+{q:"Why deposit?",o:["Avoid wahala, Show seriousness","Cheat","Delay","Hide"],a:0},
+{q:"What is Balance Payment?",o:["Remaining money after work","Deposit","Free","No pay"],a:0},
+{q:"When to collect balance?",o:["Before send final file","After send final","Never","Free"],a:0},
+{q:"What is an Invoice?",o:["Paper to ask payment","Design","Flyer","Bio"],a:0},
+{q:"Invoice must have?",o:["Name, Work, Price, Date, Payment","Colour only","Font only","Template"],a:0},
+{q:"What is a Receipt?",o:["Proof of payment","Design","Flyer","Bio"],a:0},
+{q:"What is a Quotation?",o:["Price you tell client before work","Design","Flyer","Bio"],a:0},
+{q:"What is a Contract?",o:["Agreement - Price, Time, Revisions","Chat","Call","Bio"],a:0},
+{q:"Contract protects?",o:["You and Client","Only you","Only client","Nobody"],a:0},
+{q:"What is a Revision?",o:["Small change","New design","Delete","Copy"],a:0},
+{q:"How many free revisions?",o:["2","10","Unlimited","0"],a:0},
+{q:"What is a Business Account?",o:["Separate money for business","Mix with personal","Hide","Borrow"],a:0},
+{q:"Why separate business money?",o:["Know profit, No confuse","Confuse","Hide","Delete"],a:0},
+{q:"What is a Business Name?",o:["Name people call your business","Logo","Colour","Font"],a:0},
+{q:"Business Name must be?",o:["Short, Easy, Memorable","Long, Hard","Vague","Hidden"],a:0},
+{q:"What is CAC Registration?",o:["Register business in Nigeria","Logo","Colour","Font"],a:0},
+{q:"CAC helps?",o:["Trust, Bank account, Big clients","Hide","Delete","Confuse"],a:0},
+{q:"Do you need CAC to start?",o:["No - Start first, Register when you grow","Yes must","No business","Hide"],a:0},
+{q:"What is a Bank Account for Business?",o:["Account for business money","Personal account","Hide","Borrow"],a:0},
+{q:"What is Opay / Moniepoint for Business?",o:["Receive payment fast","Chat","Music","Game"],a:0},
+{q:"What is a Payment Link?",o:["Link client click to pay","Design","Flyer","Bio"],a:0},
+{q:"What is a Scam?",o:["Fake payment, Fake client","Real client","Pays deposit","Clear"],a:0},
+{q:"Fake receipt sign?",o:["Pressure, No deposit, Too good, Urgent","Deposit","Clear","Calm"],a:0},
+{q:"How to avoid scam?",o:["Deposit first, Confirm payment, No final before pay","Send final first","No deposit","Trust all"],a:0},
+{q:"What is a Client?",o:["Person who pays you","Friend","Enemy","Teacher"],a:0},
+{q:"What is a Good Client?",o:["Clear, Pays deposit, Respects time","Rude, No pay, Vague","Late, Rude","No pay"],a:0},
+{q:"What is a Bad Client?",o:["No deposit, Unlimited changes, Rude","Pays, Clear","Respectful","On time"],a:0},
+{q:"How to handle bad client?",o:["Contract, Deposit, Limit, Walk away","Beg","Free work","Fight"],a:0},
+{q:"What is a Referral?",o:["Client bring new client","Complaint","Price","Colour"],a:0},
+{q:"How to get referral?",o:["Good work + Ask","Bad work","No ask","Rude"],a:0},
+{q:"What is a Testimonial?",o:["Client happy review","Complaint","Price","Colour"],a:0},
+{q:"Testimonial helps?",o:["New clients trust you","No help","Hide","Delete"],a:0},
+{q:"What is a Portfolio?",o:["Collection of best works","All works","Bad works","No works"],a:0},
+{q:"Portfolio must have?",o:["10-15 best","100","1","0"],a:0},
+{q:"What is a Final Project?",o:["Show everything you learn - Full brand","One flyer","No project","Hide"],a:0},
+{q:"Final Project must include?",o:["Logo, Flyer, Card, Post, Brand Kit","Logo only","Flyer only","Colour only"],a:0},
+{q:"Final Project is for?",o:["Portfolio, Get clients, Certificate","Hide","Delete","No use"],a:0},
+{q:"What is a Case Study?",o:["Problem, Solution, Result story","Logo only","Colour only","Font only"],a:0},
+{q:"Case Study must have?",o:["Before, After, Why, Result","Logo only","Colour only","Font only"],a:0},
+{q:"What is a Presentation for Final Project?",o:["Tell story of your brand","Show only","Hide","Delete"],a:0},
+{q:"Presentation must have?",o:["Story, Colours, Fonts, Mockups","Logo only","Colour only","Font only"],a:0},
+{q:"What is a Mockup for Final Project?",o:["Show design on real object","Real photo","Template","Font"],a:0},
+{q:"What is a Brand Kit for Final Project?",o:["Logo, Colours, Fonts, Rules","Logo only","Colour only","Font only"],a:0},
+{q:"What is a Certificate?",o:["Proof you finish VERTEXA","Logo","Colour","Font"],a:0},
+{q:"Certificate is useful when?",o:["Show clients you learn, You sabi","Hide","Delete","No use"],a:0},
+{q:"What is Discipline?",o:["Do am even when you no feel like","Do only when happy","Wait","Hide"],a:0},
+{q:"Discipline example?",o:["Design 1 flyer everyday","Design once","No design","Copy"],a:0},
+{q:"What is Consistency?",o:["Show up everyday","Show up once","Hide","Quit"],a:0},
+{q:"Consistency brings?",o:["Skill, Clients, Money","No skill","No clients","No money"],a:0},
+{q:"What is a Habit?",o:["Thing you do everyday","Once","Never","Random"],a:0},
+{q:"Good habit for designer?",o:["Design daily, Post daily, Learn daily","No design","No post","No learn"],a:0},
+{q:"What is Time Management?",o:["Plan time - Design, Post, Client, Learn","Random","No plan","Waste"],a:0},
+{q:"Time Management helps?",o:["Finish work on time, No stress","Confuse","Hide","Delete"],a:0},
+{q:"What is Procrastination?",o:["Delay work - I go do am later","Do now","Finish","Start"],a:0},
+{q:"Procrastination kills?",o:["Skill, Clients, Money","Skill","Clients","Money"],a:0},
+{q:"How to beat procrastination?",o:["Start small - 15 mins, Then continue","Wait","Hide","Quit"],a:0},
+{q:"What is a Goal?",o:["Clear target - e.g. Earn 100k in 3 months","Vague","Hide","No goal"],a:0},
+{q:"Goal must be?",o:["Clear, With date","Vague","No date","Hidden"],a:0},
+{q:"What is a Plan?",o:["Steps to reach goal","Random","No steps","Hide"],a:0},
+{q:"Plan for designer?",o:["Learn, Practice, Post, DM, Sell","Random","Hide","Quit"],a:0},
+{q:"What is a Daily Plan?",o:["1 design, 1 post, 5 DMs, Learn 30 mins","Random","Hide","Quit"],a:0},
+{q:"What is a Weekly Plan?",o:["7 designs, 7 posts, 20 DMs, Review","Random","Hide","Quit"],a:0},
+{q:"What is a Monthly Plan?",o:["30 designs, Review, Set new goal","Random","Hide","Quit"],a:0},
+{q:"What is Review?",o:["Check wetin work, Wetin no work","No check","Hide","Delete"],a:0},
+{q:"Review helps?",o:["Improve, Grow","Confuse","Hide","Delete"],a:0},
+{q:"What is Growth?",o:["Better skill, More clients, More money","No skill","No clients","No money"],a:0},
+{q:"Growth comes from?",o:["Practice + Consistency + Feedback","Copy","Wait","Hide"],a:0},
+{q:"What is Feedback?",o:["Tell wetin to improve","Insult","Praise only","Hate"],a:0},
+{q:"How to take feedback?",o:["Listen, Ask clear, Fix, Thank","Vex","Fight","Ignore"],a:0},
+{q:"What is a Mentor?",o:["Person wey don pass road, Teach you","Enemy","Friend","Client"],a:0},
+{q:"Mentor helps?",o:["Avoid mistake, Grow fast","Confuse","Hide","Delete"],a:0},
+{q:"What is a Community?",o:["Group of designers - Learn together","Alone","Hide","Delete"],a:0},
+{q:"Community helps?",o:["Support, Feedback, Clients","Confuse","Hide","Delete"],a:0},
+{q:"What is Collaboration?",o:["Work with others to grow","Work alone","Hide","Delete"],a:0},
+{q:"What is Networking?",o:["Meet people - Clients, Designers","Hide","Delete","Alone"],a:0},
+{q:"Networking helps?",o:["Get clients, Learn, Grow","No help","Hide","Delete"],a:0},
+{q:"What is Personal Brand?",o:["Your name, style, voice","No brand","Hide","Random"],a:0},
+{q:"Personal Brand helps?",o:["People remember you, Trust you","Hide","No help","Confuse"],a:0},
+{q:"What is a Niche?",o:["One area you focus - Church flyers","Do everything","Do nothing","Copy"],a:0},
+{q:"Niche helps?",o:["Become known fast, Charge more","Confuse","Slow","No clients"],a:0},
+{q:"What is a Target Customer?",o:["People who need your design","Everybody","Nobody","Friends only"],a:0},
+{q:"Best customers for beginner?",o:["Churches, Salons, Shops, Schools","Banks only","Government only","Nobody"],a:0},
+{q:"What is Marketing?",o:["Show people you exist and can help","Beg","Spam","Hide"],a:0},
+{q:"Marketing for designer is?",o:["Post work, Teach, DM, Offer","Spam","Beg","Hide"],a:0},
+{q:"What is Sales?",o:["Help client solve problem","Beg","Force","Lie"],a:0},
+{q:"Sales is NOT?",o:["Beg, Force, Lie","Help","Solve","Listen"],a:0},
+{q:"What is a Good DM Script?",o:["Hi, I love your page, I design flyers for salons, Can I show you 1 sample?","Spam","Beg","Long"],a:0},
+{q:"What is Follow Up?",o:["Message again after 2-3 days","Forget","Spam","Insult"],a:0},
+{q:"What is a Upsell?",o:["Offer more - Flyer + Card + Post","Force","Beg","Lie"],a:0},
+{q:"What is a Downsell?",o:["Offer smaller cheaper package","Force","Beg","Lie"],a:0},
+{q:"What is a Discount?",o:["Reduce price small - For package","Free","Always","No discount"],a:0},
+{q:"Discount must be?",o:["Small, With reason, Not always","Big, Always","Free","No reason"],a:0},
+{q:"What is Free Work?",o:["Work without pay - Only for portfolio, Limit am","Always","Good","Must"],a:0},
+{q:"Free Work is bad when?",o:["Always free, No portfolio, No respect","Once for portfolio","For church","For friend"],a:0},
+{q:"What is Exposure?",o:["I go post you - No be payment","Payment","Money","Price"],a:0},
+{q:"What is a Side Hustle?",o:["Extra work beside main work","Main work","No work","Hide"],a:0},
+{q:"Design fit be side hustle?",o:["Yes - Start small, Grow","No","Hide","Quit"],a:0},
+{q:"What is a Full Time Designer?",o:["Design as main work","Side hustle","No work","Hide"],a:0},
+{q:"When to go full time?",o:["When design money cover bills steady","When you start","When you tired","When you broke"],a:0},
+{q:"What is a Freelancer?",o:["Work for yourself, Many clients","Work for company","No work","Hide"],a:0},
+{q:"Freelancer must be?",o:["Discipline, Good talk, On time","Late","Rude","Hide"],a:0},
+{q:"What is an Agency?",o:["Team of designers - Big jobs","One person","No team","Hide"],a:0},
+{q:"Agency starts when?",o:["You get too many jobs, Hire help","Alone","No jobs","Hide"],a:0},
+{q:"What is a Studio?",o:["Your design office - Online or Physical","No office","Hide","Delete"],a:0},
+{q:"What is a Team?",o:["People wey work together","Alone","Hide","Delete"],a:0},
+{q:"What is Delegation?",o:["Give work to others","Do all alone","Hide","Delete"],a:0},
+{q:"What is a Tool?",o:["Canva, Photoshop, Figma","Colour","Font","Template"],a:0},
+{q:"What is Canva?",o:["Free design app","Video app","Music app","Bank app"],a:0},
+{q:"What is Photoshop?",o:["Pro design app - Edit photo","Video app","Music app","Bank app"],a:0},
+{q:"What is Illustrator?",o:["Pro design app - Logo, Vector","Video app","Music app","Bank app"],a:0},
+{q:"What is Figma?",o:["Design app - Website, App","Video app","Music app","Bank app"],a:0},
+{q:"Do you need all tools to start?",o:["No - Canva fit start","Yes all","Must","No design"],a:0},
+{q:"What is AI in Design?",o:["Help you faster - No replace you","Replace you","No help","Delete"],a:0},
+{q:"AI must be used for?",o:["Ideas, Text, Speed - Then edit","Copy as-is","Hide","Delete"],a:0},
+{q:"What is the Future of Design?",o:["More video, More AI, More personal","No future","Hide","Delete"],a:0},
+{q:"Designer must keep?",o:["Learning everyday","Stop learning","Hide","Quit"],a:0},
+{q:"What is a 30-Day Challenge?",o:["Design 1 flyer everyday for 30 days","Design once","No design","Copy"],a:0},
+{q:"30-Day Challenge helps?",o:["Skill, Portfolio, Confidence","No help","Waste","Confuse"],a:0},
+{q:"What is a 90-Day Goal?",o:["3 months - Learn, Practice, Earn","1 day","No goal","Hide"],a:0},
+{q:"After VERTEXA, wetin next?",o:["Practice, Post, DM, Sell, Grow","Stop","Hide","Quit"],a:0},
+{q:"What is the VERTEXA Promise?",o:["If you practice, You go design, earn, grow","No practice, No grow","Hide","Quit"],a:0},
+{q:"What is Success?",o:["Small wins everyday - Not overnight","Overnight","Luck only","Hide"],a:0},
+{q:"What is Failure?",o:["Lesson - Try again better","End","Quit","Hide"],a:0},
+{q:"What is the Final Advice?",o:["Start now, Design daily, Post daily, Never give up","Wait","Hide","Quit"],a:0},
+{q:"What is Module 8 about?",o:["Money, Business & Final Project","Canva","Colour","Clients"],a:0},
+{q:"After Module 8, you go fit?",o:["Run design business, Earn, Grow","Design nothing","Earn nothing","No learn"],a:0},
+{q:"VERTEXA - Last word?",o:["Design. Earn. Grow.","Hello","Welcome","We design"],a:0}
+];
+var current=[], idx=0, score=0;
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function startQuiz(){ current=shuffle(BANK.slice()).slice(0,30); idx=0; score=0; document.getElementById("home").style.display="none"; document.getElementById("quiz").style.display="block"; showQ(); }
+function showQ(){ if(idx>=current.length){ document.getElementById("qtext").innerHTML="FINISHED! Score: "+score+" / "+current.length+"<br>Click Back Home to try again - New 30 go come!"; document.getElementById("opts").innerHTML=""; document.getElementById("qtitle").innerText="Module 8 - Done"; document.getElementById("progress").innerText=""; return; } var q=current[idx]; document.getElementById("qtitle").innerText="Module 8 - Q "+(idx+1)+" / "+current.length; document.getElementById("qtext").innerText=q.q; var h=""; for(var i=0;i<q.o.length;i++){ h+='<div class="opt" onclick="answer('+i+')">'+q.o[i]+'</div>'; } document.getElementById("opts").innerHTML=h; document.getElementById("progress").innerText="Score: "+score; }
+function answer(i){ if(i===current[idx].a){ score++; alert("Correct!"); } else { alert("Wrong. Correct: "+current[idx].o[current[idx].a]); } idx++; showQ(); }
+function goHome(){ document.getElementById("quiz").style.display="none"; document.getElementById("home").style.display="block"; }
+</script>
+</body>
+</html>

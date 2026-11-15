@@ -1,0 +1,9 @@
+{
+  "name": "VERTEXA - Graphic Design Academy",
+  "short_name": "VERTEXA",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f0030",
+  "theme_color": "#6a00ff",
+  "icons": [{ "src": "logo.png", "sizes": "512x512", "type": "image/png" }]
+}

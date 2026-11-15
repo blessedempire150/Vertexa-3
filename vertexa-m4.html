@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERTEXA Module 4</title>
+<style>
+body{font-family:Arial,sans-serif;background:#0f0f1a;color:#fff;margin:0;padding:16px}
+h1{color:#FFC107;text-align:center}
+button{background:#7B3DFF;color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;width:100%;margin:8px 0}
+.opt{background:#2a2a4a;padding:12px;border-radius:10px;margin:8px 0}
+.card{background:#1e1e35;padding:16px;border-radius:12px;margin:12px 0}
+.small{color:#ccc;text-align:center}
+</style>
+</head>
+<body>
+<div id="home">
+<h1>VERTEXA - MODULE 4</h1>
+<p class="small">Clients, Pricing & Portfolio | 150 Questions | Quiz go bring 30 Random</p>
+<div class="card"><b>Module 4</b> - 150 Questions<br><button onclick="startQuiz()">START MODULE 4 - 30 QUESTIONS</button></div>
+</div>
+<div id="quiz" style="display:none">
+<h2 id="qtitle"></h2>
+<p id="qtext"></p>
+<div id="opts"></div>
+<p id="progress"></p>
+<button onclick="goHome()">Back Home</button>
+</div>
+<script>
+var BANK=[
+{q:"What is a Client?",o:["Person who pays you for design","Friend","Enemy","Teacher"],a:0},
+{q:"First question to client?",o:["What is your business and who is customer?","How much?","When?","Why?"],a:0},
+{q:"What is a Brief?",o:["Client request written down","Template","Colour","Font"],a:0},
+{q:"Brief must contain?",o:["Business, Audience, Text, Colours, Price, Date","Colour only","Font only","Template"],a:0},
+{q:"Before design, collect?",o:["Logo, Text, Pictures, Colours, Price","Money only","Template","Font"],a:0},
+{q:"What is Deposit?",o:["Part payment before work - 50 percent","Full after","Free","No payment"],a:0},
+{q:"Why collect deposit?",o:["To avoid wahala and show seriousness","To cheat","To delay","To hide"],a:0},
+{q:"Deposit for flyer 10k is?",o:["5k","0","10k after","Free"],a:0},
+{q:"When to collect balance?",o:["Before send final high quality file","After send final","Never","Free"],a:0},
+{q:"How to price flyer as beginner?",o:["5k - 15k","100","Free","1M"],a:0},
+{q:"How to price logo as beginner?",o:["10k - 30k","100","Free","1M"],a:0},
+{q:"How to price business card?",o:["5k - 10k","100","Free","1M"],a:0},
+{q:"How to price full brand?",o:["30k - 100k","100","Free","1k"],a:0},
+{q:"What is Revision?",o:["Small change client asks","New design","Delete","Copy"],a:0},
+{q:"How many free revisions?",o:["2","10","Unlimited","0"],a:0},
+{q:"After 2 revisions, wetin happen?",o:["Charge extra","Free still","Delete","Quit"],a:0},
+{q:"Revision is NOT?",o:["New design from scratch","Change colour","Change text","Move small thing"],a:0},
+{q:"If client says Make am pop, wetin e mean?",o:["Make important thing bigger and clearer","Add more colours","Add glitter","Add pictures"],a:0},
+{q:"If client says Make am classy, wetin e mean?",o:["Clean, Simple, Elegant - Less colour","Add glitter","Add many colours","Add pictures"],a:0},
+{q:"If client says Make am bold, wetin e mean?",o:["Big title, Strong colour, Clear","Small","Hidden","Soft"],a:0},
+{q:"If client says I no like am, wetin you do?",o:["Ask wetin exactly, Show 2 options, Fix","Vex","Fight","Ghost"],a:0},
+{q:"How to deliver design?",o:["JPG + PDF + PNG Logo","Screenshot","Word","Voice note"],a:0},
+{q:"What is Watermark?",o:["Your name faint on draft - So dem no steal","Final file","Logo","Colour"],a:0},
+{q:"Watermark is for?",o:["Draft only, No for final","Final","All","No use"],a:0},
+{q:"What is Portfolio?",o:["Collection of your best works","All works","Bad works","No works"],a:0},
+{q:"Portfolio must have how many works?",o:["10-15 best","100","1","0"],a:0},
+{q:"Portfolio must show?",o:["Flyer, Logo, Card, Post - Different types","One type","Bad work","No work"],a:0},
+{q:"Where to post portfolio?",o:["Instagram, WhatsApp Status, TikTok","Only paper","Hide","No post"],a:0},
+{q:"What is Testimonial?",o:["Client happy review","Complaint","Price","Colour"],a:0},
+{q:"Testimonial helps?",o:["New clients trust you","No help","Hide","Delete"],a:0},
+{q:"How to get testimonial?",o:["Ask client after good work - Screenshot","Beg","Force","Lie"],a:0},
+{q:"What is Deadline?",o:["Time to deliver work","No time","Anytime","Next year"],a:0},
+{q:"If you go miss deadline, do?",o:["Tell client early, Give new time","Hide","Lie","Ghost"],a:0},
+{q:"What is Communication?",o:["Reply fast, Be clear, Be polite","Reply late","Ignore","Rude"],a:0},
+{q:"How fast to reply client?",o:["Within 1 hour - Or tell when you go reply","1 week","Never","1 month"],a:0},
+{q:"What is Professional?",o:["On time, Clean work, Good talk","Late","Dirty","Rude"],a:0},
+{q:"What is Upsell?",o:["Offer more - Flyer + Card + Post","Force","Beg","Lie"],a:0},
+{q:"Upsell example?",o:["Client order flyer - Offer card + post","Force","Beg","Lie"],a:0},
+{q:"What is Downsell?",o:["Offer smaller cheaper package","Force","Beg","Lie"],a:0},
+{q:"Downsell when?",o:["Client say too expensive","Client happy","Client rich","Client pay"],a:0},
+{q:"What is Invoice?",o:["Paper to ask payment","Design","Flyer","Bio"],a:0},
+{q:"Invoice must have?",o:["Name, Work, Price, Date, Payment","Colour only","Font only","Template"],a:0},
+{q:"What is Receipt?",o:["Proof of payment","Design","Flyer","Bio"],a:0},
+{q:"What is Contract?",o:["Agreement - Price, Time, Revisions","Chat","Call","Bio"],a:0},
+{q:"Contract protects?",o:["You and Client","Only you","Only client","Nobody"],a:0},
+{q:"Contract must have?",o:["Price, Deposit, Deadline, Revisions, Delivery","Colour only","Font only","Template"],a:0},
+{q:"What is Quotation?",o:["Price you tell client before work","Design","Flyer","Bio"],a:0},
+{q:"Quotation must be?",o:["Clear, Written","Verbal only","Vague","Hidden"],a:0},
+{q:"What is Negotiation?",o:["Talk price till both agree","Force","Beg","Fight"],a:0},
+{q:"If client says Too expensive, wetin you do?",o:["Show value, Show portfolio, Offer smaller package","Reduce to free","Insult","Quit"],a:0},
+{q:"If client says My nephew fit do am free, wetin you do?",o:["Smile, Show difference, Let dem go - No beg","Beg","Insult","Fight"],a:0},
+{q:"What is Value?",o:["Result design go bring - Sales, Trust","Price only","Colour only","Font only"],a:0},
+{q:"Client dey pay for?",o:["Value + Time + Skill","Colour only","Font only","Template"],a:0},
+{q:"What is a Good Client?",o:["Clear, Pays deposit, Respects time","Rude, No pay, Vague","Late, Rude","No pay"],a:0},
+{q:"What is a Bad Client?",o:["No deposit, Unlimited changes, Rude, Ghost","Pays, Clear","Respectful","On time"],a:0},
+{q:"How to handle bad client?",o:["Contract, Deposit, Limit revisions, Walk away if need","Beg","Free work","Fight"],a:0},
+{q:"When to walk away?",o:["Client rude, No pay, No respect","Client pay","Client clear","Client nice"],a:0},
+{q:"What is a Mock Client?",o:["Pretend client - Create brand for fake bakery","Real client","No client","Friend"],a:0},
+{q:"Mock Client helps?",o:["Build portfolio without real client","No help","Waste","Confuse"],a:0},
+{q:"Mock project example?",o:["Bakery logo + flyer + card","No project","Copy","Hide"],a:0},
+{q:"What is a Case Study?",o:["Problem, Solution, Result story","Logo only","Colour only","Font only"],a:0},
+{q:"Case Study must have?",o:["Before, After, Why, Result","Logo only","Colour only","Font only"],a:0},
+{q:"What is Before and After?",o:["Show old vs new design","Only new","Only old","No show"],a:0},
+{q:"Before and After helps?",o:["Show skill, Get clients","No help","Hide","Delete"],a:0},
+{q:"What is Redesign?",o:["Make old bad design better","New design","No design","Delete"],a:0},
+{q:"Redesign shows?",o:["Growth and skill","No growth","No skill","No eye"],a:0},
+{q:"What is Presentation?",o:["Tell story of your design","Show only","Hide","Delete"],a:0},
+{q:"Presentation must include?",o:["Story, Colours, Fonts, Mockups","Logo only","Colour only","Font only"],a:0},
+{q:"What is Moodboard?",o:["Pictures of feeling, colours, style","Template","Font","Colour"],a:0},
+{q:"Moodboard for client helps?",o:["Client approve style before design","No help","Waste","Confuse"],a:0},
+{q:"What is Feedback?",o:["Client tell wetin to change","Insult","Praise only","Hate"],a:0},
+{q:"How to take feedback?",o:["Listen, Ask clear, Fix, Thank","Vex","Fight","Ignore"],a:0},
+{q:"What is Critique?",o:["Check work to improve","Insult","Praise only","Hate"],a:0},
+{q:"What is Self-Critique?",o:["Check your own work - Will client pay?","No check","Post fast","Delete"],a:0},
+{q:"Self-Critique questions?",o:["Clear? Readable? Phone test? Spelling?","Colour only","Font only","Template"],a:0},
+{q:"What is Follow Up?",o:["Message client again after 2-3 days","Forget","Spam","Insult"],a:0},
+{q:"Follow Up message must be?",o:["Polite, Short, Helpful - No spam","Spam","Beg","Rude"],a:0},
+{q:"How many times to follow up?",o:["2-3 times, Then stop","10 times","Every hour","Never"],a:0},
+{q:"What is Referral?",o:["Client bring new client","Complaint","Price","Colour"],a:0},
+{q:"Referral comes when?",o:["You do good work + Ask","Bad work","No ask","Rude"],a:0},
+{q:"How to ask referral?",o:["If you like am, abeg refer me to 1 person","Beg","Force","Lie"],a:0},
+{q:"What is Repeat Client?",o:["Client wey come back again","One time","New","No client"],a:0},
+{q:"Repeat client is gold because?",o:["No need find new, Trust already","New","Stress","No pay"],a:0},
+{q:"What is Retainer?",o:["Monthly pay from client","One time","Free","No pay"],a:0},
+{q:"Retainer example?",o:["Shop pay 30k monthly for 8 posts","One flyer","Free","No pay"],a:0},
+{q:"Retainer is good because?",o:["Steady money monthly","One time","Free","No money"],a:0},
+{q:"What is Package?",o:["Bundle - Flyer + Card + Post for one price","One flyer","Free","No price"],a:0},
+{q:"Package helps?",o:["Client buy more, You earn more","Confuse","Hide","Delete"],a:0},
+{q:"What is Target Customer?",o:["People who need your design","Everybody","Nobody","Friends only"],a:0},
+{q:"Best customers for beginner?",o:["Churches, Salons, Shops, Schools","Banks only","Government only","Nobody"],a:0},
+{q:"Why churches are good clients?",o:["Need flyer every week","Need once","No need","No pay"],a:0},
+{q:"Why salons are good clients?",o:["Need post every week - Price, Promo","Need once","No need","No pay"],a:0},
+{q:"Why shops are good clients?",o:["Need promo flyer to sell","Need once","No need","No pay"],a:0},
+{q:"What is Niche?",o:["One area you focus - e.g. Church flyers","Do everything","Do nothing","Copy"],a:0},
+{q:"Niche helps?",o:["Become known fast, Charge more","Confuse","Slow","No clients"],a:0},
+{q:"What is Personal Brand?",o:["Your name, style, voice","No brand","Hide","Random"],a:0},
+{q:"Personal Brand for designer is?",o:["Show work, Teach, Be consistent","Hide","No show","Random"],a:0},
+{q:"What is Instagram for designer?",o:["Portfolio + Shop","Chat only","Music","Game"],a:0},
+{q:"Bio must say?",o:["What you do, Who you help, CTA","Hello","Welcome","Nice"],a:0},
+{q:"What is a DM?",o:["Direct Message to client","Public post","Comment","Bio"],a:0},
+{q:"How to DM client?",o:["Compliment, Show work, Offer help - No spam","Spam","Beg","Insult"],a:0},
+{q:"What is WhatsApp Status for designer?",o:["Daily show your work","Chat only","Call","Music"],a:0},
+{q:"What is a Proposal?",o:["Document - What you go do + Price + Time","Design","Flyer","Bio"],a:0},
+{q:"Proposal must be?",o:["Clear, Professional, Short","Long","Vague","Hidden"],a:0},
+{q:"What is a Discovery Call?",o:["Call to understand client need","Sell only","Chat","Gist"],a:0},
+{q:"Discovery Call questions?",o:["Business, Audience, Goal, Budget, Deadline","Colour only","Font only","Template"],a:0},
+{q:"What is Budget?",o:["How much client fit pay","Colour","Font","Template"],a:0},
+{q:"If budget too low, do?",o:["Offer smaller package or walk away","Do free","Insult","Fight"],a:0},
+{q:"What is a Timeline?",o:["When each part go ready","No time","Anytime","Next year"],a:0},
+{q:"Timeline helps?",o:["Client know when to expect","Confuse","Hide","Delete"],a:0},
+{q:"What is Delivery?",o:["Send final files + Thank you","Send draft","Hide","Delete"],a:0},
+{q:"Delivery message must have?",o:["Thank you, Files, How to use, Ask referral","Hello only","Price","Colour"],a:0},
+{q:"What is After-Sales?",o:["Check if client happy after delivery","Forget","Ghost","Insult"],a:0},
+{q:"What is Money Management?",o:["Save, Reinvest, Track","Spend all","Hide","Borrow"],a:0},
+{q:"How much to save from each job?",o:["Save at least 20 percent","Spend all","Save 0","Borrow"],a:0},
+{q:"What is a Business Account?",o:["Separate money for business","Mix with personal","Hide","Borrow"],a:0},
+{q:"Why separate business money?",o:["Know profit, No confuse","Confuse","Hide","Delete"],a:0},
+{q:"What is a Price List?",o:["List of your prices - Flyer, Logo, Card","Hidden","Vague","No list"],a:0},
+{q:"Price List helps?",o:["Client know price fast, No waste time","Confuse","Hide","Delete"],a:0},
+{q:"What is a Discount?",o:["Reduce price small - For package or loyal","Free","Always","No discount"],a:0},
+{q:"Discount must be?",o:["Small, With reason, Not always","Big, Always","Free","No reason"],a:0},
+{q:"What is Free Work?",o:["Work without pay - Only for portfolio, Limit am","Always","Good","Must"],a:0},
+{q:"Free work is bad when?",o:["Always free, No portfolio, No respect","Once for portfolio","For church","For friend"],a:0},
+{q:"What is Exposure?",o:["I go post you - No be payment","Payment","Money","Price"],a:0},
+{q:"Exposure is NOT payment because?",o:["Exposure no pay rent, No buy data","Exposure pay","Exposure good","Exposure money"],a:0},
+{q:"What is a Scam Client?",o:["Promise big pay, No deposit, Send fake receipt","Pays deposit","Clear","Respectful"],a:0},
+{q:"Fake receipt sign?",o:["Pressure, No deposit, Too good, Urgent","Deposit","Clear","Calm"],a:0},
+{q:"How to avoid scam?",o:["Deposit first, Confirm payment, No send final before pay","Send final first","No deposit","Trust all"],a:0},
+{q:"What is a Test Job?",o:["Small paid test before big job","Free test","No test","Big job direct"],a:0},
+{q:"Test Job must be?",o:["Paid, Small","Free, Big","No pay","No job"],a:0},
+{q:"What is a Design Brief Template?",o:["Form client fill - Business, Text, Colours","Design","Flyer","Bio"],a:0},
+{q:"Brief Template helps?",o:["Save time, No forget","Waste time","Confuse","Hide"],a:0},
+{q:"What is a Client Onboarding?",o:["Steps - Brief, Deposit, Design, Delivery","Design only","Pay only","Chat only"],a:0},
+{q:"What is a Client Offboarding?",o:["Thank you, Files, Review, Referral","Forget","Ghost","Insult"],a:0},
+{q:"What is a Review?",o:["Client rate your work","Complaint","Price","Colour"],a:0},
+{q:"What is a 5-Star Review?",o:["Best review - Client happy","Bad","Average","No review"],a:0},
+{q:"What is a Portfolio Website?",o:["Online page to show works","Paper","Hide","No page"],a:0},
+{q:"Portfolio Website fit be?",o:["Instagram, Behance, Canva Link","Paper only","Hide","No page"],a:0},
+{q:"What is Behance?",o:["Site to show design portfolio","Chat","Music","Game"],a:0},
+{q:"What is Dribbble?",o:["Site to show design work","Chat","Music","Game"],a:0},
+{q:"What is a Mockup for portfolio?",o:["Show design on real object","Real photo","Template","Font"],a:0},
+{q:"Portfolio Mockup helps?",o:["Work look real and professional","No help","Hide","Delete"],a:0},
+{q:"What is a Design Challenge?",o:["Practice - Design 1 flyer everyday","No practice","Copy","Hide"],a:0},
+{q:"Design Challenge helps?",o:["Build skill + portfolio fast","No help","Waste","Confuse"],a:0},
+{q:"What is Module 4 about?",o:["Clients, Pricing, Portfolio","Canva","Colour","Money"],a:0},
+{q:"After Module 4, you go fit?",o:["Get clients, Price, Deliver, Build portfolio","Design nothing","Earn nothing","No learn"],a:0},
+{q:"VERTEXA promise?",o:["Design. Earn. Grow.","Hello","Welcome","We design"],a:0}
+];
+var current=[], idx=0, score=0;
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function startQuiz(){ current=shuffle(BANK.slice()).slice(0,30); idx=0; score=0; document.getElementById("home").style.display="none"; document.getElementById("quiz").style.display="block"; showQ(); }
+function showQ(){ if(idx>=current.length){ document.getElementById("qtext").innerHTML="FINISHED! Score: "+score+" / "+current.length+"<br>Click Back Home to try again - New 30 go come!"; document.getElementById("opts").innerHTML=""; document.getElementById("qtitle").innerText="Module 4 - Done"; document.getElementById("progress").innerText=""; return; } var q=current[idx]; document.getElementById("qtitle").innerText="Module 4 - Q "+(idx+1)+" / "+current.length; document.getElementById("qtext").innerText=q.q; var h=""; for(var i=0;i<q.o.length;i++){ h+='<div class="opt" onclick="answer('+i+')">'+q.o[i]+'</div>'; } document.getElementById("opts").innerHTML=h; document.getElementById("progress").innerText="Score: "+score; }
+function answer(i){ if(i===current[idx].a){ score++; alert("Correct!"); } else { alert("Wrong. Correct: "+current[idx].o[current[idx].a]); } idx++; showQ(); }
+function goHome(){ document.getElementById("quiz").style.display="none"; document.getElementById("home").style.display="block"; }
+</script>
+</body>
+</html>

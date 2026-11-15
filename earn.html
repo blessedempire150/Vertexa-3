@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>VERTEXA - Daily Task & Earn</title><link rel="stylesheet" href="style.css"><style>
+.taskDone{opacity:0.6}.earnCard{background:linear-gradient(135deg,#6A00FF,#B366FF);color:#fff;border-radius:18px;padding:18px;text-align:center}.earnCard h1{font-size:38px;margin:5px 0;color:#fff}.lockBox{border:2px solid #FF6A00;border-radius:14px;padding:14px;background:#FFF3E6}.payBoxReal{background:#fff;border:2px solid #6A00FF;border-radius:14px;padding:14px;margin:10px 0}.paidBadge{background:green;color:#fff;padding:4px 10px;border-radius:20px;font-size:12px}.freeBadge{background:#FF6A00;color:#fff;padding:4px 10px;border-radius:20px;font-size:12px}
+</style></head>
+<body class="inspo">
+<div class="inspo-top"><div class="inspo-head"><div><p class="hi">Hello,</p><h1>Daily Task & Earn 💰</h1><p class="sub">Daily Task From Admin • Refer ₦100 • Join Fee ₦15,000 • Withdraw ₦5,000 Min</p></div><div class="avatar">V</div></div></div>
+<div class="inspo-body">
+<div class="earnCard"><p>YOUR BALANCE</p><h1 id="balance">₦0</h1><p>Total Earned: <span id="totalEarned">₦0</span> • Withdrawn: <span id="totalWithdrawn">₦0</span></p><p>Account Type: <span id="userType">FREE USER</span></p><p id="earnStatus"></p></div>
+
+<div class="card2"><h2>👤 Your Account Status</h2><p id="accountInfo"></p>
+<div id="payBox" class="lockBox"><h3>🔒 You Be FREE USER</h3><p>Free user fit do Daily Task + Refer, but <b>NO withdraw</b> until you pay.</p><p><b>To Unlock Withdraw:</b><br>1. Pay <b>₦15,000</b> Join Fee (One Time)<br>2. Refer <b>1 Paid User</b><br>3. Finish Module 9 + Certificate Approved by Founder<br>4. Reach <b>₦5,000</b> Balance</p>
+<div class="payBoxReal"><h3 style="margin:0">💳 Pay ₦15,000 To Join VERTEXA</h3><p style="font-size:18px;line-height:1.6"><b>OPay Number:</b> 09159228665<br><b>Account Name:</b> Isaiah OGENERUONA Favour<br><b>Bank:</b> OPay Digital Services</p><p class="muted">After transfer, upload receipt here. Admin go confirm. NO auto-paid.</p>
+<input type="file" id="receiptFile" accept="image/*"><input id="opayName" placeholder="Your OPay Name - as e dey for receipt"><button class="btn-purple" onclick="uploadReceipt()">📤 Upload Receipt - Send to Admin</button><p id="payMsg"></p>
+<p class="muted">Backup: <button class="btn-white" onclick="sendReceipt()">Send Receipt For WhatsApp 📱</button></p></div>
+<button class="btn-purple" onclick="copyOpay()">Copy OPay Number 📋</button></div>
+<div id="paidBox" style="display:none"><h3>✅ You Be PAID USER</h3><p id="paidInfo"></p></div>
+<div id="pendingBox" style="display:none" class="lockBox"><h3>⏳ Payment Pending</h3><p>Your receipt don reach Admin. Wait for Founder / Senior to approve. You never be Paid yet.</p></div></div>
+
+<div class="card2"><h2>📅 Daily Task - From Admin</h2><p class="muted">Task na wetin Admin add today for Admin page. Reward ₦20.</p><p><b>Today:</b> <span id="todayDate"></span></p><div id="taskList"><p>Loading Admin task...</p></div><p id="taskMsg"></p></div>
+
+<div class="card2"><h2>👥 Refer & Earn — REAL LINK • ₦100</h2><p id="referRule">You earn ₦100 per Paid Friend. Refer 1 Paid Friend to unlock Withdraw.</p><div style="background:#F1E9FF;padding:12px;border-radius:12px"><b>Your Real Referral Link:</b><br><span id="refLink">Loading...</span><br><button class="btn-purple" onclick="copyRef()">Copy Link 📋</button> <button class="btn-white" onclick="shareRef()">Share For WhatsApp</button></div><p>Friends Referred: <b id="refCount">0</b> • Paid Friends: <b id="paidRefCount">0</b> • Referral Earnings: <b id="refEarn">₦0</b></p><p class="muted" style="font-size:12px">Your link go track who use am. When dem pay ₦15,000 + Admin approve, you go get ₦100 + Paid Referral +1 automatically. No demo, no fake.</p></div>
+
+<div class="card2"><h2>🏆 Weekly Challenge</h2><p>Post 3 designs + Tag VERTEXA = <b>₦200 Bonus</b></p><button class="btn-purple" onclick="claimWeekly()">Claim Weekly Bonus ₦200</button><p id="weeklyMsg"></p></div>
+
+<div class="card2"><h2>💸 Withdraw - ₦5,000 Minimum • Paid Users Only</h2><div id="withdrawLock" class="lockBox"><p id="withdrawLockText">Locked</p></div><div id="withdrawBox" style="display:none"><p>Balance: <b id="wBalance">₦0</b></p><input id="wAmount" type="number" placeholder="Amount - Minimum 5000"><input id="wBank" placeholder="Bank / OPay Name"><input id="wAcct" placeholder="Account Number"><input id="wName" placeholder="Account Name"><button class="btn-purple" onclick="requestWithdraw()">Request Withdrawal →</button><p id="withdrawMsg"></p></div><h3>Withdrawal History</h3><div id="withdrawList"><p>No withdrawal yet.</p></div></div>
+
+<div class="card2"><h2>📜 Earnings History</h2><div id="earnList"><p>No earnings yet.</p></div><button class="btn-white" onclick="location.href='student.html'">Go To Student / Certificate →</button><p class="muted">Questions? WhatsApp Admin: 09132481467</p></div>
+</div>
+<nav class="bottomNav"><a href="index.html">🏠<span>Featured</span></a><a href="modules.html">📚<span>Modules</span></a><a href="tools.html">🛠️<span>Tools</span></a><a href="chat.html">💬<span>Chat</span></a><a href="student.html">🎓<span>Student</span></a><a href="daily.html" class="active">💰<span>Daily / Earn</span></a><a href="settings.html">⚙️<span>Setting</span></a><a href="admin.html">👑<span>Admin</span></a></nav>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script><script src="firebase.js"></script>
+<script>
+document.getElementById('todayDate').innerText=new Date().toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+var myEmail=(localStorage.getItem('vertexa_email')||'').toLowerCase();
+var myName=localStorage.getItem('vertexa_student_name')||localStorage.getItem('vertexa_name')||myEmail;
+var myUid=localStorage.getItem('vertexa_uid')||myEmail;
+var isPaidState=false, certApproved=false, paidRefs=0, balance=0, totalEarned=0, myRefCode='';
+function todayID(){ return new Date().toISOString().slice(0,10); }
+function copyOpay(){navigator.clipboard.writeText('09159228665').then(function(){alert('Copied! OPay: 09159228665 - Isaiah OGENERUONA Favour');});}
+function sendReceipt(){var t='Hello VERTEXA Admin! I don pay ₦15,000 Join Fee. My name: '+myName+' Email: '+myEmail;window.open('https://wa.me/2349132481467?text='+encodeURIComponent(t));}
+
+// PAYMENT - RECEIPT UPLOAD, PENDING, NO AUTO-PAID
+function uploadReceipt(){
+  var f=document.getElementById('receiptFile').files[0];
+  var opay=document.getElementById('opayName').value.trim();
+  if(!f) return alert('Select receipt photo first');
+  if(!opay) return alert('Type your OPay Name');
+  document.getElementById('payMsg').innerText='Uploading...';
+  var reader=new FileReader();
+  reader.onload=function(){
+    db.collection('payments').add({name:myName,email:myEmail,uid:myUid,amount:15000,type:'join_fee',opayName:opay,receiptUrl:reader.result,receiptName:f.name,status:'pending',createdAt:new Date()}).then(function(){
+      document.getElementById('payMsg').innerText='✅ Receipt sent! Status: PENDING. Wait for Founder / Senior to approve. You never be Paid yet.';
+      checkPaymentStatus();
+    });
+  };
+  reader.readAsDataURL(f);
+}
+function checkPaymentStatus(){
+  if(!window.db) return;
+  db.collection('payments').where('email','==',myEmail).orderBy('createdAt','desc').limit(1).get().then(function(s){
+    if(!s.empty && s.docs[0].data().status==='pending'){ document.getElementById('pendingBox').style.display='block'; document.getElementById('payBox').style.display='none'; }
+  });
+  db.collection('vertexa_users').doc(myUid).get().then(function(d){
+    if(d.exists){ var u=d.data(); if(u.is_paid==='yes') isPaidState=true; if(u.balance) balance=Number(u.balance); if(u.paid_ref_count) paidRefs=Number(u.paid_ref_count); if(u.total_earned) totalEarned=Number(u.total_earned); }
+    checkCert();
+  });
+}
+function checkCert(){
+  db.collection('certificates').where('email','==',myEmail).orderBy('createdAt','desc').limit(1).get().then(function(s){
+    if(!s.empty && s.docs[0].data().status==='approved') certApproved=true;
+    renderAll(); loadAdminTask(); loadWithdrawHistory(); loadEarnings(); setupRealReferral();
+  }).catch(function(){ renderAll(); loadAdminTask(); setupRealReferral(); });
+}
+
+// DAILY TASK FROM ADMIN - NOT HARDCODED
+function loadAdminTask(){
+  db.collection('dailyTasks').doc(todayID()).get().then(function(d){
+    if(!d.exists){ document.getElementById('taskList').innerHTML='<p>No task for today yet. Admin never add am. Check later.</p>'; return; }
+    var t=d.data();
+    var doneKey='vertexa_task_done_'+todayID();
+    var done=localStorage.getItem(doneKey)==='yes';
+    document.getElementById('taskList').innerHTML='<div class="card2"><b>📝 Today Task: '+t.task+'</b><br><span class="muted">Added by: '+t.addedBy+'</span><br>Reward: <b>₦20</b><br>'+(done?'<button class="btn-white" disabled>✅ Done Today</button>':'<button class="btn-purple" onclick="completeAdminTask()">Complete Task + ₦20</button>')+'</div>';
+  });
+}
+function completeAdminTask(){
+  var doneKey='vertexa_task_done_'+todayID();
+  if(localStorage.getItem(doneKey)==='yes') return alert('You don do am today');
+  if(!confirm('You don really do today task?')) return;
+  localStorage.setItem(doneKey,'yes');
+  db.collection('dailyTasks').doc(todayID()).collection('completions').doc(myUid).set({name:myName,email:myEmail,uid:myUid,completedAt:new Date(),amount:20}).then(function(){
+    addEarn(20,'Daily Task - '+todayID());
+    document.getElementById('taskMsg').innerText='🎉 +₦20 added! Admin fit see your completion.';
+    loadAdminTask();
+  });
+}
+function addEarn(amount,reason){
+  balance+=amount; totalEarned+=amount;
+  localStorage.setItem('vertexa_balance',balance); localStorage.setItem('vertexa_total_earned',totalEarned);
+  if(window.db){ db.collection('earnings').add({email:myEmail,name:myName,uid:myUid,amount:amount,reason:reason,createdAt:new Date()}); db.collection('vertexa_users').doc(myUid).set({balance:balance,total_earned:totalEarned},{merge:true}); }
+  renderAll();
+}
+
+// REAL REFERRAL - ₦100
+function setupRealReferral(){
+  myRefCode='VERT-'+myEmail.split('@')[0].toUpperCase().replace(/[^A-Z0-9]/g,'');
+  localStorage.setItem('vertexa_my_ref_code',myRefCode);
+  var realLink=location.origin+'/join.html?ref='+myRefCode;
+  document.getElementById('refLink').innerText=realLink;
+  if(window.db && myUid){
+    db.collection('vertexa_users').doc(myUid).set({email:myEmail,name:myName,refCode:myRefCode},{merge:true});
+    db.collection('vertexa_users').where('referredBy','==',myRefCode).get().then(function(s){
+      document.getElementById('refCount').innerText=s.size;
+      var paidCount=0; s.forEach(function(doc){ if(doc.data().is_paid==='yes') paidCount++; });
+      document.getElementById('paidRefCount').innerText=paidCount;
+      paidRefs=paidCount; renderAll();
+    });
+    db.collection('earnings').where('email','==',myEmail).get().then(function(s){
+      var tot=0; s.forEach(function(d){ if((d.data().reason||'').includes('Referral')) tot+=Number(d.data().amount||0); });
+      document.getElementById('refEarn').innerText='₦'+tot.toLocaleString();
+    });
+  }
+}
+function copyRef(){ var link=location.origin+'/join.html?ref='+myRefCode; navigator.clipboard.writeText(link).then(function(){ alert('✅ Real link copied! Share am: '+link); }); }
+function shareRef(){ var link=location.origin+'/join.html?ref='+myRefCode; var msg='Join VERTEXA - Learn Graphics, Earn Daily! 💰\n\nPay ₦15,000, Learn M1-M9, Earn ₦20 per task + ₦100 per referral.\n\nJoin with my link: '+link; window.open('https://wa.me/?text='+encodeURIComponent(msg)); }
+
+function canWithdraw(){
+  if(!isPaidState) return {ok:false,reason:'🔒 You be FREE USER. Pay ₦15,000 + Admin approve to unlock.'};
+  if(paidRefs<1) return {ok:false,reason:'🔒 You never refer 1 Paid User. Paid referrals: '+paidRefs+' / 1'};
+  if(!certApproved) return {ok:false,reason:'🔒 Finish Module 9 + Founder approve Certificate first.'};
+  if(balance<5000) return {ok:false,reason:'🔒 Balance never reach ₦5,000. Balance: ₦'+balance+'.'};
+  return {ok:true,reason:'✅ You fit withdraw! Paid + 1 Paid Referral + Certificate + ₦5,000+'};
+}
+function renderAll(){
+  document.getElementById('balance').innerText='₦'+balance.toLocaleString();
+  document.getElementById('wBalance').innerText='₦'+balance.toLocaleString();
+  document.getElementById('totalEarned').innerText='₦'+totalEarned.toLocaleString();
+  document.getElementById('userType').innerText=isPaidState?'PAID USER ✅':'FREE USER';
+  document.getElementById('userType').className=isPaidState?'paidBadge':'freeBadge';
+  if(isPaidState){ document.getElementById('payBox').style.display='none'; document.getElementById('pendingBox').style.display='none'; document.getElementById('paidBox').style.display='block'; document.getElementById('paidInfo').innerText='You don pay ₦15,000 Join Fee. Paid referrals: '+paidRefs+' / 1. Referral bonus: ₦100 per paid friend.'; document.getElementById('referRule').innerText='You earn ₦100 per Paid Friend. Refer 1 Paid Friend to unlock Withdraw.'; }
+  else { document.getElementById('paidBox').style.display='none'; document.getElementById('referRule').innerText='You earn ₦100 per Paid Friend. Pay ₦15,000 + Admin approve to unlock withdraw.'; }
+  document.getElementById('accountInfo').innerText=isPaidState?'Status: PAID ✅ | Paid Referrals: '+paidRefs+' / 1 | Certificate: '+(certApproved?'Approved ✅':'Locked 🔒'):'Status: FREE | Pay ₦15,000 + Admin approve to unlock withdraw.';
+  var cw=canWithdraw(); document.getElementById('earnStatus').innerText=cw.reason; document.getElementById('withdrawLockText').innerText=cw.reason;
+  if(cw.ok){ document.getElementById('withdrawLock').style.display='none'; document.getElementById('withdrawBox').style.display='block'; } else { document.getElementById('withdrawLock').style.display='block'; document.getElementById('withdrawBox').style.display='none'; }
+}
+function claimWeekly(){
+  var wk='vertexa_weekly_'+todayID().slice(0,7);
+  if(localStorage.getItem(wk)) { document.getElementById('weeklyMsg').innerText='You don claim weekly for this month already.'; return; }
+  if(!confirm('You don post 3 designs + tag VERTEXA?')) return;
+  localStorage.setItem(wk,'yes'); addEarn(200,'Weekly Challenge Bonus'); document.getElementById('weeklyMsg').innerText='🎉 +₦200 Weekly Bonus added!';
+}
+function requestWithdraw(){
+  var cw=canWithdraw(); if(!cw.ok){ document.getElementById('withdrawMsg').innerText=cw.reason; return; }
+  var amt=parseInt(document.getElementById('wAmount').value||'0'); var bank=document.getElementById('wBank').value.trim(); var acct=document.getElementById('wAcct').value.trim(); var name=document.getElementById('wName').value.trim();
+  if(amt<5000){ document.getElementById('withdrawMsg').innerText='❌ Minimum na ₦5,000.'; return; }
+  if(amt>balance){ document.getElementById('withdrawMsg').innerText='❌ Balance no reach.'; return; }
+  if(!bank||!acct||!name){ document.getElementById('withdrawMsg').innerText='❌ Fill Bank, Account Number and Name.'; return; }
+  balance-=amt; localStorage.setItem('vertexa_balance',balance);
+  db.collection('withdrawals').add({email:myEmail,name:name,uid:myUid,amount:amt,bank:bank+' - '+acct,status:'pending',isPaid:isPaidState,paidRefs:paidRefs,createdAt:new Date()}).then(function(){ document.getElementById('withdrawMsg').innerText='✅ Request Sent! ₦'+amt+' go enter '+bank+' '+acct+' after Founder / Senior confirm.'; renderAll(); loadWithdrawHistory(); });
+}
+function loadWithdrawHistory(){ if(!window.db) return; db.collection('withdrawals').where('email','==',myEmail).orderBy('createdAt','desc').limit(10).get().then(function(s){ var h=''; s.forEach(function(d){ var w=d.data(); h+='<div class="card2"><b>₦'+w.amount+' - '+w.status+'</b><br>'+w.bank+'<br><span class="muted">'+(w.createdAt?w.createdAt.toDate().toLocaleString():'')+'</span></div>'; }); document.getElementById('withdrawList').innerHTML=h||'<p>No withdrawal yet.</p>'; }); }
+function loadEarnings(){ if(!window.db) return; db.collection('earnings').where('email','==',myEmail).orderBy('createdAt','desc').limit(20).get().then(function(s){ var h=''; s.forEach(function(d){ var e=d.data(); h+='<p>✅ +₦'+e.amount+' - '+e.reason+'</p>'; }); document.getElementById('earnList').innerHTML=h||'<p>No earnings yet.</p>'; }); }
+checkPaymentStatus();
+</script></body></html>

@@ -20,7 +20,11 @@
 <div class="card2 modCard" id="card-6"><b>Module 7: Brand Kit & Portfolio</b><br><span class="muted">Brand Kit + Portfolio Wey Bring Client</span><br><button class="btn-purple" onclick="openModule(6)">Open Full Professional Lesson</button> <button class="btn-white" onclick="goQuiz(7)">Quiz 30</button><p class="lockMsg" id="lock-6"></p></div>
 <div class="card2 modCard" id="card-7"><b>Module 8: Earn & Pricing</b><br><span class="muted">Price Your Work • Get Clients • NO VIDEO</span><br><button class="btn-purple" onclick="openModule(7)">Open Full Professional Lesson</button> <button class="btn-white" onclick="goQuiz(8)">Quiz 30</button><p class="lockMsg" id="lock-7"></p></div>
 <div class="card2 modCard" id="card-8"><b>Module 9: Final Project + Certificate</b><br><span class="muted">🎓 FINAL: Exam 70 + 4 Projects • No Video</span><br><button class="btn-purple" onclick="openModule(8)">Open Final Project →</button> <button class="btn-white" onclick="goQuiz(9)">Final Exam 70</button><p class="lockMsg" id="lock-8"></p></div>
-
+<!-- NEW COURSES FROM ADMIN - AUTO LOAD -->
+<div id="newCoursesSection" style="margin-top:20px">
+  <h2 style="margin:12px 0">✨ New Courses</h2>
+  <div id="newCoursesList"><p class="muted">Loading new courses...</p></div>
+</div>
 <div id="lessonBox" style="display:none" class="card2 lessonBox"><h3 id="lessonTitle"></h3><div id="lessonBody"></div><div id="videoWrap" style="margin:12px 0"><p><b>🎥 Practical Video - HOW TO DO AM:</b></p><iframe id="lessonVideo" width="100%" height="220" style="border:0;border-radius:14px" allowfullscreen></iframe><br><a id="lessonVideoLink" href="#" target="_blank">🔎 If video no play, tap here →</a></div><p><b>🛠️ Practical Task:</b></p><p id="lessonPractical"></p><p><b>📝 Assignment:</b> <span id="lessonAssign"></span></p><input id="lessonLink" placeholder="Paste assignment link"><button class="btn-purple" onclick="submitLesson()">Submit Assignment</button> <button class="btn-purple" id="quizBtn" onclick="goQuiz()">Do Quiz 30 →</button> <button class="btn-white" onclick="closeLesson()">Back</button><p id="lessonMsg"></p></div>
 </div>
 <nav class="bottomNav"><a href="index.html">🏠<span>Featured</span></a><a href="modules.html" class="active">📚<span>Modules</span></a><a href="tools.html">🛠️<span>Tools</span></a><a href="chat.html">💬<span>Chat</span></a><a href="student.html">🎓<span>Student</span></a><a href="daily.html">💰<span>Earn</span></a><a href="student.html">⚙️<span>Setting</span></a><a href="admin.html">👑<span>Admin</span></a></nav>
@@ -93,5 +97,54 @@ if(want){
     if(el) el.scrollIntoView({behavior:'smooth'});
   }, 800);
 }
+// ===== NEW COURSES - STUDENT GO SEE AM =====
+var curNewCourseId = null;
+var curNewModules = [];
+
+function loadNewCourses(){
+  var list = document.getElementById('newCoursesList');
+  if(!list || !window.db) { if(list) list.innerHTML = '<p class="muted">No new courses yet.</p>'; return; }
+  db.collection('courses').orderBy('createdAt','desc').get().then(function(snap){
+    if(snap.empty){ list.innerHTML = '<p class="muted">No new courses yet. Check back soon ✨</p>'; return; }
+    var html = '';
+    snap.forEach(function(doc){
+      var c = doc.data();
+      html += '<div class="card2 modCard"><b>'+(c.title||'New Course')+'</b><br><span class="muted">'+(c.description||'')+'</span><br>'
+        + '<button class="btn-purple" onclick="openNewCourse(\''+doc.id+'\',\''+(c.title||'').replace(/'/g,"")+'\')">Open Course →</button></div>';
+    });
+    list.innerHTML = html;
+  }).catch(function(){ list.innerHTML = '<p class="muted">No new courses yet.</p>'; });
+}
+
+function openNewCourse(id, title){
+  curNewCourseId = id;
+  // Paid lock same as M2-M9 - M1 free, others paid
+  // If you want new course FREE, change this to true
+  if(!isPaid){ alert('🔒 This course na for Paid only. Pay ₦'+PRICE.toLocaleString()+' to unlock.'); return location.href='daily.html'; }
+  db.collection('courses').doc(id).collection('modules').orderBy('createdAt').get().then(function(snap){
+    curNewModules = [];
+    snap.forEach(function(d){ var m=d.data(); m.id=d.id; curNewModules.push(m); });
+    var html = '<h3>'+title+'</h3>';
+    if(!curNewModules.length) html += '<p class="muted">No modules yet - Admin dey add am soon.</p>';
+    curNewModules.forEach(function(m,i){
+      html += '<div class="card2"><b>'+(i+1)+'. '+m.title+'</b><p>'+(m.desc||'')+'</p>'
+        + (m.video ? '<a href="'+m.video+'" target="_blank" class="btn-purple">🎥 Watch Video</a>' : '<p class="muted">No video yet</p>')
+        + '<br><br><button class="btn-white" onclick="document.getElementById(\'lessonBox\').style.display=\'none\'; document.getElementById(\'newCoursesSection\').scrollIntoView()">Back</button></div>';
+    });
+    document.getElementById('lessonBox').style.display = 'none';
+    // Show modules inside lessonBox area for clean look
+    var box = document.getElementById('lessonBox');
+    box.style.display = 'block';
+    document.getElementById('lessonTitle').innerText = title;
+    document.getElementById('lessonBody').innerHTML = html;
+    document.getElementById('videoWrap').style.display = 'none';
+    document.getElementById('lessonPractical').innerText = '';
+    document.getElementById('lessonAssign').innerText = '';
+    box.scrollIntoView();
+  });
+}
+
+// Run am on load
+loadNewCourses();
 </script>
 </body></html>

@@ -73,23 +73,23 @@ function doLogin(){
   var pass=document.getElementById('liPass').value.trim();
   if(!email||!pass) return document.getElementById('liMsg').innerText='❌ Enter Email + Password';
   document.getElementById('liMsg').innerText='Logging in...';
-  db.collection('admin').get().then(function(snap){
-    var adminDoc=null;
-    snap.forEach(function(d){
-      var a=d.data();
-      var aEmail=String(a.email||'').trim().toLowerCase();
-      var aPass=String(a.pass||'').trim();
-      if(aEmail===email && aPass===pass){ adminDoc=a; }
-    });
-    if(adminDoc){
-      localStorage.setItem('vertexa_admin', JSON.stringify(adminDoc));
-      localStorage.setItem('vertexa_email', email);
-      document.getElementById('liMsg').innerText='✅ Welcome Admin 👑 '+(adminDoc.name||'');
-      setTimeout(function(){ location.href='admin.html'; },800);
-      return;
-    }
-    return auth.signInWithEmailAndPassword(email,pass).then(function(cred){
-      var uid=cred.user.uid;
+// LOCKED: Auth FIRST, then check Admin by UID only - no download all admins, no pass for Firestore
+  auth.signInWithEmailAndPassword(email,pass).then(function(cred){
+    var uid=cred.user.uid;
+    return db.collection('admin').doc(uid).get().then(function(adminDoc){
+      if(adminDoc.exists){
+        var a=adminDoc.data()||{};
+        // Na Admin - clear student data, save admin, go admin dashboard straight, no login again
+        localStorage.removeItem('vertexa_uid');
+        localStorage.removeItem('vertexa_is_paid');
+        localStorage.removeItem('vertexa_refcode');
+        localStorage.setItem('vertexa_admin', JSON.stringify({id:uid, name:a.name||'Admin', email:email, role:a.role||'OWNER', startDate:a.startDate||a.createdAt||'2026-11-15T00:00:00.000Z'}));
+        localStorage.setItem('vertexa_email', email);
+        document.getElementById('liMsg').innerText='✅ Welcome Admin 👑 '+(a.name||'');
+        setTimeout(function(){ location.href='admin.html'; },800);
+        return;
+      }
+      // No be admin, check student
       return db.collection('vertexa_users').doc(uid).get().then(function(d){
         var u=d.data()||{};
         localStorage.removeItem('vertexa_admin');
@@ -100,8 +100,8 @@ function doLogin(){
         document.getElementById('liMsg').innerText = u.is_paid==='yes' ? '✅ Welcome back! You be PAID ✅' : '✅ Welcome back! You be FREE - Go Daily to pay to turn PAID.';
         setTimeout(function(){ location.href='student.html'; },1200);
       });
-    }).catch(function(e){ document.getElementById('liMsg').innerText='❌ '+e.message+' - Check Email / Password'; });
-  }).catch(function(e){ document.getElementById('liMsg').innerText='❌ '+e.message; });
+    });
+  }).catch(function(e){ document.getElementById('liMsg').innerText='❌ '+e.message+' - Check Email / Password'; });
 }
 </script>
 </body></html>

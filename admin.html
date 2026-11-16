@@ -228,6 +228,12 @@ function addModule(courseId){
   db.collection('courses').doc(courseId).collection('modules').add({title:title, video:video, desc:desc, createdAt:new Date()}).then(function(){ alert('Module Added ✅'); openRealModule(courseId); });
 }
 function openRealModule(id){
+  // OLD courses M1-M9 dey inside modules.html, no be Firebase
+  if(/^M[1-9]$/.test(id)){
+    window.location.href = 'modules.html?course=' + id;
+    return;
+  }
+  // NEW courses wey you create now dey for Firebase
   db.collection('courses').doc(id).collection('modules').get().then(function(snap){
     var mods = [];
     snap.forEach(function(d){ mods.push(d.data()); });

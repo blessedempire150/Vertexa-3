@@ -15,7 +15,7 @@
 <div class="card2"><h2>🏆 Your VERTEXA Certificate - Real Design</h2><p class="muted">This na YOUR real VERTEXA Academy Master Class certificate. Founder must approve am before download.</p>
 <div class="certWrap" id="certBox">
 <img src="certificate.jpg" alt="VERTEXA Certificate">
-<div class="certName" id="certName">ADA OKONKWO</div>
+<div class="certName" id="certName">LOADING...</div>
 <div class="certId" id="certId">ID: VERT-2026-00123</div>
 <div id="certLock" class="certLock"><div style="font-size:50px">🔒</div><h3>Certificate Locked</h3><p id="lockReason">Finish Module 9 to unlock.</p><button class="btn-purple" onclick="location.href='modules.html'">Go Finish Module 9 →</button></div>
 </div>
@@ -32,39 +32,81 @@
 <div class="card2"><h2>📚 My Modules Progress</h2><div id="myModules"></div></div>
 <div class="card2"><h2>📝 My Quiz Scores</h2><div id="myQuizzes"><p>Loading...</p></div></div>
 </div>
-<nav class="bottomNav"><a href="index.html">🏠<span>Featured</span></a><a href="modules.html">📚<span>Modules</span></a><a href="tools.html">🛠️<span>Tools</span></a><a href="chat.html">💬<span>Chat</span></a><a href="student.html" class="active">🎓<span>Student</span></a><a href="daily.html">💰<span>Earn</span></a><a href="settings.html">⚙️<span>Setting</span></a><a href="admin.html">👑<span>Admin</span></a></nav>
+<nav id="bottomNav" class="bottomNav">
+<a href="index.html">🏠<span>Featured</span></a>
+<a href="modules.html">📚<span>Modules</span></a>
+<a href="tools.html">🛠️<span>Tools</span></a>
+<a href="chat.html">💬<span>Chat</span></a>
+<a href="student.html">🎓<span>Student</span></a>
+<a href="daily.html">💰<span>Earn</span></a>
+<a href="settings.html">⚙️<span>Setting</span></a>
+<a id="adminTab" href="admin.html">👑<span>Admin</span></a>
+</nav>
+<script>
+// Hide Admin tab if no be Admin - FIXED
+var savedUser = localStorage.getItem('vertexa_user');
+var userRole = localStorage.getItem('vertexa_role') || '';
+if (savedUser) {
+  try { userRole = JSON.parse(savedUser).role || userRole; } catch(e) {}
+}
+var myEmailCheck = (localStorage.getItem('vertexa_email')||'').toLowerCase();
+if (myEmailCheck === 'vertexa@gmail.com' || myEmailCheck === 'admin@vertexa.com') {
+  userRole = 'admin';
+}
+var adminTab = document.getElementById('adminTab');
+if (adminTab && userRole !== 'admin') {
+  adminTab.style.display = 'none';
+}
+</script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script><script src="firebase.js"></script>
 <script>
 var myEmail = (localStorage.getItem('vertexa_email')||'').toLowerCase();
 var myName = localStorage.getItem('vertexa_student_name')||localStorage.getItem('vertexa_name')||'';
+try {
+  var _u = JSON.parse(localStorage.getItem('vertexa_user') || 'null');
+  if (_u && _u.name) myName = _u.name;
+  if (_u && _u.fullName) myName = _u.fullName;
+} catch(e) {}
 var myUid = localStorage.getItem('vertexa_uid')||myEmail;
-var certStatus = 'none'; // none, pending, approved, rejected
+var certStatus = 'none';
 var certId = localStorage.getItem('vertexa_cert_id');
 if(!certId){ certId='VERT-2026-'+Math.floor(1000+Math.random()*9000); localStorage.setItem('vertexa_cert_id',certId); }
 var currentMod = 1;
 
 function getModuleFromFirestore(){
-  // Module from Firestore = real progress, no hack
   if(window.db && myEmail){
     db.collection('vertexa_users').doc(myUid).get().then(function(d){
-      if(d.exists && d.data().current_module) currentMod = parseInt(d.data().current_module);
-      else currentMod = parseInt(localStorage.getItem('vertexa_current_module')||'1');
+      if(d.exists){
+        var data = d.data();
+        if(data.current_module) currentMod = parseInt(data.current_module);
+        // FIX: Pull real paid user name from Firestore - NO MORE ADA OKONKWO
+        if(data.name) { myName = data.name; localStorage.setItem('vertexa_student_name', myName); }
+        if(data.fullName) { myName = data.fullName; localStorage.setItem('vertexa_student_name', myName); }
+        if(data.studentName) { myName = data.studentName; localStorage.setItem('vertexa_student_name', myName); }
+      } else {
+        currentMod = parseInt(localStorage.getItem('vertexa_current_module')||'1');
+      }
       checkCertFromFirestore();
     }).catch(function(){ currentMod = parseInt(localStorage.getItem('vertexa_current_module')||'1'); checkCertFromFirestore(); });
   } else { currentMod = parseInt(localStorage.getItem('vertexa_current_module')||'1'); renderCert(); }
 }
 function checkCertFromFirestore(){
-  // FIX: Approval comes from Admin Firestore, NOT ?cert=unlock
   if(!window.db) return renderCert();
   db.collection('certificates').where('email','==',myEmail).orderBy('createdAt','desc').limit(1).get().then(function(s){
-    if(!s.empty){ var c=s.docs[0].data(); certStatus=c.status; if(c.certId) certId=c.certId; }
+    if(!s.empty){ var c=s.docs[0].data(); certStatus=c.status; if(c.certId) certId=c.certId; if(c.name) { myName = c.name; localStorage.setItem('vertexa_student_name', myName); } }
     else certStatus='none';
     renderCert();
   }).catch(renderCert);
 }
 function renderCert(){
   document.getElementById('studentEmail').innerText='Email: '+myEmail;
-  var showName=(myName||myEmail.split('@')[0]||'ADA OKONKWO').toUpperCase();
+  // FIX: NO MORE ADA OKONKWO FALLBACK - Use real paid user name only
+  var showName = 'STUDENT';
+  if (myName) {
+    showName = myName.toUpperCase();
+  } else if (myEmail && myEmail.includes('@')) {
+    showName = myEmail.split('@')[0].replace(/[._-]/g, ' ').toUpperCase();
+  }
   document.getElementById('certName').innerText=showName;
   document.getElementById('certId').innerText='ID: '+certId;
   document.getElementById('currentMod').innerText='Module '+currentMod;
@@ -112,7 +154,6 @@ function submitWithdraw(){
   if(!bank||!acct||!nm||!amt) return alert('Fill all');
   db.collection('withdrawals').add({name:nm, email:myEmail, uid:myUid, bank:bank+' - '+acct, amount:amt, status:'pending', createdAt:new Date()}).then(function(){ alert('✅ Withdrawal sent! Founder / Senior go see am for Admin > Withdraw'); document.getElementById('withdrawForm').style.display='none'; });
 }
-// NO ?cert=unlock hack - REMOVED
 getModuleFromFirestore();
 if(window.db){ db.collection('quizzes').where('email','==',myEmail).orderBy('createdAt','desc').limit(5).onSnapshot(function(s){ var h=''; s.forEach(function(d){ var c=d.data(); h+='<p>Module '+c.module+' - '+c.score+' / 30 - '+(c.score>=21?'PASS ✅':'Try Again')+'</p>'; }); document.getElementById('myQuizzes').innerHTML=h||'<p>No quiz yet.</p>'; }); }
 </script></body></html>

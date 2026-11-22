@@ -27,9 +27,26 @@
 </div>
 <div id="lessonBox" style="display:none" class="card2 lessonBox"><h3 id="lessonTitle"></h3><div id="lessonBody"></div><div id="videoWrap" style="margin:12px 0"><p><b>🎥 Practical Video - HOW TO DO AM:</b></p><iframe id="lessonVideo" width="100%" height="220" style="border:0;border-radius:14px" allowfullscreen></iframe><br><a id="lessonVideoLink" href="#" target="_blank">🔎 If video no play, tap here →</a></div><p><b>🛠️ Practical Task:</b></p><p id="lessonPractical"></p><p><b>📝 Assignment:</b> <span id="lessonAssign"></span></p><input id="lessonLink" placeholder="Paste assignment link"><button class="btn-purple" onclick="submitLesson()">Submit Assignment</button> <button class="btn-purple" id="quizBtn" onclick="goQuiz()">Do Quiz 30 →</button> <button class="btn-white" onclick="closeLesson()">Back</button><p id="lessonMsg"></p></div>
 </div>
-<nav class="bottomNav"><a href="index.html">🏠<span>Featured</span></a><a href="modules.html" class="active">📚<span>Modules</span></a><a href="tools.html">🛠️<span>Tools</span></a><a href="chat.html">💬<span>Chat</span></a><a href="student.html">🎓<span>Student</span></a><a href="daily.html">💰<span>Earn</span></a><a href="student.html">⚙️<span>Setting</span></a><a href="admin.html">👑<span>Admin</span></a></nav>
+<nav id="bottomNav" class="bottomNav">
+  <a href="index.html">🏠<span>Featured</span></a>
+  <a href="modules.html">📚<span>Modules</span></a>
+  <a href="tools.html">🛠️<span>Tools</span></a>
+  <a href="chat.html">💬<span>Chat</span></a>
+  <a href="student.html">🎓<span>Student</span></a>
+  <a href="daily.html">💰<span>Earn</span></a>
+  <a href="settings.html">⚙️<span>Setting</span></a>
+  <a id="adminTab" href="admin.html" style="display:none">👑<span>Admin</span></a>
+</nav>
 <script>
-function toggleMindset(){var b=document.getElementById('mindsetBox');b.style.display=(b.style.display==='none'?'block':'none');}
+// Hide Admin if no be Admin
+var user = JSON.parse(localStorage.getItem('vertexa_user') || 'null');
+var adminTab = document.getElementById('adminTab');
+if (adminTab && (!user || user.role !== 'admin')) {
+  adminTab.style.display = 'none';
+}
+<script>
+<script>
+function toggleMindset(){var b=document.getElementById('mindsetBox');if(b) b.style.display=(b.style.display==='none'?'block':'none');}
 var PRICE = 15000;
 var isPaid = localStorage.getItem('vertexa_is_paid')==='yes' || localStorage.getItem('vertexa_paid')==='yes';
 var email = (localStorage.getItem('vertexa_email')||'').toLowerCase();
@@ -37,14 +54,73 @@ var uid = localStorage.getItem('vertexa_uid');
 var role = localStorage.getItem('v_admin_role')||'';
 var isAdmin = localStorage.getItem('v_admin')==='owner' || localStorage.getItem('v_admin')==='extra' || role==='founder' || role==='senior' || role==='other_admin' || email==='blessedempire150@gmail.com';
 if(isAdmin) isPaid = true;
+
+var currentMod = parseInt(localStorage.getItem('vertexa_current_module')||'1');
+if(isNaN(currentMod) || currentMod < 1) currentMod = 1;
+if(isAdmin) currentMod = 9;
+
+function safeSet(id, text){
+  var el = document.getElementById(id);
+  if(el) el.innerText = text;
+}
+
 function applyLock(){
-  document.getElementById('debug').innerText = isPaid ? '✅ PAID / Admin - M1-M9 All Unlocked' : 'M1 FREE ✅ | M2-M9 PAID 🔒 - Pay ₦'+PRICE.toLocaleString()+' to unlock';
-  document.getElementById('priceBanner').innerText = isPaid ? '✅ You fit watch M1-M9 - All Unlocked' : '🔒 M1 FREE ✅ | M2-M9 PAID 🔒 - Pay ₦'+PRICE.toLocaleString()+(PRICE===15000?' (PROMO First 20 Only!)':'')+' → Daily Page';
-  for(var i=1;i<=8;i++){
+  if(isAdmin){
+    safeSet('debug', '✅ ADMIN - M1-M9 All Unlocked');
+    safeSet('priceBanner', '✅ Admin - All Unlocked');
+  } else if(!isPaid){
+    safeSet('debug', 'M1 FREE ✅ | M2-M9 PAID 🔒 - Pay ₦'+PRICE.toLocaleString()+' to unlock');
+    safeSet('priceBanner', '🔒 M1 FREE ✅ | M2-M9 PAID 🔒 - Pay ₦'+PRICE.toLocaleString()+' → Daily Page');
+  } else {
+    safeSet('debug', '✅ PAID - You dey Module '+currentMod+' | Finish am to unlock Module '+(currentMod>=9?'9 - Last!':currentMod+1));
+    safeSet('priceBanner', '✅ PAID - You dey Module '+currentMod+' - Finish am to unlock next');
+  }
+
+  for(var i=1;i<=9;i++){
     var el=document.getElementById('lock-'+i);
-    if(el) el.innerHTML = isPaid ? '' : '🔒 Paid Only - <a href="daily.html">Pay ₦'+PRICE.toLocaleString()+' To Unlock →</a>';
+    if(!el) continue;
+    if(isAdmin){
+      el.innerHTML = '';
+    } else if(!isPaid){
+      if(i===1) el.innerHTML = '';
+      else el.innerHTML = '🔒 Paid Only - <a href="daily.html">Pay ₦'+PRICE.toLocaleString()+' To Unlock →</a>';
+    } else {
+      if(i <= currentMod) el.innerHTML = '';
+      else if(i === currentMod + 1) el.innerHTML = '🔒 Finish Module '+currentMod+' First to Unlock';
+      else el.innerHTML = '🔒 Locked - Finish Module '+currentMod+' First';
+    }
   }
 }
+
+function unlockNextModule(finishedMod){
+  if(isAdmin) return;
+  if(finishedMod >= currentMod && currentMod < 9){
+    currentMod = finishedMod + 1;
+    localStorage.setItem('vertexa_current_module', currentMod);
+    if(window.db && (uid || email)){
+      db.collection('vertexa_users').doc(uid || email).set({current_module: currentMod}, {merge:true});
+    }
+    alert('🎉 Module '+finishedMod+' Done! Module '+currentMod+' don open ✅');
+    applyLock();
+  }
+}
+
+// Run after page don load - THIS NA THE FIX
+document.addEventListener('DOMContentLoaded', function(){
+  applyLock();
+  // Try load from Firestore after 1 sec, when firebase don ready
+  setTimeout(function(){
+    if(window.db && (uid || email)){
+      db.collection('vertexa_users').doc(uid || email).get().then(function(d){
+        if(d.exists && d.data().current_module){
+          currentMod = parseInt(d.data().current_module);
+          if(!isAdmin) localStorage.setItem('vertexa_current_module', currentMod);
+          applyLock();
+        }
+      }).catch(function(){});
+    }
+  }, 1000);
+});
 function goQuiz(m){
   if(m && m>1 && !isPaid){ alert('🔒 Quiz '+m+' na for Paid only. Pay ₦'+PRICE.toLocaleString()+' to unlock.'); return location.href='daily.html'; }
   location.href='quiz.html?m='+(m|| (cur+1));

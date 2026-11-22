@@ -39,7 +39,16 @@
 <a href="daily.html" class="btn-white">Go Pay / Upload Receipt →</a>
 </div>
 </div>
-<nav class="bottomNav"><a href="index.html">🏠<span>Featured</span></a><a href="modules.html">📚<span>Modules</span></a><a href="tools.html">🛠️<span>Tools</span></a><a href="chat.html">💬<span>Chat</span></a><a href="student.html">🎓<span>Student</span></a><a href="daily.html">💰<span>Earn</span></a><a href="student.html">⚙️<span>Setting</span></a><a href="admin.html">👑<span>Admin</span></a></nav>
+<nav id="bottomNav" class="bottomNav" style="display:none !important;">
+  <a href="index.html">🏠<span>Featured</span></a>
+  <a href="modules.html">📚<span>Modules</span></a>
+  <a href="tools.html">🛠️<span>Tools</span></a>
+  <a href="chat.html">💬<span>Chat</span></a>
+  <a href="student.html">🎓<span>Student</span></a>
+  <a href="daily.html">💰<span>Earn</span></a>
+  <a href="settings.html">⚙️<span>Setting</span></a>
+  <a id="adminTab" href="admin.html">👑<span>Admin</span></a>
+</nav>
 <script>
 function showLogin(){ document.getElementById('signupBox').style.display='none'; document.getElementById('loginBox').style.display='block'; }
 function showSignup(){ document.getElementById('loginBox').style.display='none'; document.getElementById('signupBox').style.display='block'; }

@@ -1,10 +1,26 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>VERTEXA - Daily Task & Earn</title><link rel="stylesheet" href="style.css"><style>
-.taskDone{opacity:0.6}.earnCard{background:linear-gradient(135deg,#6A00FF,#B366FF);color:#fff;border-radius:18px;padding:18px;text-align:center}.earnCard h1{font-size:38px;margin:5px 0;color:#fff}.lockBox{border:2px solid #FF6A00;border-radius:14px;padding:14px;background:#FFF3E6}.payBoxReal{background:#fff;border:2px solid #6A00FF;border-radius:14px;padding:14px;margin:10px 0}.paidBadge{background:green;color:#fff;padding:4px 10px;border-radius:20px;font-size:12px}.freeBadge{background:#FF6A00;color:#fff;padding:4px 10px;border-radius:20px;font-size:12px}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERTEXA - Daily Task & Earn</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.taskDone{opacity:0.6}
+.earnCard{background:linear-gradient(135deg,#6A00FF,#B366FF);color:#fff;border-radius:18px;padding:18px;text-align:center}
+.earnCard h1{font-size:38px;margin:5px 0;color:#fff}
+.lockBox{border:2px solid #FF6A00;border-radius:14px;padding:14px;background:#FFF3E6}
+.payBoxReal{background:#fff;border:2px solid #6A00FF;border-radius:14px;padding:14px;margin:10px 0}
+.paidBadge{background:green;color:#fff;padding:4px 10px;border-radius:20px;font-size:12px}
+.freeBadge{background:#FF6A00;color:#fff;padding:4px 10px;border-radius:20px;font-size:12px}
 body{padding-bottom:90px !important}
 .bottomNav{position:fixed!important;bottom:0;left:0;right:0;height:68px;background:#fff;display:flex;justify-content:space-around;align-items:center;border-top:1px solid #eee;z-index:9999}
 .bottomNav a{flex:1;display:flex;flex-direction:column;align-items:center;font-size:10px;color:#666;text-decoration:none;gap:2px;min-width:0;white-space:nowrap;overflow:hidden}
 .bottomNav a.active{color:#6A00FF;font-weight:700}
-</style></head>
+.proofBox{background:#F1E9FF;border:2px solid #6A00FF;border-radius:14px;padding:14px;margin-top:10px}
+.proofBox input{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin:6px 0 10px 0;box-sizing:border-box}
+</style>
+</head>
 <body class="inspo">
 <div class="inspo-top"><div class="inspo-head"><div><p class="hi">Hello,</p><h1>Daily Task & Earn 💰</h1><p class="sub">Daily Task From Admin • Refer ₦100 • Join Fee ₦15,000 • Withdraw ₦5,000 Min</p></div><div class="avatar">V</div></div></div>
 <div class="inspo-body">
@@ -19,7 +35,12 @@ body{padding-bottom:90px !important}
 <div id="paidBox" style="display:none"><h3>✅ You Be PAID USER</h3><p id="paidInfo"></p></div>
 <div id="pendingBox" style="display:none" class="lockBox"><h3>⏳ Payment Pending</h3><p>Your receipt don reach Admin. Wait for Founder / Senior to approve. You never be Paid yet.</p></div></div>
 
-<div class="card2"><h2>📅 Daily Task - From Admin</h2><p class="muted">Task na wetin Admin add today for Admin page. Reward ₦20.</p><p><b>Today:</b> <span id="todayDate"></span></p><div id="taskList"><p>Loading Admin task...</p></div><p id="taskMsg"></p></div>
+<div class="card2"><h2>📅 Daily Task - From Admin</h2><p class="muted">Task na wetin Admin add today. Reward ₦20. Do task to get your PERSONAL code + Proof.</p><p><b>Today:</b> <span id="todayDate"></span></p>
+<div id="taskList"><p>Loading Admin task...</p></div>
+
+<!-- DYNAMIC PROOF BOX - POST OR REFERRAL -->
+<div id="proofBox" class="proofBox" style="display:none"></div>
+</div>
 
 <div class="card2"><h2>👥 Refer & Earn — REAL LINK • ₦100</h2><p id="referRule">You earn ₦100 per Paid Friend. Refer 1 Paid Friend to unlock Withdraw.</p><div style="background:#F1E9FF;padding:12px;border-radius:12px"><b>Your Real Referral Link:</b><br><span id="refLink">Loading...</span><br><button class="btn-purple" onclick="copyRef()">Copy Link 📋</button> <button class="btn-white" onclick="shareRef()">Share For WhatsApp</button></div><p>Friends Referred: <b id="refCount">0</b> • Paid Friends: <b id="paidRefCount">0</b> • Referral Earnings: <b id="refEarn">₦0</b></p><p class="muted" style="font-size:12px">Your link go track who use am. When dem pay ₦15,000 + Admin approve, you go get ₦100 + Paid Referral +1 automatically. No demo, no fake.</p></div>
 
@@ -42,7 +63,6 @@ body{padding-bottom:90px !important}
 </nav>
 
 <script>
-// Admin Tab - Hide by default, show only if admin - CORRECTED & CLOSED
 (function(){
   var email=(localStorage.getItem('vertexa_email')||'').toLowerCase();
   var vAdmin=localStorage.getItem('v_admin')||'';
@@ -61,10 +81,8 @@ var myEmail=(localStorage.getItem('vertexa_email')||'').toLowerCase();
 var myName=localStorage.getItem('vertexa_student_name')||localStorage.getItem('vertexa_name')||myEmail;
 var myUid=localStorage.getItem('vertexa_uid')||myEmail;
 var isPaidState=false, certApproved=false, paidRefs=0, myRefCode='';
-// FIXED: Load balance from localStorage, no reset to 0
 var balance=Number(localStorage.getItem('vertexa_balance')||0);
 var totalEarned=Number(localStorage.getItem('vertexa_total_earned')||0);
-// FIXED: Lagos date, no be UTC
 function todayID(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function copyOpay(){navigator.clipboard.writeText('09159228665').then(function(){alert('Copied! OPay: 09159228665 - Isaiah OGENERUONA Favour');});}
 function sendReceipt(){var t='Hello VERTEXA Admin! I don pay ₦15,000 Join Fee. My name: '+myName+' Email: '+myEmail;window.open('https://wa.me/2349132481467?text='+encodeURIComponent(t));}
@@ -101,27 +119,137 @@ function checkCert(){
     renderAll(); loadAdminTask(); loadWithdrawHistory(); loadEarnings(); setupRealReferral();
   }).catch(function(){ renderAll(); loadAdminTask(); setupRealReferral(); });
 }
+
+// ===== DAILY TASK - POST + REFERRAL + PERSONAL CODE =====
+function getMyPersonalCode(baseCode){
+  var cleanBase = (baseCode||'').trim().toUpperCase().replace('VTX-','').replace(/-/g,'');
+  var suffix = myEmail.substring(0,3).toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(suffix.length < 3) suffix = (suffix + 'XXX').substring(0,3);
+  return { full: 'VTX-' + cleanBase + '-' + suffix, short: cleanBase + '-' + suffix, cleanBase: cleanBase, suffix: suffix };
+}
+function checkPersonalCode(code){
+  var rawBase=(window._todayTask && window._todayTask.secretCode || '').trim();
+  if(!rawBase) return {ok:false, msg:'❌ Admin never set Secret Code for today. Wait for Admin.'};
+  var myCode = getMyPersonalCode(rawBase);
+  if(code !== myCode.full && code !== myCode.short){
+    return {ok:false, msg:'❌ Wrong Code. Your code must end with -' + myCode.suffix + ' (first 3 letters of your email).'};
+  }
+  return {ok:true, myCode:myCode};
+}
 function loadAdminTask(){
   if(!window.db){ document.getElementById('taskList').innerHTML='<p>Network never ready, refresh page.</p>'; return; }
   db.collection('dailyTasks').doc(todayID()).get().then(function(d){
-    if(!d.exists){ document.getElementById('taskList').innerHTML='<p>No task for today yet. Admin never add am. Check later.</p>'; return; }
+    if(!d.exists){ document.getElementById('taskList').innerHTML='<p>No task for today yet. Admin never add am. Check later.</p>'; document.getElementById('proofBox').style.display='none'; return; }
     var t=d.data();
+    window._todayTask = t;
     var doneKey='vertexa_task_done_'+todayID();
     var done=localStorage.getItem(doneKey)==='yes';
-    document.getElementById('taskList').innerHTML='<div class="card2"><b>📝 Today Task: '+(t.task||'')+'</b><br><span class="muted">Added by: '+(t.addedBy||'Admin')+'</span><br>Reward: <b>₦20</b><br>'+(done?'<button class="btn-white" disabled>✅ Done Today</button>':'<button class="btn-purple" onclick="completeAdminTask()">Complete Task + ₦20</button>')+'</div>';
+    if(done){
+      document.getElementById('taskList').innerHTML='<div class="card2"><b>✅ Done Today</b><br>You don claim today task. Come back tomorrow.</div>';
+      document.getElementById('proofBox').style.display='none';
+      return;
+    }
+    var type = t.taskType || 'post';
+    var typeLabel = type === 'referral' ? '👥 REFERRAL TASK' : '📝 POST TASK';
+    document.getElementById('taskList').innerHTML='<div class="card2"><b>'+typeLabel+': '+(t.task||'')+'</b><br><span class="muted">Added by: '+(t.addedBy||'Admin')+'</span><br>Reward: <b>₦20</b></div>';
+    var box = document.getElementById('proofBox');
+    box.style.display='block';
+    if(type === 'referral'){
+      // REFERRAL TASK UI
+      box.innerHTML = '<h3 style="margin:0">👥 Referral Task - Claim ₦20</h3>'
+        + '<p class="muted" style="font-size:13px">You must refer <b>1 Paid Friend TODAY</b>. Share your link, make dem pay, then claim.</p>'
+        + '<p><b>Your Referral Link:</b><br><span style="word-break:break-all">'+location.origin+'/join.html?ref='+(myRefCode||'...')+'</span></p>'
+        + '<p><b>🔑 Your Personal Code:</b></p>'
+        + '<input id="secretCodeInput" placeholder="VTX-XXXX-XXX (XXX = first 3 letters of your email)">'
+        + '<button class="btn-purple" onclick="submitReferralTask()">Check Referral + Claim ₦20</button>'
+        + '<p id="proofMsg"></p><p id="taskMsg"></p>';
+    } else {
+      // POST TASK UI
+      box.innerHTML = '<h3 style="margin:0">✅ Post Task - Submit Proof To Claim ₦20</h3>'
+        + '<p class="muted" style="font-size:13px">1. Do the task &nbsp; 2. Copy your post/video link &nbsp; 3. Find Base Code inside task + add your own 3 letters<br><b>Example:</b> Base 8492 + john@gmail.com = <b>VTX-8492-JOH</b></p>'
+        + '<p><b>📎 Proof Link:</b></p>'
+        + '<input id="proofLink" placeholder="Paste your post link - https://tiktok.com/...">'
+        + '<p><b>🔑 Your Personal Secret Code:</b></p>'
+        + '<input id="secretCodeInput" placeholder="VTX-8492-XXX">'
+        + '<button class="btn-purple" onclick="submitTaskProof()">Submit Proof + Claim ₦20</button>'
+        + '<p id="proofMsg"></p><p id="taskMsg"></p>';
+    }
   }).catch(function(e){ document.getElementById('taskList').innerHTML='<p>Error loading task: '+e.message+'</p>'; });
 }
-// FIXED: Earn even if Firestore fail, so earning must work
-function completeAdminTask(){
-  var doneKey='vertexa_task_done_'+todayID();
-  if(localStorage.getItem(doneKey)==='yes') return alert('You don do am today');
-  if(!confirm('You don really do today task?')) return;
-  localStorage.setItem(doneKey,'yes');
-  addEarn(20,'Daily Task - '+todayID());
-  document.getElementById('taskMsg').innerText='🎉 +₦20 added! Admin fit see your completion.';
-  loadAdminTask();
-  if(window.db){ db.collection('dailyTasks').doc(todayID()).collection('completions').doc(myUid).set({name:myName,email:myEmail,uid:myUid,completedAt:new Date(),amount:20}).catch(function(e){console.log(e);}); }
+
+// POST TASK SUBMIT
+function submitTaskProof(){
+  var link=document.getElementById('proofLink').value.trim();
+  var code=document.getElementById('secretCodeInput').value.trim().toUpperCase();
+  var msg=document.getElementById('proofMsg');
+  if(!link || !link.startsWith('http')){ msg.innerText='❌ Paste valid link - must start with https://'; return; }
+  if(link.length < 15){ msg.innerText='❌ Link too short. Paste real post link.'; return; }
+  if(!code){ msg.innerText='❌ Enter Your Personal Secret Code'; return; }
+  var tryKey='vertexa_task_try_'+todayID();
+  var tries=Number(localStorage.getItem(tryKey)||0);
+  if(tries>=3){ msg.innerText='❌ You don try 3 times. Try tomorrow.'; return; }
+  var chk = checkPersonalCode(code);
+  if(!chk.ok){ localStorage.setItem(tryKey, tries+1); msg.innerText=chk.msg+' You get '+(2-tries)+' tries remain.'; return; }
+  if(!window.db){ finishTaskClaim(link); return; }
+  msg.innerText='Checking link...';
+  db.collection('dailyTasks').doc(todayID()).collection('completions').where('proofLink','==',link).get().then(function(s){
+    if(!s.empty){ msg.innerText='❌ This link don already use. Use your own link.'; return; }
+    finishTaskClaim(link);
+  }).catch(function(){ finishTaskClaim(link); });
 }
+
+// REFERRAL TASK SUBMIT
+function submitReferralTask(){
+  var code=document.getElementById('secretCodeInput').value.trim().toUpperCase();
+  var msg=document.getElementById('proofMsg');
+  if(!code){ msg.innerText='❌ Enter Your Personal Secret Code'; return; }
+  var tryKey='vertexa_task_try_'+todayID();
+  var tries=Number(localStorage.getItem(tryKey)||0);
+  if(tries>=3){ msg.innerText='❌ You don try 3 times. Try tomorrow.'; return; }
+  var chk = checkPersonalCode(code);
+  if(!chk.ok){ localStorage.setItem(tryKey, tries+1); msg.innerText=chk.msg+' You get '+(2-tries)+' tries remain.'; return; }
+  if(!window.db){ msg.innerText='❌ Network never ready'; return; }
+  msg.innerText='Checking your referrals today...';
+  if(!myRefCode){
+    myRefCode='VERT-'+myEmail.split('@')[0].toUpperCase().replace(/[^A-Z0-9]/g,'');
+  }
+  db.collection('vertexa_users').where('referredBy','==',myRefCode).get().then(function(s){
+    var todayCount=0;
+    var today=todayID();
+    s.forEach(function(doc){
+      var u=doc.data();
+      if(u.is_paid==='yes' && u.createdAt){
+        try{
+          var d = u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt);
+          var dID = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+          if(dID===today) todayCount++;
+        }catch(e){}
+      }
+    });
+    if(todayCount < 1){
+      msg.innerText='❌ You never refer 1 Paid Friend today. Paid today: 0 / 1. Share your link first, make dem pay.';
+      return;
+    }
+    finishTaskClaim('REFERRAL-TASK-'+todayID());
+    msg.innerText='🎉 Correct! You refer '+todayCount+' today. +₦20 added!';
+  }).catch(function(e){ msg.innerText='Error checking referral: '+e.message; });
+}
+
+function finishTaskClaim(link){
+  var doneKey='vertexa_task_done_'+todayID();
+  if(localStorage.getItem(doneKey)==='yes') return;
+  localStorage.setItem(doneKey,'yes');
+  localStorage.setItem('vertexa_task_link_'+todayID(), link);
+  addEarn(20,'Daily Task - '+todayID());
+  var m=document.getElementById('proofMsg'); if(m) m.innerText='🎉 Correct! +₦20 added!';
+  var t=document.getElementById('taskMsg'); if(t) t.innerText='🎉 +₦20 added!';
+  if(window.db){
+    db.collection('dailyTasks').doc(todayID()).collection('completions').doc(myUid).set({name:myName,email:myEmail,uid:myUid,proofLink:link,completedAt:new Date(),amount:20}).catch(function(e){console.log(e);});
+  }
+  loadAdminTask();
+}
+// ===== END DAILY TASK =====
+
 function addEarn(amount,reason){
   balance+=amount; totalEarned+=amount;
   localStorage.setItem('vertexa_balance',balance); localStorage.setItem('vertexa_total_earned',totalEarned);
@@ -148,7 +276,12 @@ function setupRealReferral(){
   }
 }
 function copyRef(){ var link=location.origin+'/join.html?ref='+myRefCode; navigator.clipboard.writeText(link).then(function(){ alert('✅ Real link copied! Share am: '+link); }); }
-function shareRef(){ var link=location.origin+'/join.html?ref='+myRefCode; var msg='Join VERTEXA - Learn Graphics, Earn Daily! 💰\n\nPay ₦15,000, Learn M1-M9, Earn ₦20 per task + ₦100 per referral.\n\nJoin with my link: '+link; window.open('https://wa.me/?text='+encodeURIComponent(msg)); }
+function shareRef(){ 
+  var link=location.origin+'/join.html?ref='+myRefCode; 
+  var msg='Join VERTEXA - Learn Graphics, Earn Daily! 💰\n\nPay ₦15,000, Learn M1-M9, Earn ₦20 per task + ₦100 per referral.\n\nJoin with my link: '+link; 
+  window.open('https://wa.me/?text='+encodeURIComponent(msg)); 
+}
+
 function canWithdraw(){
   if(!isPaidState) return {ok:false,reason:'🔒 You be FREE USER. Pay ₦15,000 + Admin approve to unlock.'};
   if(paidRefs<1) return {ok:false,reason:'🔒 You never refer 1 Paid User. Paid referrals: '+paidRefs+' / 1'};
@@ -156,36 +289,94 @@ function canWithdraw(){
   if(balance<5000) return {ok:false,reason:'🔒 Balance never reach ₦5,000. Balance: ₦'+balance+'.'};
   return {ok:true,reason:'✅ You fit withdraw! Paid + 1 Paid Referral + Certificate + ₦5,000+'};
 }
+
 function renderAll(){
   document.getElementById('balance').innerText='₦'+balance.toLocaleString();
   document.getElementById('wBalance').innerText='₦'+balance.toLocaleString();
   document.getElementById('totalEarned').innerText='₦'+totalEarned.toLocaleString();
   document.getElementById('userType').innerText=isPaidState?'PAID USER ✅':'FREE USER';
   document.getElementById('userType').className=isPaidState?'paidBadge':'freeBadge';
-  if(isPaidState){ document.getElementById('payBox').style.display='none'; document.getElementById('pendingBox').style.display='none'; document.getElementById('paidBox').style.display='block'; document.getElementById('paidInfo').innerText='You don pay ₦15,000 Join Fee. Paid referrals: '+paidRefs+' / 1. Referral bonus: ₦100 per paid friend.'; document.getElementById('referRule').innerText='You earn ₦100 per Paid Friend. Refer 1 Paid Friend to unlock Withdraw.'; }
-  else { document.getElementById('paidBox').style.display='none'; document.getElementById('referRule').innerText='You earn ₦100 per Paid Friend. Pay ₦15,000 + Admin approve to unlock withdraw.'; }
+  if(isPaidState){ 
+    document.getElementById('payBox').style.display='none'; 
+    document.getElementById('pendingBox').style.display='none'; 
+    document.getElementById('paidBox').style.display='block'; 
+    document.getElementById('paidInfo').innerText='You don pay ₦15,000 Join Fee. Paid referrals: '+paidRefs+' / 1. Referral bonus: ₦100 per paid friend.'; 
+    document.getElementById('referRule').innerText='You earn ₦100 per Paid Friend. Refer 1 Paid Friend to unlock Withdraw.'; 
+  } else { 
+    document.getElementById('paidBox').style.display='none'; 
+    document.getElementById('referRule').innerText='You earn ₦100 per Paid Friend. Pay ₦15,000 + Admin approve to unlock withdraw.'; 
+  }
   document.getElementById('accountInfo').innerText=isPaidState?'Status: PAID ✅ | Paid Referrals: '+paidRefs+' / 1 | Certificate: '+(certApproved?'Approved ✅':'Locked 🔒'):'Status: FREE | Pay ₦15,000 + Admin approve to unlock withdraw.';
-  var cw=canWithdraw(); document.getElementById('earnStatus').innerText=cw.reason; document.getElementById('withdrawLockText').innerText=cw.reason;
-  if(cw.ok){ document.getElementById('withdrawLock').style.display='none'; document.getElementById('withdrawBox').style.display='block'; } else { document.getElementById('withdrawLock').style.display='block'; document.getElementById('withdrawBox').style.display='none'; }
+  var cw=canWithdraw(); 
+  document.getElementById('earnStatus').innerText=cw.reason; 
+  document.getElementById('withdrawLockText').innerText=cw.reason;
+  if(cw.ok){ 
+    document.getElementById('withdrawLock').style.display='none'; 
+    document.getElementById('withdrawBox').style.display='block'; 
+  } else { 
+    document.getElementById('withdrawLock').style.display='block'; 
+    document.getElementById('withdrawBox').style.display='none'; 
+  }
 }
+
 function claimWeekly(){
   var wk='vertexa_weekly_'+todayID().slice(0,7);
-  if(localStorage.getItem(wk)) { document.getElementById('weeklyMsg').innerText='You don claim weekly for this month already.'; return; }
+  if(localStorage.getItem(wk)) { 
+    document.getElementById('weeklyMsg').innerText='You don claim weekly for this month already.'; 
+    return; 
+  }
   if(!confirm('You don post 3 designs + tag VERTEXA?')) return;
-  localStorage.setItem(wk,'yes'); addEarn(200,'Weekly Challenge Bonus'); document.getElementById('weeklyMsg').innerText='🎉 +₦200 Weekly Bonus added!';
+  localStorage.setItem(wk,'yes'); 
+  addEarn(200,'Weekly Challenge Bonus'); 
+  document.getElementById('weeklyMsg').innerText='🎉 +₦200 Weekly Bonus added!';
 }
+
 function requestWithdraw(){
-  var cw=canWithdraw(); if(!cw.ok){ document.getElementById('withdrawMsg').innerText=cw.reason; return; }
-  var amt=parseInt(document.getElementById('wAmount').value||'0'); var bank=document.getElementById('wBank').value.trim(); var acct=document.getElementById('wAcct').value.trim(); var name=document.getElementById('wName').value.trim();
+  var cw=canWithdraw(); 
+  if(!cw.ok){ document.getElementById('withdrawMsg').innerText=cw.reason; return; }
+  var amt=parseInt(document.getElementById('wAmount').value||'0'); 
+  var bank=document.getElementById('wBank').value.trim(); 
+  var acct=document.getElementById('wAcct').value.trim(); 
+  var name=document.getElementById('wName').value.trim();
   if(amt<5000){ document.getElementById('withdrawMsg').innerText='❌ Minimum na ₦5,000.'; return; }
   if(amt>balance){ document.getElementById('withdrawMsg').innerText='❌ Balance no reach.'; return; }
   if(!bank||!acct||!name){ document.getElementById('withdrawMsg').innerText='❌ Fill Bank, Account Number and Name.'; return; }
   if(!window.db) return alert('Network never ready');
-  balance-=amt; localStorage.setItem('vertexa_balance',balance);
-  db.collection('withdrawals').add({email:myEmail,name:name,uid:myUid,amount:amt,bank:bank+' - '+acct,status:'pending',isPaid:isPaidState,paidRefs:paidRefs,createdAt:new Date()}).then(function(){ document.getElementById('withdrawMsg').innerText='✅ Request Sent! ₦'+amt+' go enter '+bank+' '+acct+' after Founder / Senior confirm.'; renderAll(); loadWithdrawHistory(); });
+  balance-=amt; 
+  localStorage.setItem('vertexa_balance',balance);
+  db.collection('withdrawals').add({email:myEmail,name:name,uid:myUid,amount:amt,bank:bank+' - '+acct,status:'pending',isPaid:isPaidState,paidRefs:paidRefs,createdAt:new Date()}).then(function(){ 
+    document.getElementById('withdrawMsg').innerText='✅ Request Sent! ₦'+amt+' go enter '+bank+' '+acct+' after Founder / Senior confirm.'; 
+    renderAll(); 
+    loadWithdrawHistory(); 
+  });
 }
-function loadWithdrawHistory(){ if(!window.db) return; db.collection('withdrawals').where('email','==',myEmail).orderBy('createdAt','desc').limit(10).get().then(function(s){ var h=''; s.forEach(function(d){ var w=d.data(); h+='<div class="card2"><b>₦'+w.amount+' - '+w.status+'</b><br>'+w.bank+'<br><span class="muted">'+(w.createdAt?w.createdAt.toDate().toLocaleString():'')+'</span></div>'; }); document.getElementById('withdrawList').innerHTML=h||'<p>No withdrawal yet.</p>'; }).catch(function(){}); }
-function loadEarnings(){ if(!window.db) return; db.collection('earnings').where('email','==',myEmail).orderBy('createdAt','desc').limit(20).get().then(function(s){ var h=''; s.forEach(function(d){ var e=d.data(); h+='<p>✅ +₦'+e.amount+' - '+e.reason+'</p>'; }); document.getElementById('earnList').innerHTML=h||'<p>No earnings yet.</p>'; }).catch(function(){}); }
+
+function loadWithdrawHistory(){ 
+  if(!window.db) return; 
+  db.collection('withdrawals').where('email','==',myEmail).orderBy('createdAt','desc').limit(10).get().then(function(s){ 
+    var h=''; 
+    s.forEach(function(d){ 
+      var w=d.data(); 
+      h+='<div class="card2"><b>₦'+w.amount+' - '+w.status+'</b><br>'+w.bank+'<br><span class="muted">'+(w.createdAt?w.createdAt.toDate().toLocaleString():'')+'</span></div>'; 
+    }); 
+    document.getElementById('withdrawList').innerHTML=h||'<p>No withdrawal yet.</p>'; 
+  }).catch(function(){}); 
+}
+
+function loadEarnings(){ 
+  if(!window.db) return; 
+  db.collection('earnings').where('email','==',myEmail).orderBy('createdAt','desc').limit(20).get().then(function(s){ 
+    var h=''; 
+    s.forEach(function(d){ 
+      var e=d.data(); 
+      h+='<p>✅ +₦'+e.amount+' - '+e.reason+'</p>'; 
+    }); 
+    document.getElementById('earnList').innerHTML=h||'<p>No earnings yet.</p>'; 
+  }).catch(function(){}); 
+}
+
 renderAll();
 setTimeout(function(){ checkPaymentStatus(); }, 800);
-</script></body></html>
+</script>
+</body>
+</html>
